@@ -32,7 +32,8 @@ const Topbar = props => {
             alt="Logo"
             src="/images/logos/logo--white--full.png"
             style={{
-              maxWidth: '180px'
+              maxWidth: '180px',
+              maxHeight: '55px'
             }}
           />
         </RouterLink>
