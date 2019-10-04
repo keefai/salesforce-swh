@@ -2,6 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import style from './style.module.scss';
+import './print.scss';
 import Sidebar from './components/Sidebar';
 import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';
@@ -213,7 +214,7 @@ const InvoicePage = () => {
             </small>
           </Grid>
 
-          <Grid container spacing={3} className="page-break">
+          <Grid container spacing={3} className={`page-break ${style.pageBreak}`}>
             <Grid item xs={6}>
               <div className={style.heading}>YOUR INSTALL DETAILS</div>
               <table className={style.table}>
@@ -264,9 +265,7 @@ const InvoicePage = () => {
                   </tr>
                 </tbody>
               </table>
-              <br />
-              <br />
-              <div className={style.heading}>YOUR PAYMENT DETAILS</div>
+              <div className={`${style.heading} ${style.yourPaymentDetails}`}>YOUR PAYMENT DETAILS</div>
               <table className={style.table}>
                 <tbody>
                   <tr>
@@ -335,7 +334,7 @@ const InvoicePage = () => {
               </div>
             </Grid>
           </Grid>
-          <Grid container spacing={3} style={{ marginTop: '30px' }}>
+          <Grid container spacing={3} className={style.paymentTerms}>
             <Grid item xs={12}>
               <b>Payment Terms</b>
               <p>
@@ -348,7 +347,7 @@ const InvoicePage = () => {
                 Upon Acceptance of this agreement, we require a deposit to be paid at time of submitting the agreed
                 quote. With the remainder of the balance due on the day of installation of your solar PV system.
               </p>
-              <table className={style.table3} style={{ marginTop: '30px' }}>
+              <table className={`${style.table3} ${style.paymentTable}`}>
                 <thead>
                   <tr>
                     <th>Full Payment Upfront</th>
@@ -368,7 +367,7 @@ const InvoicePage = () => {
                   </tr>
                 </tbody>
               </table>
-              <p style={{ marginTop: '30px', marginBottom: '30px' }}>
+              <p className={style.agreement}>
                 In signing this quotation, I authorise Solar Warehouse Australia to install a solar PV system in
                 accordance with the terms available at solarwarehouseaustralia.com.ai hereby forming a contrat of sale.
                 I have read and agree with all of Solar Warehouse Australia's terms and conditions as listed on their
