@@ -44,11 +44,11 @@ app.use(
 );
 
 // App
-app.get('/', express.static(path.join(__dirname, '../build')));
-app.get('/me', express.static(path.join(__dirname, '../build')));
-app.get('/login', express.static(path.join(__dirname, '../build')));
-app.get('/invoice', express.static(path.join(__dirname, '../build')));
-app.get('/not-found', express.static(path.join(__dirname, '../build')));
+app.use('/', express.static(path.join(__dirname, '../build')));
+app.use('/me', express.static(path.join(__dirname, '../build')));
+app.use('/login', express.static(path.join(__dirname, '../build')));
+app.use('/invoice', express.static(path.join(__dirname, '../build')));
+app.use('/not-found', express.static(path.join(__dirname, '../build')));
 
 /**
  *  Attemps to retrieves the server session.
