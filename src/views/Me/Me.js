@@ -1,7 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
-import { Notifications, Password, UserData } from './components';
+// import { Notifications, Password, UserData } from './components';
+import { UserData } from './components';
 import { Main as MainLayout } from '../../layouts';
 import withAuth from '../../hoc/withAuth';
 

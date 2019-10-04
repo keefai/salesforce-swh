@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import { Sidebar, Topbar, Footer } from './components';
+import { Sidebar, Topbar } from './components';
 import socket from '../../common/socket';
 import api from '../../common/api';
 
@@ -58,7 +58,7 @@ const Main = props => {
       console.log('SOCKET LIVE');
 
       try {
-        const res = await api.get('/whoami');
+        await api.get('/whoami');
         salesforceOK = true;
         console.log('SALESFORCE LIVE');
       } catch (err) {
