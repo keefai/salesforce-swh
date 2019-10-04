@@ -1,5 +1,5 @@
 .sidebar {
-    background: #ddd;
+    background: rgb(0, 153, 255);
     position: fixed;
     right: 0;
     top: calc(50% - 111px);
@@ -7,13 +7,13 @@
     & > div {
     	padding: 15px;
     	text-align: center;
-        border: 2px solid #ddd;
+        border: 2px solid rgb(0, 153, 255);
         transition: all 0.2s ease-in-out;
 
         &:hover {
             cursor: pointer;
-            background: white;
-            border: 2px solid black;
+            background: rgb(144, 219, 244);
+            border: 2px solid rgb(144, 219, 244);
             box-sizing: border-box;
         }
 
@@ -21,4 +21,10 @@
     		max-width: 30px;
     	}
     }
+}
+
+@media print {
+  .sidebar {
+    visibility: hidden;
+  }
 }

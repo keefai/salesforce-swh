@@ -4,13 +4,15 @@ body {
 }
 
 .page {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 20px auto auto auto;
   font-family: 'Raleway', sans-serif;
   font-size: 16px;
-
+  font-weight: 500;
+  
   * {
-    font-family: 'Raleway', sans-serif;
+    // font-family: 'Raleway', sans-serif;
+    // font-weight: 500;
   }
 }
 
@@ -48,12 +50,13 @@ body {
 
   tr {
     td {
-      padding: 4px;
+      padding: 5px;
       border: 1px solid #fff;
       background: rgb(145, 203, 239);
     }
     td:nth-child(2) {
       background: rgb(199, 226, 246);
+      text-align: right;
     }
   }
 }
@@ -63,7 +66,7 @@ body {
 
   tr {
     td {
-      padding: 4px;
+      padding: 5px;
       border: 1px solid #fff;
       background: rgb(145, 203, 239);
     }
@@ -82,7 +85,7 @@ body {
   td, th {
     width: 33%;
     text-align: center;
-    padding: 4px;
+    padding: 5px;
     border: 1px solid #fff;
     background: rgb(145, 203, 239);
   }
