@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import style from './style.module.scss';
@@ -6,18 +6,24 @@ import './print.scss';
 import Sidebar from './components/Sidebar';
 import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';
+import Signature from './components/Signature';
 
 const InvoicePage = () => {
+  const [sign, setSign] = useState('');
+  const [signModal, setSignModal] = useState(false);
   let resume = React.createRef();
 
   const exportPDF = () => {
     resume.save();
   };
 
+  const openModal = () => setSignModal(true);
+  const closeModal = () => setSignModal(false);
+
   return (
     <React.Fragment>
-      <Sidebar exportPDF={exportPDF} />
-
+      <Sidebar exportPDF={exportPDF} openModal={openModal} />
+      <Signature state={signModal} closeModal={closeModal} setSign={setSign} />
       <PDFExport
         scale={0.55}
         paperSize="A4"
@@ -385,7 +391,17 @@ const InvoicePage = () => {
                 <tbody>
                   <tr style={{ height: '70px' }}>
                     <td>Alex Kuchel</td>
-                    <td>&nbsp;</td>
+                    <td>
+                      {sign && (
+                        <img
+                          src={sign}
+                          alt="sign"
+                          style={{
+                            height: '50px'
+                          }}
+                        />
+                      )}
+                    </td>
                     <td>&nbsp;</td>
                   </tr>
                 </tbody>
@@ -393,6 +409,7 @@ const InvoicePage = () => {
             </Grid>
           </Grid>
         </div>
+        <br />
       </PDFExport>
     </React.Fragment>
   );
