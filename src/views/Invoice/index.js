@@ -17,19 +17,22 @@ const InvoicePage = () => {
     SystemSize: 5,
     SystemEfficiency: 60
   });
-  const [solarSystemProductionData, setSolarSystemProductionData] = useState();
+  const [solarSystemProductionData, setSolarSystemProductionData] = useState(null);
 
   const updateSolarSystemProductionData = async (body) => {
     try {
       const res = await api.post('/getSolarSystemProduction', body);
-      console.log(res);
+      console.log(res.data);
+      setSolarSystemProductionData(res.data);
     } catch (err) {
       console.log(err);
+      setSolarSystemProductionData(null);
       return err;
     }
   };
 
   useEffect(() => {
+    setSolarSystemProductionData(null);
     updateSolarSystemProductionData(data);
   }, [data]);
 
@@ -42,6 +45,7 @@ const InvoicePage = () => {
 
   return (
     <React.Fragment>
+      {/* <button onClick={() => setData({ ...data, SystemSize: data.SystemSize + 1 })}>Change System Size</button> */}
       <Sidebar exportPDF={exportPDF} openModal={openModal} />
       <Signature state={signModal} closeModal={closeModal} setSign={setSign} />
       <PDFExport
@@ -227,7 +231,7 @@ const InvoicePage = () => {
               <div className={style.chartContainer}>
                 <div className={style.chart}>
                   <div className={style.heading2}>Estimated Average Daily Power Production (kWh)*</div>
-                  <Chart2 />
+                  <Chart2 data={solarSystemProductionData} />
                 </div>
               </div>
             </Grid>

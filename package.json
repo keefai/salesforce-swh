@@ -2,7 +2,7 @@
   "name": "salesforce-swh",
   "version": "1.0.0",
   "private": true,
-  "proxy": "https://ea5ed1de.ngrok.io",
+  "proxy": "https://salesforce-swh.herokuapp.com",
   "scripts": {
     "start": "node ./bin/www",
     "start:watch": "nodemon ./bin/www",

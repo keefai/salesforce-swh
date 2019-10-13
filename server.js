@@ -131,10 +131,16 @@ app.post('/api/getSolarSystemProduction',  asyncMiddleware(async (request, respo
   const body = request.body;
   const session = getSession(request, response);
   if (session == null) return;
-  const res = await utils.getSolarSystemProduction(session, body);
+  const res = await utils.getSolarSystemProduction(sfdc, session, body);
   return response.status(res.status).json(res.json);
 }));
 
-app.get('*', express.static(path.join(__dirname, '../build')));
+app.post('/api/getSolarSystemInvestmentAnalysis',  asyncMiddleware(async (request, response, next) => {
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+  const res = await utils.getSolarSystemInvestmentAnalysis(sfdc, session, body);
+  return response.status(res.status).json(res.json);
+}));
 
 module.exports = app;

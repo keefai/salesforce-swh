@@ -23,25 +23,42 @@ exports.getUserData = async (session) => {
   }
 }
 
-exports.getSolarSystemProduction = async (session, body) => {
-  try {
-    const payload = await httpClient.post({
-      url: session.sfdcAuth.id,
-      headers: {
-        Authorization: `Bearer ${session.sfdcAuth.access_token}`
-      },
-      body,
-      json: true
-    });
+exports.getSolarSystemProduction = async (sfdc, session, data) => {
+	console.log('getSolarSystemProduction Body: ', JSON.stringify(data, null, 2));
+	var apiRequestOptions = sfdc.apex.createApexRequest(session.sfdcAuth, 'CalculateSolarSystemProduction');
+	try {
+    const payload = await httpClient.post({ ...apiRequestOptions, body: data, json: true });
+    const json = JSON.parse(payload);
+    console.log(json)
     return {
       status: 200,
-      json: payload
+      json
     };
-  } catch (error) {
-    console.error('getUserData: Force.com data API error: '+ JSON.stringify(error));
+	} catch (error) {
+		console.error('getSolarSystemProduction: Force.com data API error: '+ JSON.stringify(error));
     return {
       status: 500,
       json: error
     };
-  }
+	}
+}
+
+exports.getSolarSystemInvestmentAnalysis = async (sfdc, session, data) => {
+	console.log('getSolarSystemInvestmentAnalysis Body: ', JSON.stringify(data, null, 2));
+	var apiRequestOptions = sfdc.apex.createApexRequest(session.sfdcAuth, 'CalculateSolarSystemInvestmentAnalysis');
+	try {
+    const payload = await httpClient.post({ ...apiRequestOptions, body: data, json: true });
+    const json = JSON.parse(payload);
+    console.log(json)
+    return {
+      status: 200,
+      json
+    };
+	} catch (error) {
+		console.error('getSolarSystemInvestmentAnalysis: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+	}
 }
