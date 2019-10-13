@@ -14,10 +14,9 @@ const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, ..
 
     if (re) {
       if (e.target.value === '' || re.test(e.target.value)) {
-        if (min !== undefined && (e.target.value === '' || Number(e.target.value) <= Number(min))) {
+        if (min !== undefined && (e.target.value === '' || Number(e.target.value) < Number(min))) {
           e.target.value = min;
         }
-        e.target.value = Number(e.target.value);
         onChange(e);
       }
     } else {
@@ -28,7 +27,11 @@ const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, ..
 	return (
 		<React.Fragment>
       {prefix}
-      <AutosizeInput input='text' inputClassName={`${style.input} ${className}`} onChange={onChangeMiddleware} {...props} />
+      <AutosizeInput
+        input='text'
+        inputClassName={`${style.input} ${className}`}
+        onChange={onChangeMiddleware} {...props}
+      />
       {suffix}
 		</React.Fragment>
 	);
