@@ -122,8 +122,16 @@ app.get('/api/auth/logout', function(request, response, next) {
 app.get('/api/whoami', asyncMiddleware( async (request, response, next) => {
   const session = getSession(request, response);
   if (session == null) return;
-  debug('SESSION: ', session);
+  console.log('SESSION: ', session);
   const res = await utils.getUserData(session);
+  return response.status(res.status).json(res.json);
+}));
+
+app.post('/api/getSolarSystemProduction',  asyncMiddleware(async (request, response, next) => {
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+  const res = await utils.getSolarSystemProduction(session, body);
   return response.status(res.status).json(res.json);
 }));
 

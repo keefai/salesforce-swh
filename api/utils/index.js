@@ -22,3 +22,26 @@ exports.getUserData = async (session) => {
     };
   }
 }
+
+exports.getSolarSystemProduction = async (session, body) => {
+  try {
+    const payload = await httpClient.post({
+      url: session.sfdcAuth.id,
+      headers: {
+        Authorization: `Bearer ${session.sfdcAuth.access_token}`
+      },
+      body,
+      json: true
+    });
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('getUserData: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
