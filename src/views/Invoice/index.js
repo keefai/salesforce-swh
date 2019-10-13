@@ -9,6 +9,7 @@ import Sidebar from './components/Sidebar';
 import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';
 import Signature from './components/Signature';
+import EditableInput from './components/EditableInput';
 
 const InvoicePage = () => {
   let resume = React.createRef();
@@ -18,30 +19,47 @@ const InvoicePage = () => {
   // chart1
   const [chart1Loading, setChart1Loading] = useState(false);
   const [chart1Data, setChart1Data] = useState({
-    InitialCost : 5070,
-    EnergyUsageProfile : {
+    InitialCost: 5070,
+    EnergyUsageProfile: {
       DayUsagePercentage : 50,
       NightUsagePercentage : 50,
       AverageDailyUsage    : 18,
       PredictedAnnualRiseInPowerCost : 10,
       PredictedAnnualRiseInFeedintarriff : 0
     },
-    EnergyRetailerProfile : {
+    EnergyRetailerProfile: {
       CostOfPower : 0.4,
       DailySupplyCharge : 0.71,
       FeedinTarrif : 0.163
     },
-    SolarSystemProduction : {
+    SolarSystemProduction: {
       AverageDailyProduction : 13,
       AverageAnnualProduction : 4883.7
     }
   });
   const [solarSystemInvestmentAnalysisData, setSolarSystemInvestmentAnalysisData] = useState(null);
 
-  const updateSolarSystemInvestmentAnalysisData = async (body) => {
+  const handleChart1Input = (field1, field2) => (e) => {
+    if (field2) {
+      setChart1Data({
+        ...chart1Data,
+        [field1]: {
+          ...chart1Data[field1],
+          [field2]: e.target.value
+        }
+      });
+    } else {
+      setChart1Data({
+        ...chart1Data,
+        [field1]: e.target.value
+      });
+    }
+  }
+
+  const updateSolarSystemInvestmentAnalysisData = async (data) => {
     setChart1Loading(true);
     try {
-      const res = await api.post('/getSolarSystemInvestmentAnalysis', body);
+      const res = await api.post('/getSolarSystemInvestmentAnalysis', data);
       console.log(res.data);
       setSolarSystemInvestmentAnalysisData(res.data);
     } catch (err) {
@@ -53,10 +71,16 @@ const InvoicePage = () => {
     }
   };
 
-  useEffect(() => {
+  const updateChart1 = (_, newData) => {
+    console.log(newData);
+    let data = chart1Data;
+    if (newData) {
+      data = newData;
+      setChart1Data(newData);
+    }
     setSolarSystemInvestmentAnalysisData(null);
-    updateSolarSystemInvestmentAnalysisData(chart1Data);
-  }, [chart1Data]);
+    updateSolarSystemInvestmentAnalysisData(data);
+  };
 
   // chart2
   const [chart2Loading, setChart2Loading] = useState(false);
@@ -66,12 +90,28 @@ const InvoicePage = () => {
   });
   const [solarSystemProductionData, setSolarSystemProductionData] = useState(null);
 
-  const updateSolarSystemProductionData = async (body) => {
+  const handleChart2Input = (field) => (e) => {
+    setChart2Data({
+      ...chart2Data,
+      [field]: e.target.value
+    });
+  }
+
+  const updateSolarSystemProductionData = async () => {
     setChart2Loading(true);
     try {
-      const res = await api.post('/getSolarSystemProduction', body);
+      const res = await api.post('/getSolarSystemProduction', chart2Data);
       console.log(res.data);
       setSolarSystemProductionData(res.data);
+      // update chart1 data based on chart2 data
+      const newData = {
+        ...chart1Data,
+        SolarSystemProduction: {
+          AverageDailyProduction: res.data.AverageDailyProduction,
+          AverageAnnualProduction: res.data.AverageAnnualProduction
+        } 
+      };
+      updateChart1(null, newData);
     } catch (err) {
       console.log(err);
       setSolarSystemProductionData(null);
@@ -81,10 +121,15 @@ const InvoicePage = () => {
     }
   };
 
-  useEffect(() => {
+  const updateChart2 = () => {
     setSolarSystemProductionData(null);
-    updateSolarSystemProductionData(chart2Data);
-  }, [chart2Data]);
+    updateSolarSystemProductionData();
+  }
+
+  // initial data
+  useEffect(() => {
+    updateChart2();
+  }, []);
 
   // save pdf function
   const exportPDF = () => {
@@ -97,6 +142,52 @@ const InvoicePage = () => {
 
   return (
     <React.Fragment>
+      <div className={style.page}>
+        <h4>Test</h4>
+        <table className={style.table}>
+          <tbody>
+            <tr>
+              <td>System Efficiency</td>
+              <td className={style.editTd}>
+                <EditableInput
+                  type='integer'
+                  min='0'
+                  value={chart2Data.SystemEfficiency}
+                  onChange={handleChart2Input('SystemEfficiency')}
+                  onBlur={updateChart2}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Predicted Annual Rise In FeedinTarrif</td>
+              <td className={style.editTd}>
+                <EditableInput
+                  type='float'
+                  min={0}
+                  value={chart1Data.EnergyUsageProfile.PredictedAnnualRiseInFeedintarriff}
+                  onChange={handleChart1Input('EnergyUsageProfile', 'PredictedAnnualRiseInFeedintarriff')}
+                  suffix='% p.a.'
+                  onBlur={updateChart1}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Inital Cost</td>
+              <td className={style.editTd}>
+                <EditableInput
+                  type='integer'
+                  min={0}
+                  value={chart1Data.InitialCost}
+                  onChange={handleChart1Input('InitialCost')}
+                  onBlur={updateChart1}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <br />
+      <hr />
       <Sidebar exportPDF={exportPDF} openModal={openModal} />
       <Signature state={signModal} closeModal={closeModal} setSign={setSign} />
       <PDFExport
@@ -135,11 +226,19 @@ const InvoicePage = () => {
                 <tbody>
                   <tr>
                     <td>System Size</td>
-                    <td>8.2kW</td>
+                    <td className={style.editTd}>
+                      <EditableInput
+                        type='integer'
+                        min='0'
+                        value={chart2Data ? chart2Data.SystemSize : ''}
+                        onChange={handleChart2Input('SystemSize')}
+                        suffix=' kW'
+                        onBlur={updateChart2}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Number of Panels</td>
-
                     <td>24</td>
                   </tr>
                   <tr>
@@ -159,19 +258,58 @@ const InvoicePage = () => {
                 <tbody>
                   <tr>
                     <td>Cost of Power</td>
-                    <td>$0.35/kWh</td>
+                    <td className={style.editTd}>
+                      <EditableInput
+                        type='float'
+                        min={0}
+                        value={chart1Data.EnergyRetailerProfile.CostOfPower}
+                        onChange={handleChart1Input('EnergyRetailerProfile', 'CostOfPower')}
+                        prefix='$'
+                        suffix='/kWh'
+                        onBlur={updateChart1}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Daily supply charge</td>
-                    <td>$0.88/Day</td>
+                    <td className={style.editTd}>
+                      <EditableInput
+                        type='float'
+                        min={0}
+                        value={chart1Data.EnergyRetailerProfile.DailySupplyCharge}
+                        onChange={handleChart1Input('EnergyRetailerProfile', 'DailySupplyCharge')}
+                        prefix='$'
+                        suffix='/Day'
+                        onBlur={updateChart1}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Feed-in Tariff</td>
-                    <td>$0.160/kWh</td>
+                    <td className={style.editTd}>
+                      <EditableInput
+                        type='float'
+                        min={0}
+                        value={chart1Data.EnergyRetailerProfile.FeedinTarrif}
+                        onChange={handleChart1Input('EnergyRetailerProfile', 'FeedinTarrif')}
+                        prefix='$'
+                        suffix='/kWh'
+                        onBlur={updateChart1}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Predicted Energy Price Rise</td>
-                    <td>3.00% p.a.</td>
+                    <td className={style.editTd}>
+                      <EditableInput
+                        type='float'
+                        min={0}
+                        value={chart1Data.EnergyUsageProfile.PredictedAnnualRiseInPowerCost}
+                        onChange={handleChart1Input('EnergyUsageProfile', 'PredictedAnnualRiseInPowerCost')}
+                        suffix='% p.a.'
+                        onBlur={updateChart1}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Average Daily Energy Usage</td>
@@ -183,11 +321,29 @@ const InvoicePage = () => {
                   </tr>
                   <tr>
                     <td>Day Usage</td>
-                    <td>30%</td>
+                    <td className={style.editTd}>
+                      <EditableInput
+                        type='integer'
+                        min='0'
+                        value={chart1Data.EnergyUsageProfile.DayUsagePercentage}
+                        onChange={handleChart1Input('EnergyUsageProfile', 'DayUsagePercentage')}
+                        suffix='%'
+                        onBlur={updateChart1}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Night Usage</td>
-                    <td>70%</td>
+                    <td className={style.editTd}>
+                      <EditableInput
+                        type='integer'
+                        min='0'
+                        value={chart1Data.EnergyUsageProfile.NightUsagePercentage}
+                        onChange={handleChart1Input('EnergyUsageProfile', 'NightUsagePercentage')}
+                        suffix='%'
+                        onBlur={updateChart1}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Average 1st year quarterly savings*</td>
@@ -218,13 +374,17 @@ const InvoicePage = () => {
                 <tbody>
                   <tr>
                     <td>Average Daily Energy Production</td>
-                    <td>31.39kWh</td>
+                    <td>
+                      {chart1Data.SolarSystemProduction.AverageDailyProduction} kWh
+                    </td>
                   </tr>
                   <tr>
                     <td>
                       Approx. 1<sup>st</sup> Year Energy Production
                     </td>
-                    <td>11,457.35kWh</td>
+                    <td>
+                      {chart1Data.SolarSystemProduction.AverageAnnualProduction} kWh
+                    </td>
                   </tr>
                 </tbody>
               </table>
