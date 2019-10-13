@@ -44,11 +44,11 @@ app.use(
 );
 
 // App
-app.use('/', express.static(path.join(__dirname, '../build')));
-app.use('/me', express.static(path.join(__dirname, '../build')));
-app.use('/login', express.static(path.join(__dirname, '../build')));
-app.use('/invoice', express.static(path.join(__dirname, '../build')));
-app.use('/not-found', express.static(path.join(__dirname, '../build')));
+// app.use('/', express.static(path.join(__dirname, '../build')));
+// app.use('/me', express.static(path.join(__dirname, '../build')));
+// app.use('/login', express.static(path.join(__dirname, '../build')));
+// app.use('/invoice', express.static(path.join(__dirname, '../build')));
+// app.use('/not-found', express.static(path.join(__dirname, '../build')));
 
 /**
  *  Attemps to retrieves the server session.
@@ -142,5 +142,10 @@ app.post('/api/getSolarSystemInvestmentAnalysis',  asyncMiddleware(async (reques
   const res = await utils.getSolarSystemInvestmentAnalysis(sfdc, session, body);
   return response.status(res.status).json(res.json);
 }));
+
+app.use(express.static(path.join(__dirname, './build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './build/index.html'));
+});
 
 module.exports = app;

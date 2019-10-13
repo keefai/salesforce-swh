@@ -38,7 +38,8 @@ const withAuth = (WrappedComponent) => {
       }
 
       if (this.state.error) {
-        return <Redirect to="/login" /> 
+        console.log('Should Redirect');
+        return <Redirect to='/login' /> 
       }
 
       return (
@@ -49,7 +50,6 @@ const withAuth = (WrappedComponent) => {
       );
     }
   }
-
 };
 
 export default withAuth;

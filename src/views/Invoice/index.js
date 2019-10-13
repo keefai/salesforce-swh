@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { PDFExport } from '@progress/kendo-react-pdf';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import style from './style.module.scss';
 import './print.scss';
 import api from '../../common/api'
@@ -13,13 +14,60 @@ const InvoicePage = () => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
-  const [data, setData] = useState({
+
+  // chart1
+  const [chart1Loading, setChart1Loading] = useState(false);
+  const [chart1Data, setChart1Data] = useState({
+    InitialCost : 5070,
+    EnergyUsageProfile : {
+      DayUsagePercentage : 50,
+      NightUsagePercentage : 50,
+      AverageDailyUsage    : 18,
+      PredictedAnnualRiseInPowerCost : 10,
+      PredictedAnnualRiseInFeedintarriff : 0
+    },
+    EnergyRetailerProfile : {
+      CostOfPower : 0.4,
+      DailySupplyCharge : 0.71,
+      FeedinTarrif : 0.163
+    },
+    SolarSystemProduction : {
+      AverageDailyProduction : 13,
+      AverageAnnualProduction : 4883.7
+    }
+  });
+  const [solarSystemInvestmentAnalysisData, setSolarSystemInvestmentAnalysisData] = useState(null);
+
+  const updateSolarSystemInvestmentAnalysisData = async (body) => {
+    setChart1Loading(true);
+    try {
+      const res = await api.post('/getSolarSystemInvestmentAnalysis', body);
+      console.log(res.data);
+      setSolarSystemInvestmentAnalysisData(res.data);
+    } catch (err) {
+      console.log(err);
+      setSolarSystemInvestmentAnalysisData(null);
+      return err;
+    } finally {
+      setChart1Loading(false);
+    }
+  };
+
+  useEffect(() => {
+    setSolarSystemInvestmentAnalysisData(null);
+    updateSolarSystemInvestmentAnalysisData(chart1Data);
+  }, [chart1Data]);
+
+  // chart2
+  const [chart2Loading, setChart2Loading] = useState(false);
+  const [chart2Data, setChart2Data] = useState({
     SystemSize: 5,
     SystemEfficiency: 60
   });
   const [solarSystemProductionData, setSolarSystemProductionData] = useState(null);
 
   const updateSolarSystemProductionData = async (body) => {
+    setChart2Loading(true);
     try {
       const res = await api.post('/getSolarSystemProduction', body);
       console.log(res.data);
@@ -28,24 +76,27 @@ const InvoicePage = () => {
       console.log(err);
       setSolarSystemProductionData(null);
       return err;
+    } finally {
+      setChart2Loading(false);
     }
   };
 
   useEffect(() => {
     setSolarSystemProductionData(null);
-    updateSolarSystemProductionData(data);
-  }, [data]);
+    updateSolarSystemProductionData(chart2Data);
+  }, [chart2Data]);
 
+  // save pdf function
   const exportPDF = () => {
     resume.save();
   };
 
+  // modal handlers
   const openModal = () => setSignModal(true);
   const closeModal = () => setSignModal(false);
 
   return (
     <React.Fragment>
-      {/* <button onClick={() => setData({ ...data, SystemSize: data.SystemSize + 1 })}>Change System Size</button> */}
       <Sidebar exportPDF={exportPDF} openModal={openModal} />
       <Signature state={signModal} closeModal={closeModal} setSign={setSign} />
       <PDFExport
@@ -223,16 +274,28 @@ const InvoicePage = () => {
             </Grid>
             <Grid item xs={6}>
               <div className={style.chartContainer}>
-                <div className={style.chart}>
-                  <div className={style.heading2}>Return on Investment & Savings Analysis*</div>
-                  <Chart1 />
-                </div>
+                { chart1Loading &&
+                  <div className={style.loadingDiv}>
+                    <CircularProgress
+                      style={{
+                        color: '#009EDB'
+                      }}
+                    />
+                  </div>
+                }
+                <Chart1 data={solarSystemInvestmentAnalysisData} />
               </div>
               <div className={style.chartContainer}>
-                <div className={style.chart}>
-                  <div className={style.heading2}>Estimated Average Daily Power Production (kWh)*</div>
-                  <Chart2 data={solarSystemProductionData} />
+                {chart2Loading &&
+                <div className={style.loadingDiv}>
+                  <CircularProgress
+                    style={{
+                      color: '#009EDB'
+                    }}
+                  />
                 </div>
+                }
+                <Chart2 data={solarSystemProductionData} />
               </div>
             </Grid>
           </Grid>
