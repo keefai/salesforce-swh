@@ -15,7 +15,7 @@ const { asyncMiddleware } = middlwares;
 // Redis Config
 var redis = require("redis");
 var pubDb = redis.createClient({
-  url: process.env.REDIS_URL
+  url: process.env.HEROKU_REDIS_NAVY_URL
 });
 
 // Instantiate Salesforce client with .env configuration
