@@ -1,17 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import style from './style.module.scss';
 import './print.scss';
+import api from '../../common/api'
 import Sidebar from './components/Sidebar';
 import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';
 import Signature from './components/Signature';
 
 const InvoicePage = () => {
+  let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
-  let resume = React.createRef();
+  const [data, setData] = useState({
+    SystemSize: 5,
+    SystemEfficiency: 60
+  });
+  const [solarSystemProductionData, setSolarSystemProductionData] = useState();
+
+  const updateSolarSystemProductionData = async (body) => {
+    try {
+      const res = await api.post('/getSolarSystemProduction', body);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  };
+
+  useEffect(() => {
+    updateSolarSystemProductionData(data);
+  }, [data]);
 
   const exportPDF = () => {
     resume.save();
