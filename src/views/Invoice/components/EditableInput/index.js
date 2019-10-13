@@ -4,7 +4,7 @@ import style from './style.module.scss';
 
 const regexType = {
   integer: /^\d+$/,
-  float: /^\d+(\.\d+)?$/
+  float: /^\d+(\.(\d+)?)?$/
 };
 
 const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, ...props }) => {
