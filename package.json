@@ -57,6 +57,7 @@
     "react-dom": "^16.8.6",
     "react-input-autosize": "^2.2.2",
     "react-perfect-scrollbar": "^1.5.3",
+    "react-qr-reader": "^2.2.1",
     "react-resize-aware": "2.7.2",
     "react-router-dom": "^5.0.1",
     "react-scripts": "^3.0.1",
