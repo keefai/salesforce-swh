@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AutosizeInput from 'react-input-autosize';
 import style from './style.module.scss';
 
@@ -30,7 +30,8 @@ const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, ..
       <AutosizeInput
         input='text'
         inputClassName={`${style.input} ${className}`}
-        onChange={onChangeMiddleware} {...props}
+        onChange={onChangeMiddleware} 
+        {...props}
       />
       {suffix}
 		</React.Fragment>

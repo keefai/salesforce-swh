@@ -21,20 +21,20 @@ const InvoicePage = () => {
   const [chart1Data, setChart1Data] = useState({
     InitialCost: 5070,
     EnergyUsageProfile: {
-      DayUsagePercentage : 50,
-      NightUsagePercentage : 50,
-      AverageDailyUsage    : 18,
-      PredictedAnnualRiseInPowerCost : 10,
-      PredictedAnnualRiseInFeedintarriff : 0
+      DayUsagePercentage: 50,
+      NightUsagePercentage: 50,
+      AverageDailyUsage: 18,
+      PredictedAnnualRiseInPowerCost: 10,
+      PredictedAnnualRiseInFeedintarriff: 0
     },
     EnergyRetailerProfile: {
-      CostOfPower : 0.4,
-      DailySupplyCharge : 0.71,
-      FeedinTarrif : 0.163
+      CostOfPower: 0.4,
+      DailySupplyCharge: 0.71,
+      FeedinTarrif: 0.163
     },
     SolarSystemProduction: {
-      AverageDailyProduction : 13,
-      AverageAnnualProduction : 4883.7
+      AverageDailyProduction: 13,
+      AverageAnnualProduction: 4883.7
     }
   });
   const [solarSystemInvestmentAnalysisData, setSolarSystemInvestmentAnalysisData] = useState(null);
@@ -58,8 +58,29 @@ const InvoicePage = () => {
 
   const updateSolarSystemInvestmentAnalysisData = async (data) => {
     setChart1Loading(true);
+
+    const reqData = {
+      InitialCost: Number(data.InitialCost),
+      EnergyUsageProfile: {
+        DayUsagePercentage: Number(data.EnergyUsageProfile.DayUsagePercentage),
+        NightUsagePercentage: Number(data.EnergyUsageProfile.NightUsagePercentage),
+        AverageDailyUsage: Number(data.EnergyUsageProfile.AverageDailyUsage),
+        PredictedAnnualRiseInPowerCost: Number(data.EnergyUsageProfile.PredictedAnnualRiseInPowerCost),
+        PredictedAnnualRiseInFeedintarriff: Number(data.EnergyUsageProfile.PredictedAnnualRiseInFeedintarriff),
+      },
+      EnergyRetailerProfile: {
+        CostOfPower: Number(data.EnergyRetailerProfile.CostOfPower),
+        DailySupplyCharge: Number(data.EnergyRetailerProfile.DailySupplyCharge),
+        FeedinTarrif: Number(data.EnergyRetailerProfile.FeedinTarrif),
+      },
+      SolarSystemProduction: {
+        AverageDailyProduction: Number(data.SolarSystemProduction.AverageDailyProduction),
+        AverageAnnualProduction: Number(data.SolarSystemProduction.AverageAnnualProduction)
+      }
+    };
+
     try {
-      const res = await api.post('/getSolarSystemInvestmentAnalysis', data);
+      const res = await api.post('/getSolarSystemInvestmentAnalysis', reqData);
       console.log(res.data);
       setSolarSystemInvestmentAnalysisData(res.data);
     } catch (err) {
@@ -99,8 +120,14 @@ const InvoicePage = () => {
 
   const updateSolarSystemProductionData = async () => {
     setChart2Loading(true);
+    
+    const reqData = {
+      SystemSize: Number(chart2Data.SystemSize),
+      SystemEfficiency: Number(chart2Data.SystemEfficiency)
+    };
+
     try {
-      const res = await api.post('/getSolarSystemProduction', chart2Data);
+      const res = await api.post('/getSolarSystemProduction', reqData);
       console.log(res.data);
       setSolarSystemProductionData(res.data);
       // update chart1 data based on chart2 data

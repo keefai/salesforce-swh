@@ -17,8 +17,7 @@ const Routes = () => {
       <Redirect exact from="/" to="/me" />
       <Route path="/login" exact component={LoginView} />
       <Route path="/me" exact component={withAuth(MeView)} />
-      {/* <Route path="/invoice" exact component={withAuth(InvoiceView)} /> */}
-      <Route path="/invoice" exact component={InvoiceView} />
+      <Route path="/invoice" exact component={withAuth(InvoiceView)} />
       <Route path="/not-found" exact component={NotFoundView} />
       <Redirect to="/not-found" />
     </Switch>

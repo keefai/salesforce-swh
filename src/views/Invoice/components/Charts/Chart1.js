@@ -10,13 +10,13 @@ const Chart1 = ({ data }) => {
       {
         label: 'Export Credit',
         backgroundColor: 'rgb(144, 219, 244)',
-        data: data ? data.Savings.map(d => d.ExportInfo) : [],
+        data: data ? data.Savings.map(d => d.ExportCumulative) : [],
         borderWidth: 0
       },
       {
         label: 'Direct Usage Savings',
         backgroundColor: 'rgb(0, 153, 255)',
-        data: data ? data.Savings.map(d => d.Direct) : [],
+        data: data ? data.Savings.map(d => d.DirectCumulative) : [],
         borderWidth: 0
       },
       {
