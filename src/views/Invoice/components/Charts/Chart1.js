@@ -41,8 +41,6 @@ const Chart1 = ({ data }) => {
               position: 'bottom',
               onClick: e => e.stopPropagation()
             },
-            tooltips: true,
-            hover: { mode: null },
             scales: {
               xAxes: [
                 {
