@@ -9,7 +9,8 @@ import {
   Invoice as InvoiceView,
   Login as LoginView,
   NotFound as NotFoundView,
-  QRScanner as QRScannerView
+  QRScanner as QRScannerView,
+  Scanner as ScannerView
 } from './views';
 
 const Routes = () => {
@@ -20,6 +21,7 @@ const Routes = () => {
       <Route path="/me" exact component={withAuth(MeView)} />
       <Route path="/invoice" exact component={withAuth(InvoiceView)} />
       <Route path="/qr" exact component={QRScannerView} />
+      <Route path="/scanner" exact component={ScannerView} />
       <Route path="/not-found" exact component={NotFoundView} />
       <Redirect to="/not-found" />
     </Switch>
