@@ -42,7 +42,7 @@ const ScannerPage = () => {
     getDevices();
     scan();
     console.log('Hello');
-  }, [scanned]);
+  }, [scanned, selectedDevice]);
 
   const onDeviceChange = (e) => {
     setSelectedDevice(e.target.value);
