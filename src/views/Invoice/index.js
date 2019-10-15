@@ -11,6 +11,8 @@ import Chart2 from './components/Charts/Chart2';
 import Signature from './components/Signature';
 import EditableInput from './components/EditableInput';
 
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 const InvoicePage = () => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
@@ -129,7 +131,14 @@ const InvoicePage = () => {
     try {
       const res = await api.post('/getSolarSystemProduction', reqData);
       console.log(res.data);
-      setSolarSystemProductionData(res.data);
+      // sort data according to month
+      let sortedData = res.data;
+      if (sortedData && sortedData.MonthlyProduction) {
+        sortedData.MonthlyProduction.sort((a, b) => {
+          return months.indexOf(a.month) - months.indexOf(b.month);
+        });
+      }
+      setSolarSystemProductionData(sortedData);
       // update chart1 data based on chart2 data
       const newData = {
         ...chart1Data,
