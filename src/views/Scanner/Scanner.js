@@ -45,7 +45,7 @@ const ScannerPage = () => {
   useEffect(() => {
     getDevices();
     scan();
-  }, [scanned, selectedDevice]);
+  }, [selectedDevice]);
 
   const onDeviceChange = (e) => {
     setSelectedDevice(e.target.value);
@@ -55,6 +55,8 @@ const ScannerPage = () => {
     setData(null);
     setScanned(false);
     codeReader.reset();
+    getDevices();
+    scan();
   }
 
   const renderLoader = () => (
