@@ -11,7 +11,7 @@ import Chart2 from './components/Charts/Chart2';
 import Signature from './components/Signature';
 import EditableInput from './components/EditableInput';
 
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const months = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
 const InvoicePage = () => {
   let resume = React.createRef();
