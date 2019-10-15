@@ -40,6 +40,9 @@ const ScannerPage = () => {
 
   useEffect(() => {
     getDevices();
+  }, []);
+
+  useEffect(() => {
     scan();
     console.log('Hello');
   }, [scanned, selectedDevice]);
@@ -51,7 +54,7 @@ const ScannerPage = () => {
   const reScan = () => {
     setData(null);
     setScanned(false);
-    // codeReader.reset();
+    codeReader.reset();
   }
 
   const renderLoader = () => (
