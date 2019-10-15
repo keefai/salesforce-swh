@@ -8,27 +8,27 @@ import * as ZXing from '@zxing/library';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
+const codeReader = new ZXing.BrowserMultiFormatReader();
 
 const ScannerPage = () => {
-  const codeReader = new ZXing.BrowserMultiFormatReader();
-
   const [devices, setDevices] = useState(null);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [data, setData] = useState(null);
   const [scanned, setScanned] = useState(false);
 
-  const getDevices = async (cR) => {
+  const getDevices = async () => {
     let devices = [];
-    const videoInputDevices = await cR.listVideoInputDevices();
+    const videoInputDevices = await codeReader.listVideoInputDevices();
     setDevices(videoInputDevices);
     setSelectedDevice(videoInputDevices[0].deviceId);
     setLoaded(true);
   }
 
-  const scan = (cR) => {
-    cR.decodeFromVideoDevice(selectedDevice, 'scanner', (result, err) => {
+  const scan = () => {
+    codeReader.decodeFromVideoDevice(selectedDevice, 'scanner', (result, err) => {
       if (result) {
+        console.log(result.text);
         setData(result.text);
         setScanned(true);
       }
@@ -39,9 +39,10 @@ const ScannerPage = () => {
   }
 
   useEffect(() => {
-    getDevices(codeReader);
-    scan(codeReader);
-  }, []);
+    getDevices();
+    scan();
+    console.log('Hello');
+  }, [scanned]);
 
   const onDeviceChange = (e) => {
     setSelectedDevice(e.target.value);
@@ -50,6 +51,7 @@ const ScannerPage = () => {
   const reScan = () => {
     setData(null);
     setScanned(false);
+    // codeReader.reset();
   }
 
   const renderLoader = () => (
