@@ -1,48 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import Paper from '@material-ui/core/Paper';
-// import Button from '@material-ui/core/Button';
-// import CachedIcon from '@material-ui/icons/Cached';
+import Button from '@material-ui/core/Button';
+import CachedIcon from '@material-ui/icons/Cached';
 import style from './style.module.scss';
-// import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as ZXing from '@zxing/library';
-
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 const ScannerPage = () => {
-  const codeReader = new ZXing.BrowserQRCodeReader();
+  const codeReader = new ZXing.BrowserMultiFormatReader();
+
   const [devices, setDevices] = useState(null);
+  const [selectedDevice, setSelectedDevice] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const [data, setData] = useState(null);
+  const [scanned, setScanned] = useState(false);
 
   const getDevices = async (cR) => {
     let devices = [];
     const videoInputDevices = await cR.listVideoInputDevices();
-    // console.log(videoInputDevices);
-    // videoInputDevices.forEach(device =>
-    //   devices.push({
-    //     label: device.label,
-    //     deviceId: device.deviceId
-    //   })
-    // );
-    console.log(videoInputDevices);
     setDevices(videoInputDevices);
+    setSelectedDevice(videoInputDevices[0].deviceId);
+    setLoaded(true);
+  }
+
+  const scan = (cR) => {
+    cR.decodeFromVideoDevice(selectedDevice, 'scanner', (result, err) => {
+      if (result) {
+        setData(result.text);
+        setScanned(true);
+      }
+      if (err && !(err instanceof ZXing.NotFoundException)) {
+        console.error(err);
+      }
+    });
   }
 
   useEffect(() => {
     getDevices(codeReader);
+    scan(codeReader);
   }, []);
 
-  // const [data, setData] = useState(null);
-  // const [loaded, setLoaded] = useState(false);
-  // const [scanned, setScanned] = useState(false);
+  const onDeviceChange = (e) => {
+    setSelectedDevice(e.target.value);
+  }
+
+  const reScan = () => {
+    setData(null);
+    setScanned(false);
+  }
+
+  const renderLoader = () => (
+    <div className={style.loading}>
+      <CircularProgress style={{ color: '#222' }} />
+    </div>
+  );
+
+  const renderScanner = () => (
+    <React.Fragment>
+      <video id="scanner" className={style.scanner} />
+      <br />
+      <Select
+        value={selectedDevice}
+        onChange={onDeviceChange}
+      >
+        {devices.map((d) => (
+          <MenuItem value={d.deviceId} key={d.deviceId}>{d.label}</MenuItem>
+        ))}
+      </Select>
+    </React.Fragment>
+  );
+
+  const renderResult = () => (
+    <div className={style.output}>
+      <h3>{data}</h3>
+      <br />
+      <Button
+        variant="contained"
+        color="default"
+        startIcon={<CachedIcon />}
+        onClick={reScan}
+      >
+        Rescan
+      </Button>
+    </div>
+  );
 
   return (
     <React.Fragment>
       <div className={style.page}>
-        <pre>
-          {
-            JSON.stringify(devices, null, 2)
-          }
-          </pre>
         <Paper className={style.paper}>
+          {loaded ? (scanned ? renderResult() : renderScanner()) : renderLoader()}
         </Paper>
       </div>
     </React.Fragment>

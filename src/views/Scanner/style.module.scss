@@ -9,7 +9,7 @@
 	padding: 20px;
 	margin: 20px;
 	width: 640px;
-	height: 640px;
+	min-height: 500px;
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -17,9 +17,8 @@
 	align-items: center;
 }
 
-.qrReader {
+.scanner {
 	width: 600px;
-	height: 600px;
 }
 
 .loading {
