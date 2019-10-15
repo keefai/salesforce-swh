@@ -44,7 +44,7 @@ const Chart2 = ({ data }) => {
             },
             responsive: true,
             legend: false,
-            tooltips: false,
+            tooltips: true,
             hover: { mode: null },
             scales: {
               xAxes: [

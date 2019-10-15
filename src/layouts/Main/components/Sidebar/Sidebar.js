@@ -52,6 +52,11 @@ const Sidebar = props => {
       title: 'QR',
       href: '/qr',
       icon: <CameraAltSharpIcon />
+    },
+    {
+      title: 'Scanner',
+      href: '/scanner',
+      icon: <CameraAltSharpIcon />
     }
   ];
 
