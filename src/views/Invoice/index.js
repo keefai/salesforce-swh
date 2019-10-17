@@ -274,12 +274,12 @@ const InvoicePage = () => {
                 <EditableInput
                   type='text'
                   value={address}
-                  onChange={handleAddress}
                   placeholder="Address"
                   inputStyle={{
                     minWidth: '150px',
                     textAlign: 'left'
                   }}
+                  onChange={handleAddress}
                   onBlur={setAddressForMap}
                 />
               </div>
@@ -287,6 +287,11 @@ const InvoicePage = () => {
                 <EditableInput
                   type='text'
                   value={city}
+                  placeholder="City"
+                  inputStyle={{
+                    minWidth: '150px',
+                    textAlign: 'left'
+                  }}
                   onChange={handleCity}
                   onBlur={setAddressForMap}
                 />
