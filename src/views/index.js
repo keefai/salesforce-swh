@@ -5,3 +5,4 @@ export { default as Login } from './Login';
 export { default as QRScanner } from './QRScanner';
 export { default as Scanner } from './Scanner';
 export { default as Test } from './Test';
+export { default as Barcode } from './Barcode';

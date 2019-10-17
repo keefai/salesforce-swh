@@ -11,6 +11,7 @@ import {
   NotFound as NotFoundView,
   QRScanner as QRScannerView,
   Scanner as ScannerView,
+  Barcode as BarcodeView,
   Test as TestView
 } from './views';
 
@@ -23,6 +24,7 @@ const Routes = () => {
       <Route path="/invoice" exact component={withAuth(InvoiceView)} />
       <Route path="/qr" exact component={QRScannerView} />
       <Route path="/scanner" exact component={ScannerView} />
+      <Route path="/barcode" exact component={BarcodeView} />
       {/*
         <Route path="/test" exact component={TestView} />
       */}

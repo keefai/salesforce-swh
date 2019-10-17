@@ -1,0 +1,36 @@
+.page {
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  margin: auto;
+}
+
+.paper {
+	padding: 20px;
+	margin: 20px;
+	width: 540px;
+	min-height: 640px;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.scanner {
+	width: 600px;
+}
+
+.loading {
+	width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+}
+
+.output {
+	text-align: center;
+}
