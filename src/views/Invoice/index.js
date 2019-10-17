@@ -4,7 +4,7 @@ import { PDFExport } from '@progress/kendo-react-pdf';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import style from './style.module.scss';
 import './print.scss';
-import api from '../../common/api'
+import api from '../../common/api';
 import Sidebar from './components/Sidebar';
 import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';

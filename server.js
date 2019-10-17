@@ -11,6 +11,10 @@ var SalesforceClient = require('salesforce-node-client');
 const utils = require('./api/utils');
 const middlwares = require('./api/middlewares');
 const { asyncMiddleware } = middlwares;
+const googleMapsClient = require("@google/maps").createClient({
+  key: process.env.REACT_APP_googleMapKey,
+  Promise: Promise
+});
 
 // Redis Config
 var redis = require("redis");
@@ -141,6 +145,24 @@ app.post('/api/getSolarSystemInvestmentAnalysis',  asyncMiddleware(async (reques
   if (session == null) return;
   const res = await utils.getSolarSystemInvestmentAnalysis(sfdc, session, body);
   return response.status(res.status).json(res.json);
+}));
+
+
+
+app.post('/api/geocoding',  asyncMiddleware(async (request, response, next) => {
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  googleMapsClient
+      .geocode({
+        address: body.address
+      })
+      .asPromise()
+      .then(res => {
+        console.log("Geocoding Res: ", res.json.results[0].geometry.location);
+        return response.json(res.json.results[0].geometry.location);
+      });
 }));
 
 app.use(express.static(path.join(__dirname, './build')));

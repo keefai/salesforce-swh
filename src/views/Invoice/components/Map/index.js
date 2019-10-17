@@ -2,20 +2,17 @@ import React, { useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-const googleMapsClient = require("@google/maps").createClient({
-  key: process.env.REACT_APP_googleMapKey,
-  Promise: Promise
-});
+import api from '../../../../common/api';
 
-  const LoadingContainer = (props) => (
-    <div className={style.mapLoadingContainer}>
-      <CircularProgress
-        style={{
-          color: '#009EDB'
-        }}
-      />
-    </div>
-  );
+const LoadingContainer = (props) => (
+  <div className={style.mapLoadingContainer}>
+    <CircularProgress
+      style={{
+        color: '#009EDB'
+      }}
+    />
+  </div>
+);
 
 const GoogleMap = ({ google, address, className, ...props }) => {
   const [location, setLocation] = useState({
@@ -23,16 +20,18 @@ const GoogleMap = ({ google, address, className, ...props }) => {
     lng: 0
   });
 
+  const fetchGeocoding = async () => {
+    try {
+      const res = await api.post('/geocoding', { address });
+      console.log(res.data);
+      setLocation(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
-    googleMapsClient
-      .geocode({
-        address: address
-      })
-      .asPromise()
-      .then(response => {
-        console.log("Geocoding Res: ", response.json.results[0].geometry.location);
-        setLocation(response.json.results[0].geometry.location);
-      });
+     fetchGeocoding();
   }, [address]);
 
 	return (
