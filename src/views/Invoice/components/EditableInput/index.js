@@ -10,17 +10,21 @@ const regexType = {
 const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, ...props }) => {
   // const [width, setWidth] = useState(props.value.length);
   const onChangeMiddleware = (e) => {
-    const re = regexType[type];
+    if (type === 'text') {
+      onChange(e);
+    } else {
+      const re = regexType[type];
 
-    if (re) {
-      if (e.target.value === '' || re.test(e.target.value)) {
-        if (min !== undefined && (e.target.value === '' || Number(e.target.value) < Number(min))) {
-          e.target.value = min;
+      if (re) {
+        if (e.target.value === '' || re.test(e.target.value)) {
+          if (min !== undefined && (e.target.value === '' || Number(e.target.value) < Number(min))) {
+            e.target.value = min;
+          }
+          onChange(e);
         }
+      } else {
         onChange(e);
       }
-    } else {
-      onChange(e);
     }
   }
 

@@ -10,6 +10,7 @@ import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';
 import Signature from './components/Signature';
 import EditableInput from './components/EditableInput';
+import Map from './components/Map';
 
 const months = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
@@ -17,6 +18,28 @@ const InvoicePage = () => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
+  
+  // user details
+  let addressTimer = null;
+  const [address, setAddress] = useState('Apple Headquarters, Infinite Loop');
+  const [city, setCity] = useState('Cupertino, USA');
+  const [fullAddress, setFullAddress] = useState(`${address}, ${city}`)
+
+  const setAddressForMap = () => {
+    addressTimer = setTimeout(() => {
+      setFullAddress(`${address}, ${city}`);
+    }, 2000);
+  }
+
+  const handleAddress = (e) => {
+    clearTimeout(addressTimer);
+    setAddress(e.target.value);
+  }
+
+  const handleCity = (e) => {
+    clearTimeout(addressTimer);
+    setCity(e.target.value);
+  }
 
   // chart1
   const [chart1Loading, setChart1Loading] = useState(false);
@@ -247,8 +270,27 @@ const InvoicePage = () => {
           <Grid container spacing={3}>
             <Grid item xs={6}>
               <div>Your Name</div>
-              <div>Your Address</div>
-              <div>Your City</div>
+              <div>
+                <EditableInput
+                  type='text'
+                  value={address}
+                  onChange={handleAddress}
+                  placeholder="Address"
+                  inputStyle={{
+                    minWidth: '150px',
+                    textAlign: 'left'
+                  }}
+                  onBlur={setAddressForMap}
+                />
+              </div>
+              <div>
+                <EditableInput
+                  type='text'
+                  value={city}
+                  onChange={handleCity}
+                  onBlur={setAddressForMap}
+                />
+              </div>
               <div>youremail@gmail.com</div>
               <br />
               <div>07/09/2019</div>
@@ -616,9 +658,13 @@ const InvoicePage = () => {
                 </div>
               </div>
               <div className={style.chartContainer}>
-                <div className={style.chart} style={{ padding: '2% 10%' }}>
+                <div className={style.chart} style={{ padding: '2% 4%' }}>
                   <div className={style.heading2}>Proposed Solar Panel Layout</div>
-                  <img src="/images/dummy3.png" alt="dummy-3" style={{ width: '100%' }} />
+                  <Map address={fullAddress} containerStyle={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '400px'
+                  }} />
                 </div>
               </div>
             </Grid>

@@ -4,3 +4,4 @@ export { default as Invoice } from './Invoice';
 export { default as Login } from './Login';
 export { default as QRScanner } from './QRScanner';
 export { default as Scanner } from './Scanner';
+export { default as Test } from './Test';
