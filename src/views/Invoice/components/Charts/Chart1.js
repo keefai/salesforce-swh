@@ -35,7 +35,6 @@ const Chart1 = ({ data }) => {
           data={chartData}
           height={250}
           options={{
-            animation: false,
             responsive: true,
             legend: {
               position: 'bottom',

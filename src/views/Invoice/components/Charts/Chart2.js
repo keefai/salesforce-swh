@@ -24,7 +24,6 @@ const Chart2 = ({ data }) => {
           height={250}
           options={{
             animation: {
-              duration: 0,
               onComplete: function() {
                 var chartInstance = this.chart,
                   ctx = chartInstance.ctx;
