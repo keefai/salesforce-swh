@@ -165,9 +165,29 @@ app.post('/api/geocoding',  asyncMiddleware(async (request, response, next) => {
       });
 }));
 
+app.get('/api/Opportunity', asyncMiddleware(async (request, response, next) => {
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getOpportunities(sfdc, session);
+  return response.status(res.status).json(res.json);
+}));
+
+app.get('/api/Opportunity/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getOpportunities(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}))
+
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './build/index.html'));
 });
+
 
 module.exports = app;

@@ -62,3 +62,24 @@ exports.getSolarSystemInvestmentAnalysis = async (sfdc, session, data) => {
     };
 	}
 }
+
+exports.getOpportunities = async (sfdc, session, id) => {
+  let apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'sobjects/Opportunity');
+  if (id) {
+    apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}`);
+  }
+  try {
+    const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+    console.log('getOpportunities', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('getOpportunities: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
