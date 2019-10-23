@@ -7,6 +7,7 @@ var xmlparser = require('express-xml-bodyparser');
 var path = require('path');
 var logger = require('morgan');
 var session = require('express-session');
+var http = require("http");
 var SalesforceClient = require('salesforce-node-client');
 const utils = require('./api/utils');
 const middlwares = require('./api/middlewares');
@@ -189,5 +190,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './build/index.html'));
 });
 
+setInterval(() => {
+  http.get("http://salesforce-swh.herokuapp.com");
+}, 25 * 60 * 1000);
 
 module.exports = app;
