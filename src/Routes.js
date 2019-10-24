@@ -13,7 +13,8 @@ import {
   Scanner as ScannerView,
   Barcode as BarcodeView,
   Test as TestView,
-  Opportunity as OpportunityView
+  Opportunity as OpportunityView,
+  OpportunityInvoice as OpportunityInvoiceView
 } from './views';
 
 const Routes = () => {
@@ -23,6 +24,7 @@ const Routes = () => {
       <Route path="/login" exact component={LoginView} />
       <Route path="/me" exact component={withAuth(MeView)} />
       <Route path="/invoice" exact component={withAuth(InvoiceView)} />
+      <Route path="/invoice/:opportunityId" exact component={withAuth(OpportunityInvoiceView)} />
       <Route path="/qr" exact component={QRScannerView} />
       <Route path="/scanner" exact component={ScannerView} />
       <Route path="/barcode" exact component={BarcodeView} />

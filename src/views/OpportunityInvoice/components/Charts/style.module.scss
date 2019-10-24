@@ -1,0 +1,22 @@
+.chart {
+  background: #fff;
+  padding: 15px;
+
+  @media print {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    padding: 8px;
+  }
+}
+
+.heading {
+  font-size: 25px;
+  font-weight: 700;
+  color: #40a3e5;
+  margin-bottom: 20px;
+  text-align: center;
+
+  @media print {
+    font-size: 16px;
+  }
+}

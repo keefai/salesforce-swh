@@ -7,3 +7,4 @@ export { default as Scanner } from './Scanner';
 export { default as Test } from './Test';
 export { default as Barcode } from './Barcode';
 export { default as Opportunity } from './Opportunity';
+export { default as OpportunityInvoice } from './OpportunityInvoice';
