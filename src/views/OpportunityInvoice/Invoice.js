@@ -12,84 +12,64 @@ import Signature from './components/Signature';
 import EditableInput from './components/EditableInput';
 import Map from './components/Map';
 
-const months = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
 const Invoice = ({ data }) => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
-  
+  const [oppData, setOppData] = useState(data);
+
+  const handleOppData = field => e => {
+    setOppData({
+      ...oppData,
+      [field]: e.target.value
+    });
+  };
+
+  const [missData, setMissData] = useState({
+    numberOfPanels: '--',
+    solarPanelProduct: '--',
+    inverterProduct: '--',
+    approxQuarterlyEnergyUse: '--'
+  });
+
+  const handleMissData = field => e => {
+    setMissData({
+      ...missData,
+      [field]: e.target.value
+    });
+  };
+
   // user details
   let addressTimer = null;
   const [address, setAddress] = useState('Apple Headquarters, Infinite Loop');
   const [city, setCity] = useState('Cupertino, USA');
-  const [fullAddress, setFullAddress] = useState(`${address}, ${city}`)
+  const [fullAddress, setFullAddress] = useState(`${address}, ${city}`);
 
   const setAddressForMap = () => {
     addressTimer = setTimeout(() => {
       setFullAddress(`${address}, ${city}`);
     }, 2000);
-  }
+  };
 
-  const handleAddress = (e) => {
+  const handleAddress = e => {
     clearTimeout(addressTimer);
     setAddress(e.target.value);
-  }
+  };
 
-  const handleCity = (e) => {
+  const handleCity = e => {
     clearTimeout(addressTimer);
     setCity(e.target.value);
-  }
+  };
 
-  // chart1
-  const [chart1Data, setChart1Data] = useState({
-    InitialCost: 5070,
-    EnergyUsageProfile: {
-      DayUsagePercentage: data.DayUsagePercentage__c,
-      NightUsagePercentage: data.NightUsagePercentage__c,
-      AverageDailyUsage: data.AverageDailyUsage__c,
-      PredictedAnnualRiseInPowerCost: data.PredictedAnnualRiseInPowerCost__c,
-      PredictedAnnualRiseInFeedintarriff: data.PredictedAnnualRiseInFeedInTarrif__c
-    },
-    EnergyRetailerProfile: {
-      CostOfPower: data.Cost_of_Power_ex_GST__c,
-      DailySupplyCharge: data.Daily_Supply_Charge_ex_GST__c,
-      FeedinTarrif: data.Feed_in_tariff__c
-    },
-    SolarSystemProduction: {
-      AverageDailyProduction: 13,
-      AverageAnnualProduction: 4883.7
-    }
-  });
+  // helpers
+  const getFirstYearQuarterlySavings = () => {
+    return oppData.SavingsList__c ? (JSON.parse(oppData.SavingsList__c)[0].Total / 4).toFixed(2) : 0.0;
+  };
 
-  const handleChart1Input = (field1, field2) => (e) => {
-    if (field2) {
-      setChart1Data({
-        ...chart1Data,
-        [field1]: {
-          ...chart1Data[field1],
-          [field2]: e.target.value
-        }
-      });
-    } else {
-      setChart1Data({
-        ...chart1Data,
-        [field1]: e.target.value
-      });
-    }
-  }
-
-  // chart2
-  const [chart2Data, setChart2Data] = useState({
-    SystemSize: data.SystemSize__c,
-    SystemEfficiency: data.SystemEfficiency__c
-  });
-
-  const handleChart2Input = (field) => (e) => {
-    setChart2Data({
-      ...chart2Data,
-      [field]: e.target.value
-    });
+  const getEstimatedFirstYearSavings = () => {
+    return oppData.SavingsList__c ? JSON.parse(oppData.SavingsList__c)[0].Total.toFixed(2) : 0.0;
   }
 
   // save pdf function
@@ -111,10 +91,10 @@ const Invoice = ({ data }) => {
               <td>System Efficiency</td>
               <td className={style.editTd}>
                 <EditableInput
-                  type='integer'
-                  min='0'
-                  value={chart2Data.SystemEfficiency}
-                  onChange={handleChart2Input('SystemEfficiency')}
+                  type="integer"
+                  min="0"
+                  value={oppData.SystemEfficiency__c}
+                  onChange={handleOppData('SystemEfficiency__c')}
                 />
               </td>
             </tr>
@@ -122,23 +102,24 @@ const Invoice = ({ data }) => {
               <td>Predicted Annual Rise In FeedinTarrif</td>
               <td className={style.editTd}>
                 <EditableInput
-                  type='float'
+                  type="float"
                   min={0}
-                  value={chart1Data.EnergyUsageProfile.PredictedAnnualRiseInFeedintarriff}
-                  onChange={handleChart1Input('EnergyUsageProfile', 'PredictedAnnualRiseInFeedintarriff')}
-                  suffix='% p.a.'
+                  value={oppData.PredictedAnnualRiseInFeedInTarrif__c}
+                  onChange={handleOppData('PredictedAnnualRiseInFeedInTarrif__c')}
+                  suffix="% p.a."
                 />
               </td>
             </tr>
             <tr>
               <td>Inital Cost</td>
               <td className={style.editTd}>
-                <EditableInput
+                --
+                {/* <EditableInput
                   type='integer'
                   min={0}
                   value={chart1Data.InitialCost}
                   onChange={handleChart1Input('InitialCost')}
-                />
+                /> */}
               </td>
             </tr>
           </tbody>
@@ -171,7 +152,7 @@ const Invoice = ({ data }) => {
               <div>Your Name</div>
               <div>
                 <EditableInput
-                  type='text'
+                  type="text"
                   value={address}
                   placeholder="Address"
                   inputStyle={{
@@ -183,7 +164,7 @@ const Invoice = ({ data }) => {
               </div>
               <div>
                 <EditableInput
-                  type='text'
+                  type="text"
                   value={city}
                   placeholder="City"
                   inputStyle={{
@@ -206,27 +187,47 @@ const Invoice = ({ data }) => {
                 <tbody>
                   <tr>
                     <td>System Size</td>
-                    <td className={style.editTd}>
-                      <EditableInput
+                    <td className={style.green}>
+                      {oppData.SystemSize__c}
+                      {/* <EditableInput
                         type='integer'
                         min='0'
-                        value={chart2Data ? chart2Data.SystemSize : ''}
-                        onChange={handleChart2Input('SystemSize')}
+                        value={oppData.SystemSize__c}
+                        onChange={handleOppData('SystemSize__c')}
                         suffix=' kW'
-                      />
+                      /> */}
                     </td>
                   </tr>
                   <tr>
                     <td>Number of Panels</td>
-                    <td>24</td>
+                    <td className={style.violet}>
+                      <EditableInput
+                        type="integer"
+                        min="0"
+                        value={missData.numberOfPanels}
+                        onChange={handleMissData('numberOfPanels')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Solar Panel Product</td>
-                    <td>LG NeON2 345W Optimized</td>
+                    <td className={style.violet}>
+                      <EditableInput
+                        type="text"
+                        value={missData.solarPanelProduct}
+                        onChange={handleMissData('solarPanelProduct')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Inverter Product</td>
-                    <td>SolarEdge 8kW (SE8000H)</td>
+                    <td className={style.violet}>
+                      <EditableInput
+                        type="text"
+                        value={missData.inverterProduct}
+                        onChange={handleMissData('inverterProduct')}
+                      />
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -237,105 +238,121 @@ const Invoice = ({ data }) => {
                 <tbody>
                   <tr>
                     <td>Cost of Power</td>
-                    <td className={style.editTd}>
+                    <td className={style.yellow}>
                       <EditableInput
-                        type='float'
+                        type="float"
                         min={0}
-                        value={chart1Data.EnergyRetailerProfile.CostOfPower}
-                        onChange={handleChart1Input('EnergyRetailerProfile', 'CostOfPower')}
-                        prefix='$'
-                        suffix='/kWh'
+                        value={oppData.Cost_of_Power_ex_GST__c}
+                        onChange={handleOppData('Cost_of_Power_ex_GST__c')}
+                        prefix="$"
+                        suffix="/kWh"
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>Daily supply charge</td>
-                    <td className={style.editTd}>
+                    <td className={style.yellow}>
                       <EditableInput
-                        type='float'
+                        type="float"
                         min={0}
-                        value={chart1Data.EnergyRetailerProfile.DailySupplyCharge}
-                        onChange={handleChart1Input('EnergyRetailerProfile', 'DailySupplyCharge')}
-                        prefix='$'
-                        suffix='/Day'
+                        value={oppData.Daily_Supply_Charge_ex_GST__c}
+                        onChange={handleOppData('Daily_Supply_Charge_ex_GST__c')}
+                        prefix="$"
+                        suffix="/Day"
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>Feed-in Tariff</td>
-                    <td className={style.editTd}>
+                    <td className={style.yellow}>
                       <EditableInput
-                        type='float'
+                        type="float"
                         min={0}
-                        value={chart1Data.EnergyRetailerProfile.FeedinTarrif}
-                        onChange={handleChart1Input('EnergyRetailerProfile', 'FeedinTarrif')}
-                        prefix='$'
-                        suffix='/kWh'
+                        value={oppData.Feed_in_tariff__c}
+                        onChange={handleOppData('Feed_in_tariff__c')}
+                        prefix="$"
+                        suffix="/kWh"
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>Predicted Energy Price Rise</td>
-                    <td className={style.editTd}>
+                    <td className={style.yellow}>
                       <EditableInput
-                        type='float'
+                        type="float"
                         min={0}
-                        value={chart1Data.EnergyUsageProfile.PredictedAnnualRiseInPowerCost}
-                        onChange={handleChart1Input('EnergyUsageProfile', 'PredictedAnnualRiseInPowerCost')}
-                        suffix='% p.a.'
+                        value={oppData.PredictedAnnualRiseInPowerCost__c}
+                        onChange={handleOppData('PredictedAnnualRiseInPowerCost__c')}
+                        suffix="% p.a."
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>Average Daily Energy Usage</td>
-                    <td>-- kWH</td>
+                    <td className={style.yellow}>
+                      <EditableInput
+                        type="integer"
+                        min={0}
+                        value={oppData.AverageDailyUsage__c}
+                        onChange={handleOppData('AverageDailyUsage__c')}
+                        suffix="kWh"
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Approx. Quarterly Energy Use</td>
-                    <td>-- kWH</td>
+                    <td className={style.yellow}>
+                      <EditableInput
+                        type="integer"
+                        min={0}
+                        value={missData.approxQuarterlyEnergyUse}
+                        onChange={handleMissData('approxQuarterlyEnergyUse')}
+                        suffix="kWh"
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Day Usage</td>
-                    <td className={style.editTd}>
+                    <td className={style.yellow}>
                       <EditableInput
-                        type='integer'
-                        min='0'
-                        value={chart1Data.EnergyUsageProfile.DayUsagePercentage}
-                        onChange={handleChart1Input('EnergyUsageProfile', 'DayUsagePercentage')}
-                        suffix='%'
+                        type="integer"
+                        min="0"
+                        value={oppData.DayUsagePercentage__c}
+                        onChange={handleOppData('DayUsagePercentage__c')}
+                        suffix="%"
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>Night Usage</td>
-                    <td className={style.editTd}>
+                    <td className={style.yellow}>
                       <EditableInput
-                        type='integer'
-                        min='0'
-                        value={chart1Data.EnergyUsageProfile.NightUsagePercentage}
-                        onChange={handleChart1Input('EnergyUsageProfile', 'NightUsagePercentage')}
-                        suffix='%'
+                        type="integer"
+                        min="0"
+                        value={oppData.NightUsagePercentage__c}
+                        onChange={handleOppData('NightUsagePercentage__c')}
+                        suffix="%"
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>Average 1st year quarterly savings*</td>
-                    <td>$--</td>
+                    <td className={style.green}>${getFirstYearQuarterlySavings()}</td>
                   </tr>
                   <tr>
                     <td>
                       <b>Estimated first year savings*</b>
                     </td>
-                    <td>
-                      <b>$--</b>
+                    <td className={style.green}>
+                      <b>${getEstimatedFirstYearSavings()}</b>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <b>Return On Investment**</b>
                     </td>
-                    <td>
-                      <b>-- Years</b>
+                    <td className={style.green}>
+                      <b>{oppData.PaybackPeriod__c} Years</b>
                     </td>
                   </tr>
                 </tbody>
@@ -347,17 +364,13 @@ const Invoice = ({ data }) => {
                 <tbody>
                   <tr>
                     <td>Average Daily Energy Production</td>
-                    <td>
-                      {chart1Data.SolarSystemProduction.AverageDailyProduction} kWh
-                    </td>
+                    <td className={style.green}>{oppData.AverageDailyProduction__c} kWh</td>
                   </tr>
                   <tr>
                     <td>
                       Approx. 1<sup>st</sup> Year Energy Production
                     </td>
-                    <td>
-                      {chart1Data.SolarSystemProduction.AverageAnnualProduction} kWh
-                    </td>
+                    <td className={style.green}>{oppData.AverageAnnualProduction__c} kWh</td>
                   </tr>
                 </tbody>
               </table>
@@ -406,14 +419,20 @@ const Invoice = ({ data }) => {
               </table>
             </Grid>
             <Grid item xs={6}>
-              <div className={style.chartContainer}>
-                <Chart1 data={{
-                  Savings: JSON.parse(data.SavingsList__c)
-                }} />
-              </div>
-              <div className={style.chartContainer}>
-                <Chart2 data={JSON.parse(data.Annual_Production__c)} />
-              </div>
+              {oppData.SavingsList__c && (
+                <div className={style.chartContainer}>
+                  <Chart1
+                    data={{
+                      Savings: JSON.parse(oppData.SavingsList__c)
+                    }}
+                  />
+                </div>
+              )}
+              {oppData.Annual_Production__c && (
+                <div className={style.chartContainer}>
+                  <Chart2 data={JSON.parse(oppData.Annual_Production__c)} />
+                </div>
+              )}
             </Grid>
           </Grid>
 
@@ -431,47 +450,59 @@ const Invoice = ({ data }) => {
                 <tbody>
                   <tr>
                     <td>Installation Address</td>
-                    <td>5 Celtic Avenue CLOVELLY PARK</td>
+                    <td className={style.violet}>
+                      <EditableInput
+                        type="text"
+                        value={oppData.Address_Line_1__c}
+                        onChange={handleOppData('Address_Line_1__c')}
+                      />
+                      <br />
+                      <EditableInput
+                        type="text"
+                        value={oppData.Address_Line_2__c}
+                        onChange={handleOppData('Address_Line_2__c')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Multi Storey</td>
-                    <td>{data.Multi_storey__c ? 'Yes' : 'No'}</td>
+                    <td className={style.yellow}>{oppData.Multi_storey__c ? 'Yes' : 'No'}</td>
                   </tr>
                   <tr>
                     <td>Split Count</td>
-                    <td>{data.Split_Count__c}</td>
+                    <td className={style.yellow}>{oppData.Split_Count__c}</td>
                   </tr>
                   <tr>
                     <td>Steep Roof (>30)</td>
-                    <td>No</td>
+                    <td className={style.yellow}>--</td>
                   </tr>
                   <tr>
                     <td>Meter Isolator</td>
-                    <td>{data.Meter_Isolator__c ? 'Yes' : 'No'}</td>
+                    <td className={style.yellow}>{oppData.Meter_Isolator__c ? 'Yes' : 'No'}</td>
                   </tr>
                   <tr>
                     <td>Cherry Picker Required</td>
-                    <td>No</td>
+                    <td className={style.yellow}>--</td>
                   </tr>
                   <tr>
                     <td>Roof Mount Type</td>
-                    <td>{data.Roof_Type__c}</td>
+                    <td className={style.violet}>{oppData.Roof_Type__c}</td>
                   </tr>
                   <tr>
                     <td>Electricity Provider</td>
-                    <td>&nbsp;</td>
+                    <td className={style.yellow}>--</td>
                   </tr>
                   <tr>
                     <td>Meter Number</td>
-                    <td>{data.Meter_Number__c}</td>
+                    <td className={style.yellow}>{oppData.Meter_Number__c}</td>
                   </tr>
                   <tr>
                     <td>Number of Phases</td>
-                    <td>{data.Number_of_Phases__c}</td>
+                    <td className={style.yellow}>{oppData.Number_of_Phases__c}</td>
                   </tr>
                   <tr>
                     <td>National Meter Identifier (NMI)</td>
-                    <td>{data.NMI__c}</td>
+                    <td className={style.yellow}>{oppData.NMI__c}</td>
                   </tr>
                 </tbody>
               </table>
@@ -480,39 +511,39 @@ const Invoice = ({ data }) => {
                 <tbody>
                   <tr>
                     <td>Cost of System (excluding GST)*</td>
-                    <td>${data.TotalSystemCostExclGST__c}</td>
+                    <td className={style.green}>${oppData.TotalSystemCostExclGST__c}</td>
                   </tr>
                   <tr>
                     <td>GST</td>
-                    <td>${data.GST__c}</td>
+                    <td className={style.green}>${oppData.GST__c}</td>
                   </tr>
                   <tr>
                     <td>Promo Discount</td>
-                    <td>$1,665.90</td>
+                    <td className={style.red}>$--</td>
                   </tr>
                   <tr>
                     <td>STC Discount</td>
-                    <td>${data.STCDiscount__c}</td>
+                    <td className={style.green}>${oppData.STCDiscount__c}</td>
                   </tr>
                   <tr style={{ height: '75px' }}>
                     <td>
                       <b>SALE PRICE</b> (After Discounts/Rebates)
                     </td>
-                    <td>
-                      <b>$11,499.51</b>
+                    <td className={style.green}>
+                      <b>$--</b>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <b>Deposit Amount</b>
                     </td>
-                    <td>${data.DepositAmount__c}</td>
+                    <td className={style.green}>${oppData.DepositAmount__c}</td>
                   </tr>
                   <tr>
                     <td>
                       <b>Balance Due On Day Of Install Via Rate Setter Finance</b>
                     </td>
-                    <td>${data.BalanceDueOnCompletion__c}</td>
+                    <td>${oppData.BalanceDueOnCompletion__c}</td>
                   </tr>
                 </tbody>
               </table>
@@ -539,11 +570,14 @@ const Invoice = ({ data }) => {
               <div className={style.chartContainer}>
                 <div className={style.chart} style={{ padding: '2% 4%' }}>
                   <div className={style.heading2}>Proposed Solar Panel Layout</div>
-                  <Map address={fullAddress} containerStyle={{
-                    position: 'relative',
-                    width: '100%',
-                    height: '400px'
-                  }} />
+                  <Map
+                    address={fullAddress}
+                    containerStyle={{
+                      position: 'relative',
+                      width: '100%',
+                      height: '400px'
+                    }}
+                  />
                 </div>
               </div>
             </Grid>
