@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
+import React, { useState, useEffect, useCallback } from 'react';
+import _ from 'lodash';
+import { withSnackbar } from 'notistack';
 import { PDFExport } from '@progress/kendo-react-pdf';
+import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 import style from './style.module.scss';
 import './print.scss';
 import api from '../../common/api';
@@ -11,21 +14,38 @@ import Chart2 from './components/Charts/Chart2';
 import Signature from './components/Signature';
 import EditableInput from './components/EditableInput';
 import Map from './components/Map';
+import CreateNew from './components/CreateNew';
 
 const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
-const Invoice = ({ data }) => {
+const Invoice = ({ data, ...props }) => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
   const [oppData, setOppData] = useState(data);
 
+  // Save Data
+  const saveData = (data) => {
+    console.log('Saving Data: ', data);
+    props.enqueueSnackbar(`Saving Data`, {
+      autoHideDuration: 1000
+    });
+  }
+  const debouncedSaveData = useCallback(_.debounce(saveData, 1500), []);
+
   const handleOppData = field => e => {
-    setOppData({
+    const newData = {
       ...oppData,
       [field]: e.target.value
-    });
+    };
+    setOppData(newData);
+    debouncedSaveData(newData);
   };
+
+  const oppDataBlur = () => {
+    // debouncedSaveData.flush();
+    console.log('On Blur');
+  }
 
   const [missData, setMissData] = useState({
     numberOfPanels: '--',
@@ -41,26 +61,29 @@ const Invoice = ({ data }) => {
     });
   };
 
+  // create new
+  const [create, setCreate] = useState(false);
+  const onBoarding = (state) => () => {
+    setCreate(state);
+  }
+
   // user details
-  let addressTimer = null;
   const [address, setAddress] = useState('Apple Headquarters, Infinite Loop');
   const [city, setCity] = useState('Cupertino, USA');
   const [fullAddress, setFullAddress] = useState(`${address}, ${city}`);
 
-  const setAddressForMap = () => {
-    addressTimer = setTimeout(() => {
-      setFullAddress(`${address}, ${city}`);
-    }, 2000);
+  const setAddressForMap = (add, cit) => {
+    setFullAddress(`${add}, ${cit}`);
   };
 
   const handleAddress = e => {
-    clearTimeout(addressTimer);
     setAddress(e.target.value);
+    setAddressForMap(e.target.value, city);
   };
 
   const handleCity = e => {
-    clearTimeout(addressTimer);
     setCity(e.target.value);
+    setAddressForMap(address, e.target.value);
   };
 
   // helpers
@@ -83,6 +106,7 @@ const Invoice = ({ data }) => {
 
   return (
     <React.Fragment>
+      <CreateNew state={create} close={onBoarding(false)} />
       <div className={style.page}>
         <h4>Test</h4>
         <table className={style.table}>
@@ -95,6 +119,7 @@ const Invoice = ({ data }) => {
                   min="0"
                   value={oppData.SystemEfficiency__c}
                   onChange={handleOppData('SystemEfficiency__c')}
+                  onBlur={oppDataBlur}
                 />
               </td>
             </tr>
@@ -107,6 +132,7 @@ const Invoice = ({ data }) => {
                   value={oppData.PredictedAnnualRiseInFeedInTarrif__c}
                   onChange={handleOppData('PredictedAnnualRiseInFeedInTarrif__c')}
                   suffix="% p.a."
+                  onBlur={oppDataBlur}
                 />
               </td>
             </tr>
@@ -124,6 +150,8 @@ const Invoice = ({ data }) => {
             </tr>
           </tbody>
         </table>
+        <br />
+        <Button color="primary" onClick={onBoarding(true)}>Onboarding</Button>
       </div>
       <br />
       <hr />
@@ -195,6 +223,7 @@ const Invoice = ({ data }) => {
                         value={oppData.SystemSize__c}
                         onChange={handleOppData('SystemSize__c')}
                         suffix=' kW'
+                        onBlur={oppDataBlur}
                       /> */}
                     </td>
                   </tr>
@@ -246,6 +275,7 @@ const Invoice = ({ data }) => {
                         onChange={handleOppData('Cost_of_Power_ex_GST__c')}
                         prefix="$"
                         suffix="/kWh"
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -259,6 +289,7 @@ const Invoice = ({ data }) => {
                         onChange={handleOppData('Daily_Supply_Charge_ex_GST__c')}
                         prefix="$"
                         suffix="/Day"
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -272,6 +303,7 @@ const Invoice = ({ data }) => {
                         onChange={handleOppData('Feed_in_tariff__c')}
                         prefix="$"
                         suffix="/kWh"
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -284,6 +316,7 @@ const Invoice = ({ data }) => {
                         value={oppData.PredictedAnnualRiseInPowerCost__c}
                         onChange={handleOppData('PredictedAnnualRiseInPowerCost__c')}
                         suffix="% p.a."
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -296,6 +329,7 @@ const Invoice = ({ data }) => {
                         value={oppData.AverageDailyUsage__c}
                         onChange={handleOppData('AverageDailyUsage__c')}
                         suffix="kWh"
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -320,6 +354,7 @@ const Invoice = ({ data }) => {
                         value={oppData.DayUsagePercentage__c}
                         onChange={handleOppData('DayUsagePercentage__c')}
                         suffix="%"
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -332,6 +367,7 @@ const Invoice = ({ data }) => {
                         value={oppData.NightUsagePercentage__c}
                         onChange={handleOppData('NightUsagePercentage__c')}
                         suffix="%"
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -455,12 +491,14 @@ const Invoice = ({ data }) => {
                         type="text"
                         value={oppData.Address_Line_1__c}
                         onChange={handleOppData('Address_Line_1__c')}
+                        onBlur={oppDataBlur}
                       />
                       <br />
                       <EditableInput
                         type="text"
                         value={oppData.Address_Line_2__c}
                         onChange={handleOppData('Address_Line_2__c')}
+                        onBlur={oppDataBlur}
                       />
                     </td>
                   </tr>
@@ -657,4 +695,4 @@ const Invoice = ({ data }) => {
   );
 };
 
-export default Invoice;
+export default withSnackbar(Invoice);

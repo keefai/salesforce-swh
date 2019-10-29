@@ -29,7 +29,7 @@ export default class App extends Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
-        <SnackbarProvider maxSnack={2}>
+        <SnackbarProvider maxSnack={5}>
           <Router history={browserHistory}>
             <Routes />
           </Router>

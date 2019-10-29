@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import style from './style.module.scss';
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../../common/api';
+import _ from 'lodash';
 
 const LoadingContainer = (props) => (
   <div className={style.mapLoadingContainer}>
@@ -20,9 +21,9 @@ const GoogleMap = ({ google, address, className, ...props }) => {
     lng: 0
   });
 
-  const fetchGeocoding = async () => {
+  const fetchGeocoding = async (add) => {
     try {
-      const res = await api.post('/geocoding', { address });
+      const res = await api.post('/geocoding', { add });
       console.log(res.data);
       setLocation(res.data);
     } catch (err) {
@@ -30,8 +31,10 @@ const GoogleMap = ({ google, address, className, ...props }) => {
     }
   }
 
+  const debouncedFetchGeocoding = useCallback(_.debounce(fetchGeocoding, 1500), []);
+
   useEffect(() => {
-     fetchGeocoding();
+    debouncedFetchGeocoding(address);
   }, [address]);
 
 	return (
