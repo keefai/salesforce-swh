@@ -163,6 +163,9 @@ app.post('/api/geocoding',  asyncMiddleware(async (request, response, next) => {
       .then(res => {
         console.log("Geocoding Res: ", res.json.results[0].geometry.location);
         return response.json(res.json.results[0].geometry.location);
+      })
+      .catch(err => {
+        console.log('googleMapsClient: ', err);
       });
 }));
 

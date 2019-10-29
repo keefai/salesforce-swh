@@ -23,7 +23,7 @@ const GoogleMap = ({ google, address, className, ...props }) => {
 
   const fetchGeocoding = async (add) => {
     try {
-      const res = await api.post('/geocoding', { add });
+      const res = await api.post('/geocoding', { address: add });
       console.log(res.data);
       setLocation(res.data);
     } catch (err) {
