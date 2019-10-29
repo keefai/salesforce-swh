@@ -31,7 +31,7 @@ const GoogleMap = ({ google, address, className, ...props }) => {
     }
   }
 
-  const debouncedFetchGeocoding = useCallback(_.debounce(fetchGeocoding, 1500), []);
+  const debouncedFetchGeocoding = useCallback(_.debounce(fetchGeocoding, 2000), []);
 
   useEffect(() => {
     debouncedFetchGeocoding(address);

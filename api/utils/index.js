@@ -83,3 +83,21 @@ exports.getOpportunities = async (sfdc, session, id) => {
     };
   }
 }
+
+exports.updateOpportunity = async (sfdc, session, id, data) => {
+  const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}`);
+  try {
+    const payload = await httpClient.patch({ ...apiRequestOptions, body: data, json: true });
+    console.log('updateOpportunity', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('updateOpportunity: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}

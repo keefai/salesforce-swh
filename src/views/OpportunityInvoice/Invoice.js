@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import style from './style.module.scss';
 import './print.scss';
 import api from '../../common/api';
+import { difference } from '../../common/helpers';
 import Sidebar from './components/Sidebar';
 import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';
@@ -23,15 +24,27 @@ const Invoice = ({ data, ...props }) => {
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
   const [oppData, setOppData] = useState(data);
+  const [savedOppData, setSavedOppData] = useState(data);
 
   // Save Data
-  const saveData = (data) => {
-    console.log('Saving Data: ', data);
-    props.enqueueSnackbar(`Saving Data`, {
-      autoHideDuration: 1000
-    });
-  }
-  const debouncedSaveData = useCallback(_.debounce(saveData, 1500), []);
+  const saveData = ndata => {
+    console.log('Saving Data: ', ndata);
+    const diff = difference(ndata, savedOppData);
+    console.log('PATCH: ', diff);
+    api
+      .patch(`/Opportunity/${ndata.Id}`, diff)
+      .then(res => {
+        setSavedOppData(ndata);
+        console.log(res);
+        props.enqueueSnackbar('Data Saved', {
+          autoHideDuration: 1000
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const debouncedSaveData = useCallback(_.debounce(saveData, 2000), []);
 
   const handleOppData = field => e => {
     const newData = {
@@ -45,7 +58,7 @@ const Invoice = ({ data, ...props }) => {
   const oppDataBlur = () => {
     // debouncedSaveData.flush();
     console.log('On Blur');
-  }
+  };
 
   const [missData, setMissData] = useState({
     numberOfPanels: '--',
@@ -63,9 +76,9 @@ const Invoice = ({ data, ...props }) => {
 
   // create new
   const [create, setCreate] = useState(false);
-  const onBoarding = (state) => () => {
+  const onBoarding = state => () => {
     setCreate(state);
-  }
+  };
 
   // user details
   const [address, setAddress] = useState('Apple Headquarters, Infinite Loop');
@@ -93,7 +106,7 @@ const Invoice = ({ data, ...props }) => {
 
   const getEstimatedFirstYearSavings = () => {
     return oppData.SavingsList__c ? JSON.parse(oppData.SavingsList__c)[0].Total.toFixed(2) : 0.0;
-  }
+  };
 
   // save pdf function
   const exportPDF = () => {
@@ -116,7 +129,6 @@ const Invoice = ({ data, ...props }) => {
               <td className={style.editTd}>
                 <EditableInput
                   type="integer"
-                  min="0"
                   value={oppData.SystemEfficiency__c}
                   onChange={handleOppData('SystemEfficiency__c')}
                   onBlur={oppDataBlur}
@@ -128,7 +140,6 @@ const Invoice = ({ data, ...props }) => {
               <td className={style.editTd}>
                 <EditableInput
                   type="float"
-                  min={0}
                   value={oppData.PredictedAnnualRiseInFeedInTarrif__c}
                   onChange={handleOppData('PredictedAnnualRiseInFeedInTarrif__c')}
                   suffix="% p.a."
@@ -142,7 +153,6 @@ const Invoice = ({ data, ...props }) => {
                 --
                 {/* <EditableInput
                   type='integer'
-                  min={0}
                   value={chart1Data.InitialCost}
                   onChange={handleChart1Input('InitialCost')}
                 /> */}
@@ -151,7 +161,9 @@ const Invoice = ({ data, ...props }) => {
           </tbody>
         </table>
         <br />
-        <Button color="primary" onClick={onBoarding(true)}>Onboarding</Button>
+        <Button color="primary" onClick={onBoarding(true)}>
+          Onboarding
+        </Button>
       </div>
       <br />
       <hr />
@@ -219,7 +231,6 @@ const Invoice = ({ data, ...props }) => {
                       {oppData.SystemSize__c}
                       {/* <EditableInput
                         type='integer'
-                        min='0'
                         value={oppData.SystemSize__c}
                         onChange={handleOppData('SystemSize__c')}
                         suffix=' kW'
@@ -232,7 +243,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.violet}>
                       <EditableInput
                         type="integer"
-                        min="0"
                         value={missData.numberOfPanels}
                         onChange={handleMissData('numberOfPanels')}
                       />
@@ -270,7 +280,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
-                        min={0}
                         value={oppData.Cost_of_Power_ex_GST__c}
                         onChange={handleOppData('Cost_of_Power_ex_GST__c')}
                         prefix="$"
@@ -284,7 +293,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
-                        min={0}
                         value={oppData.Daily_Supply_Charge_ex_GST__c}
                         onChange={handleOppData('Daily_Supply_Charge_ex_GST__c')}
                         prefix="$"
@@ -298,7 +306,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
-                        min={0}
                         value={oppData.Feed_in_tariff__c}
                         onChange={handleOppData('Feed_in_tariff__c')}
                         prefix="$"
@@ -312,7 +319,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
-                        min={0}
                         value={oppData.PredictedAnnualRiseInPowerCost__c}
                         onChange={handleOppData('PredictedAnnualRiseInPowerCost__c')}
                         suffix="% p.a."
@@ -325,7 +331,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
-                        min={0}
                         value={oppData.AverageDailyUsage__c}
                         onChange={handleOppData('AverageDailyUsage__c')}
                         suffix="kWh"
@@ -338,7 +343,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
-                        min={0}
                         value={missData.approxQuarterlyEnergyUse}
                         onChange={handleMissData('approxQuarterlyEnergyUse')}
                         suffix="kWh"
@@ -350,7 +354,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
-                        min="0"
                         value={oppData.DayUsagePercentage__c}
                         onChange={handleOppData('DayUsagePercentage__c')}
                         suffix="%"
@@ -363,7 +366,6 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
-                        min="0"
                         value={oppData.NightUsagePercentage__c}
                         onChange={handleOppData('NightUsagePercentage__c')}
                         suffix="%"

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const getTimezone = () => {
   let timezone_offset_min = new Date().getTimezoneOffset(),
     offset_hrs = parseInt(Math.abs(timezone_offset_min/60)),
@@ -22,4 +24,16 @@ export const getTimezone = () => {
   // Timezone difference in hours and minutes
   // String such as +5:30 GMT or -6:00 GMT or GMT
   return timezone_standard;
+}
+
+
+export const difference = (object, base) => {
+	function changes(object, base) {
+		return _.transform(object, function(result, value, key) {
+			if (!_.isEqual(value, base[key])) {
+				result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
+			}
+		});
+	}
+	return changes(object, base);
 }

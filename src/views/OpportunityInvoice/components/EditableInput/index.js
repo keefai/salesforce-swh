@@ -3,29 +3,36 @@ import AutosizeInput from 'react-input-autosize';
 import style from './style.module.scss';
 
 const regexType = {
-  integer: /^\d+$/,
-  float: /^\d+(\.(\d+)?)?$/
+  integer: /[^0-9+-]/g,
+  float: /[^0-9+-.]/g
 };
 
-const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, ...props }) => {
-  // const [width, setWidth] = useState(props.value.length);
-  const onChangeMiddleware = (e) => {
-    if (type === 'text') {
-      onChange(e);
-    } else {
-      const re = regexType[type];
+const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, value, ...props }) => {
+  const [val, setVal] = useState(value);
 
-      if (re) {
-        if (e.target.value === '' || re.test(e.target.value)) {
-          if (min !== undefined && (e.target.value === '' || Number(e.target.value) < Number(min))) {
-            e.target.value = min;
-          }
-          onChange(e);
-        }
-      } else {
-        onChange(e);
+  const onChangeMiddleware = (e) => {
+    let newVal = e.target.value;
+    let parsedVal = newVal;
+
+    const re = regexType[type];
+    if (re) {
+      newVal = newVal.replace(re, "");
+
+      if (type === "integer") {
+        parsedVal = parseInt(newVal);
+      } else if (type === "float") {
+        parsedVal = parseFloat(newVal);
       }
     }
+
+    setVal(newVal);
+    onChange({
+      ...e,
+      target: {
+        ...e.target,
+        value: isNaN(parsedVal) ? null : parsedVal
+      }
+    });
   }
 
 	return (
@@ -35,6 +42,7 @@ const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, ..
         input='text'
         inputClassName={`${style.input} ${className}`}
         onChange={onChangeMiddleware} 
+        value={val}
         {...props}
       />
       {suffix}

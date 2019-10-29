@@ -188,6 +188,17 @@ app.get('/api/Opportunity/:id', asyncMiddleware(async (request, response, next) 
   return response.status(res.status).json(res.json);
 }))
 
+app.patch('/api/Opportunity/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.updateOpportunity(sfdc, session, id, body);
+  return response.status(res.status).json(res.json);
+}))
+
+
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './build/index.html'));
