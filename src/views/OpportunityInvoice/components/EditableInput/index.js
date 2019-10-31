@@ -27,6 +27,15 @@ const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, va
       } else if (type === "float") {
         parsedVal = parseFloat(newVal);
       }
+
+      setVal(newVal);
+      onChange({
+        ...e,
+        target: {
+          ...e.target,
+          value: isNaN(parsedVal) ? null : parsedVal
+        }
+      });
     }
 
     setVal(newVal);
@@ -34,7 +43,7 @@ const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, va
       ...e,
       target: {
         ...e.target,
-        value: isNaN(parsedVal) ? null : parsedVal
+        value: parsedVal
       }
     });
   }

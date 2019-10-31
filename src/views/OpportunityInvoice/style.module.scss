@@ -86,6 +86,36 @@ body {
   }
 }
 
+.hidden {
+  display: none;
+}
+
+.numberTd {
+  max-width: 48px;
+  min-width: 48px !important;
+  width: 48px;
+  text-align: left !important;
+
+  input, div {
+    text-align: left;
+    min-width: 38px;
+    max-width: 38px;
+    width: 38px;
+  }
+}
+
+.addRemoveTd {
+  background: none !important;
+  padding: 0px !important;
+  max-width: 48px;
+  min-width: 48px;
+  width: 48px;
+
+  & > button {
+    border-radius: 0px !important;
+  }
+}
+
 .table2 {
   width: 100%;
 

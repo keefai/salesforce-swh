@@ -4,6 +4,9 @@ import { withSnackbar } from 'notistack';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 import Button from '@material-ui/core/Button';
 import style from './style.module.scss';
 import './print.scss';
@@ -18,6 +21,18 @@ import Map from './components/Map';
 import CreateNew from './components/CreateNew';
 
 const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+const AddButton = (props) => (
+  <IconButton aria-label="add" {...props}>
+    <AddIcon fontSize="medium" />
+  </IconButton>
+)
+
+const RemoveButton = (props) => (
+  <IconButton aria-label="add" {...props}>
+    <RemoveIcon fontSize="medium" />
+  </IconButton>
+)
 
 const Invoice = ({ data, ...props }) => {
   let resume = React.createRef();
@@ -78,6 +93,93 @@ const Invoice = ({ data, ...props }) => {
       [field]: e.target.value
     });
   };
+
+  // solar panel product
+  const [spProduct, setSpProduct] = useState([
+    {
+      product: '',
+      quantity: ''
+    }
+  ]);
+
+  const handleSpProductData = (i, field) => e => {
+    const oldSp = spProduct;
+    oldSp[i][field] = e.target.value;
+    setSpProduct(oldSp);
+  }
+
+  const addSpProduct = e => {
+    setSpProduct([
+      ...spProduct,
+      {
+        product: '',
+        quantity: ''
+      }
+    ]);
+  }
+
+  const removeSpProduct = i => e => {
+    const newSp = spProduct.filter((p, pi) => pi !== i);
+    setSpProduct(newSp);
+  }
+
+  // inverter product
+  const [invProduct, setInvProduct] = useState([
+    {
+      product: '',
+      quantity: ''
+    }
+  ]);
+
+  const handleInvProductData = (i, field) => e => {
+    const oldInv = invProduct;
+    oldInv[i][field] = e.target.value;
+    setInvProduct(oldInv);
+  }
+
+  const addInvProduct = e => {
+    setInvProduct([
+      ...invProduct,
+      {
+        product: '',
+        quantity: ''
+      }
+    ]);
+  }
+
+  const removeInvProduct = i => e => {
+    const newInv = invProduct.filter((p, pi) => pi !== i);
+    setInvProduct(newInv);
+  }
+
+  // battery product
+  const [batProduct, setBatProduct] = useState([
+    {
+      product: '',
+      quantity: ''
+    }
+  ]);
+
+  const handleBatProductData = (i, field) => e => {
+    const oldBat = batProduct;
+    oldBat[i][field] = e.target.value;
+    setBatProduct(oldBat);
+  }
+
+  const addBatProduct = e => {
+    setBatProduct([
+      ...batProduct,
+      {
+        product: '',
+        quantity: ''
+      }
+    ]);
+  }
+
+  const removeBatProduct = i => e => {
+    const newBat = batProduct.filter((p, pi) => pi !== i);
+    setBatProduct(newBat);
+  }
 
   // create new
   const [create, setCreate] = useState(false);
@@ -155,7 +257,7 @@ const Invoice = ({ data, ...props }) => {
             <tr>
               <td>Inital Cost</td>
               <td className={style.editTd}>
-                --
+                // --
                 {/* <EditableInput
                   type='integer'
                   value={chart1Data.InitialCost}
@@ -242,7 +344,8 @@ const Invoice = ({ data, ...props }) => {
                         onBlur={oppDataBlur}
                       /> */}
                     </td>
-                    <td>&nbsp;</td>
+                    <td className={style.hidden}>&nbsp;</td>
+                    <td className={style.hidden}>&nbsp;</td>
                   </tr>
                   <tr>
                     <td>Number of Panels</td>
@@ -253,59 +356,93 @@ const Invoice = ({ data, ...props }) => {
                         onChange={handleMissData('numberOfPanels')}
                       />
                     </td>
-                    <td>&nbsp;</td>
+                    <td className={style.hidden}>&nbsp;</td>
+                    <td className={style.hidden}>&nbsp;</td>
                   </tr>
-                  <tr>
-                    <td>Solar Panel Product</td>
-                    <td className={style.violet}>
-                      <EditableInput
-                        type="text"
-                        value={missData.solarPanelProduct}
-                        onChange={handleMissData('solarPanelProduct')}
-                      />
-                    </td>
-                    <td>
-                      <EditableInput
-                        type="integer"
-                        value={missData.solarPanelProductQ}
-                        onChange={handleMissData('solarPanelProductQ')}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Inverter Product</td>
-                    <td className={style.violet}>
-                      <EditableInput
-                        type="text"
-                        value={missData.inverterProduct}
-                        onChange={handleMissData('inverterProduct')}
-                      />
-                    </td>
-                    <td>
-                      <EditableInput
-                        type="integer"
-                        value={missData.inverterProductQ}
-                        onChange={handleMissData('inverterProductQ')}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Battery Product</td>
-                    <td className={style.violet}>
-                      <EditableInput
-                        type="text"
-                        value={missData.batteryProduct}
-                        onChange={handleMissData('batteryProduct')}
-                      />
-                    </td>
-                    <td>
-                      <EditableInput
-                        type="integer"
-                        value={missData.batteryProductQ}
-                        onChange={handleMissData('batteryProductQ')}
-                      />
-                    </td>
-                  </tr>
+                  {
+                    spProduct.map((p, i) => (
+                      <tr>
+                        <td>Solar Panel Product</td>
+                        <td className={style.violet}>
+                          <EditableInput
+                            type="text"
+                            value={p.product}
+                            onChange={handleSpProductData(i, 'product')}
+                          />
+                        </td>
+                        <td className={style.numberTd}>
+                          <EditableInput
+                            type="integer"
+                            value={p.quantity}
+                            onChange={handleSpProductData(i, 'quantity')}
+                          />
+                        </td>
+                        <td className={style.addRemoveTd}>
+                          { i === (spProduct.length - 1) ?
+                            <AddButton onClick={addSpProduct} />
+                            :
+                            <RemoveButton onClick={removeSpProduct(i)} />
+                          }
+                        </td>
+                      </tr>
+                    ))
+                  }
+                  {
+                    invProduct.map((p, i) => (
+                      <tr>
+                        <td>Inverter Product</td>
+                        <td className={style.violet}>
+                          <EditableInput
+                            type="text"
+                            value={p.product}
+                            onChange={handleInvProductData(i, 'product')}
+                          />
+                        </td>
+                        <td className={style.numberTd}>
+                          <EditableInput
+                            type="integer"
+                            value={p.quantity}
+                            onChange={handleInvProductData(i, 'quantity')}
+                          />
+                        </td>
+                        <td className={style.addRemoveTd}>
+                          { i === (invProduct.length - 1) ?
+                            <AddButton onClick={addInvProduct} />
+                            :
+                            <RemoveButton onClick={removeInvProduct(i)} />
+                          }
+                        </td>
+                      </tr>
+                    ))
+                  }
+                  {
+                    batProduct.map((p, i) => (
+                      <tr>
+                        <td>Battery Product</td>
+                        <td className={style.violet}>
+                          <EditableInput
+                            type="text"
+                            value={p.product}
+                            onChange={handleBatProductData(i, 'product')}
+                          />
+                        </td>
+                        <td className={style.numberTd}>
+                          <EditableInput
+                            type="integer"
+                            value={p.quantity}
+                            onChange={handleBatProductData(i, 'quantity')}
+                          />
+                        </td>
+                        <td className={style.addRemoveTd}>
+                          { i === (batProduct.length - 1) ?
+                            <AddButton onClick={addBatProduct} />
+                            :
+                            <RemoveButton onClick={removeBatProduct(i)} />
+                          }
+                        </td>
+                      </tr>
+                    ))
+                  }
                 </tbody>
               </table>
               <div className={style.heading} style={{ marginTop: '20px' }}>
