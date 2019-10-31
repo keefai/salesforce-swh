@@ -24,22 +24,18 @@ const Invoice = ({ data, ...props }) => {
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
   const [oppData, setOppData] = useState(data);
-  const [savedOppData, setSavedOppData] = useState(data);
 
   useEffect(() => {
     setOppData(data);
-    setSavedOppData(data);
   }, [data]);
 
   // Save Data
-  const saveData = ndata => {
-    console.log('Saving Data: ', ndata);
-    const diff = difference(ndata, savedOppData);
+  const saveData = (ndata, odata) => {
+    const diff = difference(ndata, odata);
     console.log('PATCH: ', diff);
     api
       .patch(`/Opportunity/${ndata.Id}`, diff)
       .then(res => {
-        setSavedOppData(ndata);
         console.log(res);
         props.enqueueSnackbar('Data Saved', {
           autoHideDuration: 1000
@@ -57,7 +53,7 @@ const Invoice = ({ data, ...props }) => {
       [field]: e.target.value
     };
     setOppData(newData);
-    debouncedSaveData(newData);
+    debouncedSaveData(newData, data);
   };
 
   const oppDataBlur = () => {
