@@ -18,12 +18,12 @@ const Chart1 = ({ data }) => {
         backgroundColor: 'rgb(0, 153, 255)',
         data: data ? data.Savings.map(d => d.DirectCumulative) : [],
         borderWidth: 0
-      },
-      {
-        label: 'Initial Solar System Cost',
-        backgroundColor: 'rgb(255, 45, 45)',
-        borderWidth: 0
       }
+      // {
+      //   label: 'Initial Solar System Cost',
+      //   backgroundColor: 'rgb(255, 45, 45)',
+      //   borderWidth: 0
+      // }
     ]
   };
 
@@ -67,7 +67,18 @@ const Chart1 = ({ data }) => {
                   }
                 }
               ]
-            },
+            }
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Chart1;
+
+/*
+
             annotation: {
               annotations: [
                 {
@@ -89,11 +100,4 @@ const Chart1 = ({ data }) => {
                 }
               ]
             }
-          }}
-        />
-      </div>
-    </div>
-  );
-};
-
-export default Chart1;
+*/
