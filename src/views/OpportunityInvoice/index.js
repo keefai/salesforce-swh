@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { withSnackbar } from 'notistack';
 import style from './style.module.scss';
 import api from '../../common/api';
 import { emitOpportunity, subscribeToOpportunity, unSubscribeToOpportunity } from '../../common/socket';
@@ -12,8 +13,8 @@ const OpportunityInvoice = props => {
 
   const { opportunityId } = props.match.params;
 
-  const getOpportnity = async id => {
-    setLoading(true);
+  const getOpportnity = async (id, showLoading = true) => {
+    showLoading && setLoading(true);
     try {
       const res = await api.get(`/Opportunity/${id}`);
       emitOpportunity(id);
@@ -23,7 +24,7 @@ const OpportunityInvoice = props => {
       console.log(err);
       setError(err);
     } finally {
-      setLoading(false);
+      showLoading && setLoading(false);
     }
   };
 
@@ -32,7 +33,10 @@ const OpportunityInvoice = props => {
     getOpportnity(opportunityId);
     subscribeToOpportunity(opportunityId, (d) => {
       console.log('subscribeToOpportunity: ', d);
-      getOpportnity(opportunityId);
+      props.enqueueSnackbar('Invoice Updated', {
+        autoHideDuration: 1000
+      });
+      getOpportnity(opportunityId, false);
     });
 
     return () => {
@@ -69,4 +73,4 @@ const OpportunityInvoice = props => {
   return null;
 };
 
-export default OpportunityInvoice;
+export default withSnackbar(OpportunityInvoice);
