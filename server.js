@@ -199,8 +199,9 @@ app.patch('/api/Opportunity/:id', asyncMiddleware(async (request, response, next
 }))
 
 app.post('/api/webhook/opportunity', asyncMiddleware(async (request, response, next) => {
-  console.log('OPPORTUNITY UPDATE BODY: ', request.body);
-  console.log('OPPORTUNITY UPDATE RAWBODY: ', request.rawBody);
+  console.log('OPPORTUNITY UPDATE BODY: ', JSON.stringify(request.body, null, 2));
+  const data = request.body['soapenv:envelope']['soapenv:body'][0]['notifications'][0]['notification'][0]['sobject'][0];
+  console.log('Opportunity Data: ', data);
   // console.log(request.rawBody);
   // if (type === 'tradeOrder' || type === 'tradeSet') {
   //   const data = request.body['soapenv:envelope']['soapenv:body'][0]['notifications'][0]['notification'][0]['sobject'][0];
