@@ -73,7 +73,7 @@ body {
           -webkit-print-color-adjust: exact;
       }
     }
-    td:nth-child(2) {
+    td:nth-child(2), td:nth-child(3) {
       background: rgb(199, 226, 246);
       text-align: right;
       min-width: 150px;

@@ -63,7 +63,11 @@ const Invoice = ({ data, ...props }) => {
   const [missData, setMissData] = useState({
     numberOfPanels: '--',
     solarPanelProduct: '--',
+    solarPanelProductQ: 0,
     inverterProduct: '--',
+    inverterProductQ: 0,
+    batteryProduct: '--',
+    batteryProductQ: 0,
     approxQuarterlyEnergyUse: '--'
   });
 
@@ -237,6 +241,7 @@ const Invoice = ({ data, ...props }) => {
                         onBlur={oppDataBlur}
                       /> */}
                     </td>
+                    <td>&nbsp;</td>
                   </tr>
                   <tr>
                     <td>Number of Panels</td>
@@ -247,6 +252,7 @@ const Invoice = ({ data, ...props }) => {
                         onChange={handleMissData('numberOfPanels')}
                       />
                     </td>
+                    <td>&nbsp;</td>
                   </tr>
                   <tr>
                     <td>Solar Panel Product</td>
@@ -257,6 +263,13 @@ const Invoice = ({ data, ...props }) => {
                         onChange={handleMissData('solarPanelProduct')}
                       />
                     </td>
+                    <td>
+                      <EditableInput
+                        type="integer"
+                        value={missData.solarPanelProductQ}
+                        onChange={handleMissData('solarPanelProductQ')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Inverter Product</td>
@@ -265,6 +278,30 @@ const Invoice = ({ data, ...props }) => {
                         type="text"
                         value={missData.inverterProduct}
                         onChange={handleMissData('inverterProduct')}
+                      />
+                    </td>
+                    <td>
+                      <EditableInput
+                        type="integer"
+                        value={missData.inverterProductQ}
+                        onChange={handleMissData('inverterProductQ')}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Battery Product</td>
+                    <td className={style.violet}>
+                      <EditableInput
+                        type="text"
+                        value={missData.batteryProduct}
+                        onChange={handleMissData('batteryProduct')}
+                      />
+                    </td>
+                    <td>
+                      <EditableInput
+                        type="integer"
+                        value={missData.batteryProductQ}
+                        onChange={handleMissData('batteryProductQ')}
                       />
                     </td>
                   </tr>
