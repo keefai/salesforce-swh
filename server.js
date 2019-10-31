@@ -198,6 +198,29 @@ app.patch('/api/Opportunity/:id', asyncMiddleware(async (request, response, next
   return response.status(res.status).json(res.json);
 }))
 
+app.post('/api/webhook/opportunity', asyncMiddleware(async (request, response, next) => {
+  console.log('OPPORTUNITY UPDATE BODY: ', request.body);
+  console.log('OPPORTUNITY UPDATE RAWBODY: ', request.rawBody);
+  // console.log(request.rawBody);
+  // if (type === 'tradeOrder' || type === 'tradeSet') {
+  //   const data = request.body['soapenv:envelope']['soapenv:body'][0]['notifications'][0]['notification'][0]['sobject'][0];
+  //   console.log(JSON.stringify(data, null, 2));
+  //   // const id = data['sf:id'][0];
+  //   pubDb.publish(type, JSON.stringify(data));
+  // } else {
+  //   return response.status(404).send();
+  // }
+  const resXML = `
+  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+      <notificationsResponse xmlns="http://soap.sforce.com/2005/09/outbound">
+        <Ack>true</Ack>
+      </notificationsResponse>
+    </soapenv:Body>
+  </soapenv:Envelope>
+  `;
+  return response.send(resXML);
+}));
 
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {
