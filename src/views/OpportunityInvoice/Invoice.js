@@ -19,6 +19,7 @@ import Signature from './components/Signature';
 import EditableInput from './components/EditableInput';
 import Map from './components/Map';
 import CreateNew from './components/CreateNew';
+import YesNoDropdown from './components/YesNoDropdown';
 
 const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
@@ -681,7 +682,12 @@ const Invoice = ({ data, ...props }) => {
                   </tr>
                   <tr>
                     <td>Multi Storey</td>
-                    <td className={style.yellow}>{oppData.Multi_storey__c ? 'Yes' : 'No'}</td>
+                    <td className={style.yellow}>
+                      <YesNoDropdown
+                        value={oppData.Multi_storey__c}
+                        onChange={handleOppData('Multi_storey__c')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Split Count</td>
@@ -689,15 +695,32 @@ const Invoice = ({ data, ...props }) => {
                   </tr>
                   <tr>
                     <td>Steep Roof (>30)</td>
-                    <td className={style.yellow}>--</td>
+                    {/* TODO: wrong variable */}
+                    <td className={style.yellow}>
+                      <YesNoDropdown
+                        value={oppData.KlipLok_Roof_Panel_Installtion__c}
+                        onChange={handleOppData('KlipLok_Roof_Panel_Installtion__c')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Meter Isolator</td>
-                    <td className={style.yellow}>{oppData.Meter_Isolator__c ? 'Yes' : 'No'}</td>
+                    <td className={style.yellow}>
+                      <YesNoDropdown
+                        value={oppData.Meter_Isolator__c}
+                        onChange={handleOppData('Meter_Isolator__c')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Cherry Picker Required</td>
-                    <td className={style.yellow}>--</td>
+                    {/* TODO: wrong variable */}
+                    <td className={style.yellow}>
+                      <YesNoDropdown
+                        value={oppData.KlipLok_Roof_Panel_Installtion__c}
+                        onChange={handleOppData('KlipLok_Roof_Panel_Installtion__c')}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td>Roof Mount Type</td>
