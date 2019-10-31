@@ -10,6 +10,10 @@ const regexType = {
 const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, value, ...props }) => {
   const [val, setVal] = useState(value);
 
+  useEffect(() => {
+    setVal(value);
+  }, [value]);
+
   const onChangeMiddleware = (e) => {
     let newVal = e.target.value;
     let parsedVal = newVal;
