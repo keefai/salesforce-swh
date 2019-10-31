@@ -17,7 +17,7 @@ const OpportunityInvoice = props => {
     showLoading && setLoading(true);
     try {
       const res = await api.get(`/Opportunity/${id}`);
-      emitOpportunity(id);
+      // emitOpportunity(id);
       console.log(res);
       setData(res.data);
     } catch (err) {
@@ -44,7 +44,7 @@ const OpportunityInvoice = props => {
         console.log('unSubscribeToOpportunity: ', d);
       });
     };
-  }, [props.match.params.opportunityId]);
+  }, []);
 
   if (loading) {
     return (

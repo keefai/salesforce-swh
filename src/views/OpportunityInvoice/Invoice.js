@@ -26,6 +26,11 @@ const Invoice = ({ data, ...props }) => {
   const [oppData, setOppData] = useState(data);
   const [savedOppData, setSavedOppData] = useState(data);
 
+  useEffect(() => {
+    setOppData(data);
+    setSavedOppData(data);
+  }, [data]);
+
   // Save Data
   const saveData = ndata => {
     console.log('Saving Data: ', ndata);
