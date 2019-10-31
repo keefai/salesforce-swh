@@ -20,14 +20,18 @@ socket.on('connect_error', (error) => {
   console.log(error);
 });
 
-// export const socketEmitNotification = UserID => {
-//   console.log('Subscribing to ', UserID);
-//   socket.emit('notification', { UserID });
-// };
+export const emitOpportunity = Id => {
+  console.log('Subscribing to ', Id);
+  socket.emit('opportunity', { Id });
+};
 
-// export const socketSubscribeToNotications = (UserID, cb) => {
-//   socket.on(UserID, cb);
-// };
+export const subscribeToOpportunity = (Id, cb) => {
+  socket.on(`opportunity-${Id}`, cb);
+};
+
+export const unSubscribeToOpportunity = (Id, cb) => {
+  socket.off(`opportunity-${Id}`, cb);
+};
 
 // export const subscribeToTradeOrder = (cb) => {
 //   socket.on('tradeOrder', cb);

@@ -202,15 +202,10 @@ app.post('/api/webhook/opportunity', asyncMiddleware(async (request, response, n
   console.log('OPPORTUNITY UPDATE BODY: ', JSON.stringify(request.body, null, 2));
   const data = request.body['soapenv:envelope']['soapenv:body'][0]['notifications'][0]['notification'][0]['sobject'][0];
   console.log('Opportunity Data: ', data);
-  // console.log(request.rawBody);
-  // if (type === 'tradeOrder' || type === 'tradeSet') {
-  //   const data = request.body['soapenv:envelope']['soapenv:body'][0]['notifications'][0]['notification'][0]['sobject'][0];
-  //   console.log(JSON.stringify(data, null, 2));
-  //   // const id = data['sf:id'][0];
-  //   pubDb.publish(type, JSON.stringify(data));
-  // } else {
-  //   return response.status(404).send();
-  // }
+  const id = data['sf:id'][0];
+  if (id) {
+    pubDb.publish(`opportunity-${id}`, 'update');
+  }
   const resXML = `
   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
     <soapenv:Body>
