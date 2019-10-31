@@ -1,28 +1,44 @@
 @media print 
 {
-    @page {
-      size: A4;
-      margin: 0;
-    }
+  @page {
+    size: A4;
+    margin: 0;
+  }
 
-    html, body {
-        width: 210mm;
-        height: 282mm;
-        font-size: 10px;
-        background: #FFF;
-        overflow: visible;
-    }
+  html, body {
+    width: 210mm;
+    height: 282mm;
+    font-size: 10px;
+    background: #FFF;
+    overflow: visible;
+  }
 
-    .addRemoveTd {
-        display: none;
-    }
+  .addRemoveTd {
+    display: none;
+  }
 
-    body {
-        padding: 5mm;
-    }
+  body {
+    padding: 5mm;
+  }
 
-    .chartjs-render-monitor {
-        width: 100% !important;
-        height: 100% !important;
-    }
+  .chartjs-render-monitor {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .yellow {
+    border: none;
+  }
+
+  .violet {
+    border: none;
+  }
+
+  .green {
+    border: none;
+  }
+
+  .red {
+    border: none;
+  }
 }
