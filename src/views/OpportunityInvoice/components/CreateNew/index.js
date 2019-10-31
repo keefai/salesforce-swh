@@ -24,7 +24,8 @@ const CreateNew = ({ state, open, close }) => {
     lastname: null,
     email: null,
 		mobile: null,
-		address: null,
+		postalAddress: null,
+		installationAddress: null,
     consent: false
 	});
 
@@ -40,14 +41,6 @@ const CreateNew = ({ state, open, close }) => {
       ...data,
       consent: e.target.checked
     });
-	}
-
-	const handleAddress = e => {
-		const newAddress = e.target.value;
-		setData({
-      ...data,
-      address: newAddress
-		});
 	}
 	
 	const renderDetails = () => (
@@ -97,6 +90,26 @@ const CreateNew = ({ state, open, close }) => {
 						/>
 					</Grid>
 					<Grid item xs={12}>
+						<div className={style.postalAddressContainer}>
+							<TextField
+								margin="dense"
+								label="Postal Address"
+								variant="filled"
+								value={data.postalAddress}
+								onChange={handleData('postalAddress')}
+								className={style.mapInput}
+								fullWidth
+							/>	
+							<Map
+								address={data.postalAddress}
+								containerStyle={{
+									width: '100%',
+									height: '100%'
+								}}
+							/>
+						</div>
+					</Grid>
+					<Grid item xs={12}>
 						<Checkbox
 							checked={data.consent}
 							onChange={handleConsent}
@@ -128,13 +141,13 @@ const CreateNew = ({ state, open, close }) => {
 					margin="dense"
 					label="Installation Address"
 					variant="filled"
-					value={data.address}
-					onChange={handleAddress}
+					value={data.installationAddress}
+					onChange={handleData('installationAddress')}
 					className={style.mapInput}
 					fullWidth
 				/>	
 				<Map
-					address={data.address}
+					address={data.installationAddress}
 					containerStyle={{
 						width: '100%',
 						height: '100%'
