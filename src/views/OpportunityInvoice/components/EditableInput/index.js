@@ -7,8 +7,10 @@ const regexType = {
   float: /[^0-9+-.]/g
 };
 
-const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, value, ...props }) => {
+const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, value, onBlur, ...props }) => {
+  let iRef;
   const [val, setVal] = useState(value);
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     setVal(value);
@@ -48,18 +50,36 @@ const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, va
     });
   }
 
+  const onBlurMiddleware = (e) => {
+    setEdit(false);
+    onBlur(e);
+  }
+
+  const onDivClick = () => {
+    iRef && iRef.focus();
+    setEdit(true);
+  }
+
 	return (
-		<React.Fragment>
+		<div
+      className={style.div}
+      onClick={onDivClick}
+      style={{
+        background: edit ? 'white' : 'unset'
+      }}
+    >
       {prefix}
       <AutosizeInput
         input='text'
         inputClassName={`${style.input} ${className}`}
-        onChange={onChangeMiddleware} 
+        onChange={onChangeMiddleware}
         value={val}
+        onBlur={onBlurMiddleware}
+        inputRef={el => iRef = el}
         {...props}
       />
       {suffix}
-		</React.Fragment>
+		</div>
 	);
 };
 

@@ -91,6 +91,7 @@ body {
 }
 
 .numberTd {
+  padding: 0px !important;
   max-width: 48px;
   min-width: 48px !important;
   width: 48px;
@@ -260,12 +261,18 @@ body {
   align-items: center;
 }
 
+.editLabel {
+  padding: 0px 5px !important;
+}
+
 .yellow {
   border: 2px solid yellow !important;
+  padding: 0px !important;
 }
 
 .violet {
   border: 2px solid yellow !important;
+  padding: 0px !important;
 }
 
 .green {

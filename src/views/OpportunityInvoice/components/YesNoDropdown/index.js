@@ -36,10 +36,16 @@ const YesNoDropdown = ({ value, onChange }) => {
   };
 
   return (
-    <div onClick={() => setEdit(true)}>
+    <div
+      className={style.div}
+      style={{
+        background: edit ? 'white' : 'unset'
+      }}
+      onClick={() => setEdit(true)}
+    >
       {!edit ? value === true ? "Yes" : "No" :
         <TextField
-          id="standard-select-currency-native"
+          id="select-yes-no"
           select
           className={classes.textField}
           value={value}
@@ -47,7 +53,7 @@ const YesNoDropdown = ({ value, onChange }) => {
           SelectProps={{
             native: true
           }}
-          margin="normal"
+          margin="dense"
           onBlur={() => setEdit(false)}
           style={{
             margin: 0

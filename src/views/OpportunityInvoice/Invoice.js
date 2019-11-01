@@ -349,7 +349,7 @@ const Invoice = ({ data, ...props }) => {
                     <td className={style.hidden}>&nbsp;</td>
                   </tr>
                   <tr>
-                    <td>Number of Panels</td>
+                    <td className={style.editLabel}>Number of Panels</td>
                     <td className={style.violet}>
                       <EditableInput
                         type="integer"
@@ -363,7 +363,7 @@ const Invoice = ({ data, ...props }) => {
                   {
                     spProduct.map((p, i) => (
                       <tr>
-                        <td>Solar Panel Product</td>
+                        <td className={style.editLabel}>Solar Panel Product</td>
                         <td className={style.violet}>
                           <EditableInput
                             type="text"
@@ -391,7 +391,7 @@ const Invoice = ({ data, ...props }) => {
                   {
                     invProduct.map((p, i) => (
                       <tr>
-                        <td>Inverter Product</td>
+                        <td className={style.editLabel}>Inverter Product</td>
                         <td className={style.violet}>
                           <EditableInput
                             type="text"
@@ -419,7 +419,7 @@ const Invoice = ({ data, ...props }) => {
                   {
                     batProduct.map((p, i) => (
                       <tr>
-                        <td>Battery Product</td>
+                        <td className={style.editLabel}>Battery Product</td>
                         <td className={style.violet}>
                           <EditableInput
                             type="text"
@@ -452,7 +452,7 @@ const Invoice = ({ data, ...props }) => {
               <table className={style.table}>
                 <tbody>
                   <tr>
-                    <td>Cost of Power</td>
+                    <td className={style.editLabel}>Cost of Power</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
@@ -465,7 +465,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Daily supply charge</td>
+                    <td className={style.editLabel}>Daily supply charge</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
@@ -478,7 +478,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Feed-in Tariff</td>
+                    <td className={style.editLabel}>Feed-in Tariff</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
@@ -491,7 +491,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Predicted Energy Price Rise</td>
+                    <td className={style.editLabel}>Predicted Energy Price Rise</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="float"
@@ -503,7 +503,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Average Daily Energy Usage</td>
+                    <td className={style.editLabel}>Average Daily Energy Usage</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
@@ -515,7 +515,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Approx. Quarterly Energy Use</td>
+                    <td className={style.editLabel}>Approx. Quarterly Energy Use</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
@@ -526,7 +526,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Day Usage</td>
+                    <td className={style.editLabel}>Day Usage</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
@@ -538,7 +538,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Night Usage</td>
+                    <td className={style.editLabel}>Night Usage</td>
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
@@ -663,7 +663,7 @@ const Invoice = ({ data, ...props }) => {
               <table className={style.table}>
                 <tbody>
                   <tr>
-                    <td>Installation Address</td>
+                    <td className={style.editLabel}>Installation Address</td>
                     <td className={style.violet}>
                       <EditableInput
                         type="text"
@@ -671,7 +671,6 @@ const Invoice = ({ data, ...props }) => {
                         onChange={handleOppData('Address_Line_1__c')}
                         onBlur={oppDataBlur}
                       />
-                      <br />
                       <EditableInput
                         type="text"
                         value={oppData.Address_Line_2__c}
@@ -681,7 +680,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Multi Storey</td>
+                    <td className={style.editLabel}>Multi Storey</td>
                     <td className={style.yellow}>
                       <YesNoDropdown
                         value={oppData.Multi_storey__c}
@@ -690,11 +689,11 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Split Count</td>
+                    <td className={style.editLabel}>Split Count</td>
                     <td className={style.yellow}>{oppData.Split_Count__c}</td>
                   </tr>
                   <tr>
-                    <td>Steep Roof (>30)</td>
+                    <td className={style.editLabel}>Steep Roof (>30)</td>
                     {/* TODO: wrong variable */}
                     <td className={style.yellow}>
                       <YesNoDropdown
@@ -704,7 +703,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Meter Isolator</td>
+                    <td className={style.editLabel}>Meter Isolator</td>
                     <td className={style.yellow}>
                       <YesNoDropdown
                         value={oppData.Meter_Isolator__c}
@@ -713,7 +712,7 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Cherry Picker Required</td>
+                    <td className={style.editLabel}>Cherry Picker Required</td>
                     {/* TODO: wrong variable */}
                     <td className={style.yellow}>
                       <YesNoDropdown
@@ -723,23 +722,23 @@ const Invoice = ({ data, ...props }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td>Roof Mount Type</td>
+                    <td className={style.editLabel}>Roof Mount Type</td>
                     <td className={style.violet}>{oppData.Roof_Type__c}</td>
                   </tr>
                   <tr>
-                    <td>Electricity Provider</td>
+                    <td className={style.editLabel}>Electricity Provider</td>
                     <td className={style.yellow}>--</td>
                   </tr>
                   <tr>
-                    <td>Meter Number</td>
+                    <td className={style.editLabel}>Meter Number</td>
                     <td className={style.yellow}>{oppData.Meter_Number__c}</td>
                   </tr>
                   <tr>
-                    <td>Number of Phases</td>
+                    <td className={style.editLabel}>Number of Phases</td>
                     <td className={style.yellow}>{oppData.Number_of_Phases__c}</td>
                   </tr>
                   <tr>
-                    <td>National Meter Identifier (NMI)</td>
+                    <td className={style.editLabel}>National Meter Identifier (NMI)</td>
                     <td className={style.yellow}>{oppData.NMI__c}</td>
                   </tr>
                 </tbody>
