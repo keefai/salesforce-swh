@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AutosizeInput from 'react-input-autosize';
 import style from './style.module.scss';
 
@@ -7,80 +7,93 @@ const regexType = {
   float: /[^0-9+-.]/g
 };
 
-const EditableInput = ({ prefix, suffix, className = '', type, onChange, min, value, onBlur, ...props }) => {
-  let iRef;
-  const [val, setVal] = useState(value);
-  const [edit, setEdit] = useState(false);
+class EditableInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      val: this.props.value,
+      edit: false
+    };
+    this.iRef = null;
+  }
 
-  useEffect(() => {
-    setVal(value);
-  }, [value]);
+  componentDidUpdate(prevProps) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({
+        val: this.props.value
+      });
+    }
+  }
 
-  const onChangeMiddleware = (e) => {
+  onChangeMiddleware = (e) => {
     let newVal = e.target.value;
     let parsedVal = newVal;
 
-    const re = regexType[type];
+    const re = regexType[this.props.type];
     if (re) {
       newVal = newVal.replace(re, "");
 
-      if (type === "integer") {
+      if (this.props.type === "integer") {
         parsedVal = parseInt(newVal);
-      } else if (type === "float") {
+      } else if (this.props.type === "float") {
         parsedVal = parseFloat(newVal);
       }
 
-      setVal(newVal);
-      onChange({
+      this.setState({ val: newVal });
+      this.props.onChange({
         ...e,
         target: {
           ...e.target,
           value: isNaN(parsedVal) ? null : parsedVal
         }
       });
+    } else {
+      this.setState({ val: newVal });
+      this.props.onChange({
+        ...e,
+        target: {
+          ...e.target,
+          value: parsedVal
+        }
+      });
     }
-
-    setVal(newVal);
-    onChange({
-      ...e,
-      target: {
-        ...e.target,
-        value: parsedVal
-      }
-    });
   }
 
-  const onBlurMiddleware = (e) => {
-    setEdit(false);
-    onBlur(e);
+  onBlurMiddleware = (e) => {
+    this.setState({ edit: false });
+    this.props.onBlur && this.props.onBlur(e);
   }
 
-  const onDivClick = () => {
-    iRef && iRef.focus();
-    setEdit(true);
+  onDivClick = () => {
+    console.log(this.iRef);
+    this.iRef && this.iRef.focus();
+    this.setState({ edit: true });
   }
 
-	return (
-		<div
-      className={style.div}
-      onClick={onDivClick}
-      style={{
-        background: edit ? 'white' : 'unset'
-      }}
-    >
-      {prefix}
-      <AutosizeInput
-        input='text'
-        inputClassName={`${style.input} ${className}`}
-        onChange={onChangeMiddleware}
-        value={val}
-        onBlur={onBlurMiddleware}
-        inputRef={el => iRef = el}
-        {...props}
-      />
-      {suffix}
-		</div>
-	);
-};
+  render() {
+    const { prefix, suffix, className = '', type, onChange, min, value, onBlur, ...props } = this.props;
+    return (
+      <div
+        className={style.div}
+        onClick={this.onDivClick}
+        style={{
+          background: this.state.edit ? 'white' : 'unset'
+        }}
+      >
+        {prefix}
+        <AutosizeInput
+          input='text'
+          inputClassName={`${style.input} ${className}`}
+          onChange={this.onChangeMiddleware}
+          value={this.state.val}
+          onBlur={this.onBlurMiddleware}
+          inputRef={(node) => this.iRef = node}
+          {...props}
+        />
+        {suffix}
+      </div>
+    );
+  }
+}
 
 export default EditableInput;
