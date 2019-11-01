@@ -690,7 +690,14 @@ const Invoice = ({ data, ...props }) => {
                   </tr>
                   <tr>
                     <td className={style.editLabel}>Split Count</td>
-                    <td className={style.yellow}>{oppData.Split_Count__c}</td>
+                    <td className={style.yellow}>
+                      <EditableInput
+                        type="integer"
+                        value={oppData.Split_Count__c}
+                        onChange={handleOppData('Split_Count__c')}
+                        onBlur={oppDataBlur}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td className={style.editLabel}>Steep Roof (>30)</td>
@@ -723,7 +730,14 @@ const Invoice = ({ data, ...props }) => {
                   </tr>
                   <tr>
                     <td className={style.editLabel}>Roof Mount Type</td>
-                    <td className={style.violet}>{oppData.Roof_Type__c}</td>
+                    <td className={style.violet}>
+                      <EditableInput
+                        type="text"
+                        value={oppData.Roof_Type__c}
+                        onChange={handleOppData('Roof_Type__c')}
+                        onBlur={oppDataBlur}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td className={style.editLabel}>Electricity Provider</td>
@@ -731,15 +745,36 @@ const Invoice = ({ data, ...props }) => {
                   </tr>
                   <tr>
                     <td className={style.editLabel}>Meter Number</td>
-                    <td className={style.yellow}>{oppData.Meter_Number__c}</td>
+                    <td className={style.yellow}>
+                      <EditableInput
+                        type="text"
+                        value={oppData.Meter_Number__c}
+                        onChange={handleOppData('Meter_Number__c')}
+                        onBlur={oppDataBlur}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td className={style.editLabel}>Number of Phases</td>
-                    <td className={style.yellow}>{oppData.Number_of_Phases__c}</td>
+                    <td className={style.yellow}>
+                      <EditableInput
+                        type="integer"
+                        value={oppData.Number_of_Phases__c}
+                        onChange={handleOppData('Number_of_Phases__c')}
+                        onBlur={oppDataBlur}
+                      />
+                    </td>
                   </tr>
                   <tr>
                     <td className={style.editLabel}>National Meter Identifier (NMI)</td>
-                    <td className={style.yellow}>{oppData.NMI__c}</td>
+                    <td className={style.yellow}>
+                       <EditableInput
+                        type="text"
+                        value={oppData.NMI__c}
+                        onChange={handleOppData('NMI__c')}
+                        onBlur={oppDataBlur}
+                      />
+                    </td>
                   </tr>
                 </tbody>
               </table>

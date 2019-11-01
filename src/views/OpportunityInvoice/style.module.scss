@@ -96,13 +96,7 @@ body {
   min-width: 48px !important;
   width: 48px;
   text-align: left !important;
-
-  input, div {
-    text-align: left;
-    min-width: 38px;
-    max-width: 38px;
-    width: 38px;
-  }
+  border: 2px solid yellow !important;
 }
 
 .addRemoveTd {
@@ -114,6 +108,7 @@ body {
 
   & > button {
     border-radius: 0px !important;
+    padding: 5px !important;
   }
 }
 
