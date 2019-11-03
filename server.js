@@ -218,6 +218,28 @@ app.post('/api/webhook/opportunity', asyncMiddleware(async (request, response, n
   return response.send(resXML);
 }));
 
+// app.get('/api/opportunityMetadata', asyncMiddleware(async (request, response, next) => {
+//   const { id } = request.params;
+//   const body = request.body;
+//   const session = getSession(request, response);
+//   if (session == null) return;
+
+//   const res = await utils.getOpportunities(sfdc, session, id);
+//   return response.status(res.status).json(res.json);
+// }));
+
+app.get('/api/opportunityTemplates', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getOpportunityTemplates(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}));
+
+// app.post('/api/createOpportunity');
+
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './build/index.html'));

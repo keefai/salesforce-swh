@@ -101,3 +101,23 @@ exports.updateOpportunity = async (sfdc, session, id, data) => {
     };
   }
 }
+
+exports.getOpportunityTemplates = async (sfdc, session, id, data) => {
+  var query = encodeURI('SELECT Id, Name, SystemSize__c FROM Opportunity WHERE Is_Template__c=true');
+  const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
+  try {
+    const payload = await httpClient.get({ ...apiRequestOptions });
+    console.log('getOpportunityTemplates', payload);
+    return {
+      status: 200,
+      json: JSON.parse(payload)
+    };
+  } catch (error) {
+    console.error('getOpportunityTemplates: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
