@@ -148,8 +148,6 @@ app.post('/api/getSolarSystemInvestmentAnalysis',  asyncMiddleware(async (reques
   return response.status(res.status).json(res.json);
 }));
 
-
-
 app.post('/api/geocoding',  asyncMiddleware(async (request, response, next) => {
   const body = request.body;
   const session = getSession(request, response);
@@ -238,7 +236,41 @@ app.get('/api/opportunityTemplates', asyncMiddleware(async (request, response, n
   return response.status(res.status).json(res.json);
 }));
 
-// app.post('/api/createOpportunity');
+app.post('/api/createOpportunity', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+  console.log(body);
+
+  try {
+    // create contact
+    const accountRes = await utils.createAccount(sfdc, session, {
+      FirstName: body.details.FirstName,
+      LastName: body.details.LastName,
+      Phone: body.details.Phone
+    });
+    if (accountRes.status === 500) throw new Error(accountRes.json);
+
+    const AccountId = accountRes.json.id;
+    console.log('AccountId: ', AccountId);
+
+    // get opportunity data from template id
+    const opportunity = await utils.getOpportunities(sfdc, session, id);
+    if (opportunity.status === 500) throw new Error(opportunity.json);
+
+    // create opportunity
+    const opportunityRes = await utils.createOpportunity(sfdc, session, {
+      ...opportunity,
+      AccountId
+    });
+    if (opportunityRes.status === 500) throw new Error(opportunityRes.json);
+    return response.status(opportunityRes.status).json(opportunityRes.json);
+  } catch (err) {
+    console.log(err);
+    return response.status(500).json(err);
+  }
+}));
 
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {

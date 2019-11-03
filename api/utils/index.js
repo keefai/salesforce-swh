@@ -121,3 +121,40 @@ exports.getOpportunityTemplates = async (sfdc, session, id, data) => {
   }
 }
 
+exports.createAccount = async (sfdc, session, data) => {
+	console.log('createAccount Body: ', JSON.stringify(data, null, 2));
+	try {
+	  const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'sobjects/Account');
+    const payload = await httpClient.post({ ...apiRequestOptions, body: data, json: true });
+    console.log(payload)
+    return {
+      status: 200,
+      json: payload
+    };
+	} catch (error) {
+		console.error('createAccount: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+	}
+}
+
+exports.createOpportunity = async (sfdc, session, data) => {
+  console.log('createOpportunity Body: ', JSON.stringify(data, null, 2));
+	try {
+	  const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'sobjects/Opportunity');
+    const payload = await httpClient.post({ ...apiRequestOptions, body: data, json: true });
+    console.log(payload)
+    return {
+      status: 200,
+      json: payload
+    };
+	} catch (error) {
+		console.error('createOpportunity: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+	}
+}

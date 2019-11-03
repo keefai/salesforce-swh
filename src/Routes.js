@@ -23,7 +23,10 @@ const Routes = () => {
       <Redirect exact from="/" to="/me" />
       <Route path="/login" exact component={LoginView} />
       <Route path="/me" exact component={withAuth(MeView)} />
-      <Route path="/invoice" exact component={withAuth(InvoiceView)} />
+      {/*
+        <Route path="/invoice" exact component={withAuth(InvoiceView)} />
+      */}
+      <Route path="/invoice" exact component={withAuth(OpportunityInvoiceView)} />
       <Route path="/invoice/:opportunityId" exact component={withAuth(OpportunityInvoiceView)} />
       <Route path="/qr" exact component={QRScannerView} />
       <Route path="/scanner" exact component={ScannerView} />

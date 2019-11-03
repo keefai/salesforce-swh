@@ -5,13 +5,15 @@ import style from './style.module.scss';
 import api from '../../common/api';
 import { emitOpportunity, subscribeToOpportunity, unSubscribeToOpportunity } from '../../common/socket';
 import Invoice from './Invoice';
+import Create from './Create';
 
 const OpportunityInvoice = props => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const [templates, setTemplates] = useState(null);
 
-  const { opportunityId } = props.match.params;
+  const { opportunityId = null } = props.match.params;
 
   const getOpportnity = async (id, showLoading = true) => {
     showLoading && setLoading(true);
@@ -28,22 +30,41 @@ const OpportunityInvoice = props => {
     }
   };
 
-  useEffect(() => {
-    console.log('Id: ', opportunityId);
-    getOpportnity(opportunityId);
-    subscribeToOpportunity(opportunityId, (d) => {
-      console.log('subscribeToOpportunity: ', d);
-      props.enqueueSnackbar('Invoice Updated', {
-        autoHideDuration: 1000
-      });
-      getOpportnity(opportunityId, false);
-    });
+  const getTemplates = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/opportunityTemplates`);
+      console.log(res);
+      setTemplates(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-    return () => {
-      unSubscribeToOpportunity(opportunityId, (d) => {
-        console.log('unSubscribeToOpportunity: ', d);
+  useEffect(() => {
+    console.log('opportunityId: ', opportunityId);
+    if (opportunityId) {
+      console.log('Id: ', opportunityId);
+      getOpportnity(opportunityId);
+      subscribeToOpportunity(opportunityId, (d) => {
+        console.log('subscribeToOpportunity: ', d);
+        props.enqueueSnackbar('Invoice Updated', {
+          autoHideDuration: 1000
+        });
+        getOpportnity(opportunityId, false);
       });
-    };
+
+      return () => {
+        unSubscribeToOpportunity(opportunityId, (d) => {
+          console.log('unSubscribeToOpportunity: ', d);
+        });
+      };
+    } else {
+      getTemplates();
+    }
   }, []);
 
   if (loading) {
@@ -66,8 +87,12 @@ const OpportunityInvoice = props => {
     );
   }
 
-  if (data) {
+  if (opportunityId && data) {
     return <Invoice data={data} />;
+  }
+
+  if (templates && templates.totalSize > 0) {
+    return <Create templates={templates.records} />
   }
 
   return null;
