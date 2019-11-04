@@ -283,6 +283,7 @@ app.post('/api/createOpportunity', asyncMiddleware(async (request, response, nex
     const opportunityRes = await utils.createOpportunity(sfdc, session, {
       ...createOpportunityData,
       Is_Template__c: false,
+      Address_Line_1__c: body.installationAddress,
       AccountId
     });
     if (opportunityRes.status === 500) throw new Error(opportunityRes.json);

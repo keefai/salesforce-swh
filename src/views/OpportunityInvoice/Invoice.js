@@ -299,7 +299,8 @@ const Invoice = ({ data, ...props }) => {
             <Grid item xs={6}>
               <div>Your Name</div>
               <div>
-                <EditableInput
+                {address}
+                {/* <EditableInput
                   type="text"
                   value={address}
                   placeholder="Address"
@@ -308,10 +309,11 @@ const Invoice = ({ data, ...props }) => {
                     textAlign: 'left'
                   }}
                   onChange={handleAddress}
-                />
+                /> */}
               </div>
               <div>
-                <EditableInput
+                {city}
+                {/* <EditableInput
                   type="text"
                   value={city}
                   placeholder="City"
@@ -320,7 +322,7 @@ const Invoice = ({ data, ...props }) => {
                     textAlign: 'left'
                   }}
                   onChange={handleCity}
-                />
+                /> */}
               </div>
               <div>youremail@gmail.com</div>
               <br />
@@ -329,7 +331,7 @@ const Invoice = ({ data, ...props }) => {
           </Grid>
 
           <Grid container spacing={3}>
-            <Grid item xs={6}>
+            <Grid item md={6} sm={12}>
               <div className={style.heading}>YOUR HOME ENERGY SOLUTION</div>
               <table className={style.table}>
                 <tbody>
@@ -632,7 +634,7 @@ const Invoice = ({ data, ...props }) => {
                 </tbody>
               </table>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item md={6} sm={12}>
               {oppData.SavingsList__c && (
                 <div className={style.chartContainer}>
                   <Chart1
@@ -658,7 +660,7 @@ const Invoice = ({ data, ...props }) => {
           </Grid>
 
           <Grid container spacing={3} className={`page-break ${style.pageBreak}`}>
-            <Grid item xs={6}>
+            <Grid item md={6} sm={12}>
               <div className={style.heading}>YOUR INSTALL DETAILS</div>
               <table className={style.table}>
                 <tbody>
@@ -820,7 +822,7 @@ const Invoice = ({ data, ...props }) => {
                 </tbody>
               </table>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} sm={12}>
               <div
                 style={{
                   display: 'flex',
