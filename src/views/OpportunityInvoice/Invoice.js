@@ -822,7 +822,7 @@ const Invoice = ({ data, ...props }) => {
                 </tbody>
               </table>
             </Grid>
-            <Grid item xs={6} sm={12}>
+            <Grid item md={6} sm={12}>
               <div
                 style={{
                   display: 'flex',

@@ -167,6 +167,7 @@ body {
   padding: 20px;
   margin-top: 24px;
   position: relative;
+  max-width: 100%;
 
   @media print {
     background: rgb(221, 234, 246) !important;
