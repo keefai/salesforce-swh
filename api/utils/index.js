@@ -102,7 +102,7 @@ exports.updateOpportunity = async (sfdc, session, id, data) => {
   }
 }
 
-exports.getOpportunityTemplates = async (sfdc, session, id, data) => {
+exports.getOpportunityTemplates = async (sfdc, session) => {
   var query = encodeURI('SELECT Id, Name, SystemSize__c FROM Opportunity WHERE Is_Template__c=true');
   const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
   try {
@@ -120,6 +120,61 @@ exports.getOpportunityTemplates = async (sfdc, session, id, data) => {
     };
   }
 }
+
+exports.getOpportunityObjectInfo = async (sfdc, session) => {
+  const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'ui-api/object-info/Opportunity');
+  try {
+    const payload = await httpClient.get({ ...apiRequestOptions });
+    console.log('getOpportunityObjectInfo', payload);
+    return {
+      status: 200,
+      json: JSON.parse(payload)
+    };
+  } catch (error) {
+    console.error('getOpportunityObjectInfo: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+exports.getOpportunityTemplateDefaultValues = async (sfdc, session, recordId) => {
+  const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `ui-api/record-defaults/clone/${recordId}`);
+  try {
+    const payload = await httpClient.get({ ...apiRequestOptions });
+    console.log('getOpportunityTemplateDefaultValues', payload);
+    return {
+      status: 200,
+      json: JSON.parse(payload)
+    };
+  } catch (error) {
+    console.error('getOpportunityTemplateDefaultValues: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+// exports.createOpportunity = async (sfdc, session, data) => {
+// 	console.log('createAccount Body: ', JSON.stringify(data, null, 2));
+// 	try {
+// 	  const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'sobjects/Account');
+//     const payload = await httpClient.post({ ...apiRequestOptions, body: data, json: true });
+//     console.log(payload)
+//     return {
+//       status: 200,
+//       json: payload
+//     };
+// 	} catch (error) {
+// 		console.error('createAccount: Force.com data API error: '+ JSON.stringify(error));
+//     return {
+//       status: 500,
+//       json: error
+//     };
+// 	}
+// }
 
 exports.createAccount = async (sfdc, session, data) => {
 	console.log('createAccount Body: ', JSON.stringify(data, null, 2));

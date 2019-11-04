@@ -227,17 +227,32 @@ app.post('/api/webhook/opportunity', asyncMiddleware(async (request, response, n
 // }));
 
 app.get('/api/opportunityTemplates', asyncMiddleware(async (request, response, next) => {
-  const { id } = request.params;
-  const body = request.body;
   const session = getSession(request, response);
   if (session == null) return;
 
-  const res = await utils.getOpportunityTemplates(sfdc, session, id);
+  const res = await utils.getOpportunityTemplates(sfdc, session);
   return response.status(res.status).json(res.json);
 }));
 
+app.get('/api/getOpportunityObjectInfo', asyncMiddleware(async (request, response, next) => {
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getOpportunityObjectInfo(sfdc, session);
+  return response.status(res.status).json(res.json);
+}));
+
+app.get('/api/getOpportunityTemplateDefaultValues/:recordId', asyncMiddleware(async (request, response, next) => {
+  const { recordId } = request.params;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getOpportunityTemplateDefaultValues(sfdc, session, recordId);
+  return response.status(res.status).json(res.json);
+}));
+
+
 app.post('/api/createOpportunity', asyncMiddleware(async (request, response, next) => {
-  const { id } = request.params;
   const body = request.body;
   const session = getSession(request, response);
   if (session == null) return;
@@ -248,7 +263,9 @@ app.post('/api/createOpportunity', asyncMiddleware(async (request, response, nex
     const accountRes = await utils.createAccount(sfdc, session, {
       FirstName: body.details.FirstName,
       LastName: body.details.LastName,
-      Phone: body.details.Phone
+      Phone: body.details.Phone,
+      PersonEmail: body.details.PersonEmail
+      // BillingAddress: body.details.BillingAddress
     });
     if (accountRes.status === 500) throw new Error(accountRes.json);
 
@@ -256,12 +273,16 @@ app.post('/api/createOpportunity', asyncMiddleware(async (request, response, nex
     console.log('AccountId: ', AccountId);
 
     // get opportunity data from template id
-    const opportunity = await utils.getOpportunities(sfdc, session, id);
+    const { templateId } = body;
+    const opportunity = await utils.getOpportunities(sfdc, session, templateId);
     if (opportunity.status === 500) throw new Error(opportunity.json);
 
     // create opportunity
+    const { attributes, Id, RecordTypeId, LastModifiedDate, Daily_Supply_Charge_incl_GST__c,
+      EstimatedMonthlyRepayment__c, TotalSystemCostInclGST__c, HasOpenActivity, KlipLok_Roof_Panel_Installtion__c, IsDeleted, FiscalQuarter, UseFinance__c, Split_Array__c, DepositAmount__c, Solar_Panel_Product_Count__c, IsClosed, Landscape_Panel_Installation__c, SystemModstamp, LastActivityDate, GST__c, HasOpportunityLineItem, ForecastCategory, CreatedById, STCDiscount__c, Rack_Kit_Product__c, Cost_of_Power_incl_GST__c, BalanceDueOnCompletion__c, LastViewedDate, Fiscal, CreatedDate, HasOverdueTask, FiscalYear, LastReferencedDate, IsWon, LastModifiedById, ...createOpportunityData } = opportunity.json;
     const opportunityRes = await utils.createOpportunity(sfdc, session, {
-      ...opportunity,
+      ...createOpportunityData,
+      Is_Template__c: false,
       AccountId
     });
     if (opportunityRes.status === 500) throw new Error(opportunityRes.json);

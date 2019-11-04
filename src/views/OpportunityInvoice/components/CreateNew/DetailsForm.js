@@ -49,9 +49,10 @@ const DetailsForm = ({
               label="Email Address"
               type="email"
               variant="outlined"
-              value={details.email}
-              onChange={handleDetails("email")}
+              value={details.PersonEmail}
+              onChange={handleDetails("PersonEmail")}
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12}>

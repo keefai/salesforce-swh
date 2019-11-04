@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import style from './style.module.scss';
 import DetailsFrom from './DetailsForm';
 import InstallationAddress from './InstallationAddress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import QuickTemplates from './QuickTemplates';
 
 const STEPS = Object.freeze({
@@ -16,9 +14,13 @@ const STEPS = Object.freeze({
 });
 
 const CreateNew = ({
+  error,
+  loading,
   state,
   close,
+  templateId,
   templates,
+  handleTemplate,
   details,
   handleDetails,
   handleConsent,
@@ -28,27 +30,7 @@ const CreateNew = ({
 }) => {
   const [step, setStep] = useState(STEPS.DETAILS);
 
-  const renderSuccess = () => (
-    <React.Fragment>
-      <DialogContent>
-        <h1
-          style={{
-            padding: '50px',
-            textAlign: 'center'
-          }}
-        >
-          Success
-        </h1>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={close} color="primary">
-          Close
-        </Button>
-      </DialogActions>
-    </React.Fragment>
-  );
-
-  const renderState = () => {
+  const renderSteps = () => {
     if (step === STEPS.DETAILS)
       return (
         <DetailsFrom
@@ -73,11 +55,43 @@ const CreateNew = ({
       return (
         <QuickTemplates
           templates={templates}
+          templateId={templateId}
+          handleTemplate={handleTemplate}
           nextStep={submitData}
         />
       );
     return null;
   };
+
+  const renderLoading = () => (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '300px'
+    }}>
+      <CircularProgress style={{ color: '#009EDB' }} />
+    </div> 
+  );
+
+  const renderError = () => (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '300px'
+    }}>
+      Error Creating Opportunity
+    </div> 
+  );
+
+  const renderState = () => {
+    if (loading)
+      return renderLoading();
+    if (error)
+      return renderError();
+    return renderSteps();
+  }
 
   return (
     <Dialog

@@ -4,17 +4,26 @@ import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import style from './style.module.scss';
 
 const QuickTemplates = ({
   templates,
+  templateId,
+  handleTemplate,
   nextStep
 }) => {
   return (
     <React.Fragment>
-      <DialogTitle id="form-dialog-title">Contact Details</DialogTitle>
+      <DialogTitle id="form-dialog-title">Templates</DialogTitle>
       <DialogContent>
-        <pre>{JSON.stringify(templates, null, 2)}</pre>
+        <RadioGroup aria-label="template" name="template" value={templateId} onChange={handleTemplate}>
+          {templates.map((t, i) => (
+            <FormControlLabel value={t.Id} control={<Radio />} label={t.Name} />
+          ))}
+        </RadioGroup>
       </DialogContent>
       <DialogActions className={style.spacedActions}>
         {/* <Button onClick={() => setStep(STEPS.SUCCESS)} color="secondary">
