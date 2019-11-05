@@ -67,27 +67,6 @@ const DetailsForm = ({
             />
           </Grid>
           <Grid item xs={12}>
-            <div className={style.postalAddressContainer}>
-              <TextField
-                margin="dense"
-                label="Postal Address"
-                variant="filled"
-                value={details.BillingAddress}
-                onChange={handleDetails('BillingAddress')}
-                className={style.mapInput}
-                fullWidth
-                required
-              />
-              <Map
-                address={details.postalAddress}
-                containerStyle={{
-                  width: '100%',
-                  height: '100%'
-                }}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={12}>
             <Checkbox
               checked={details.consent}
               onChange={handleConsent}

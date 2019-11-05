@@ -14,7 +14,6 @@ const CreateOpportunity = ({ templates, ...props }) => {
       LastName: null,
       PersonEmail: null,
       Phone: null,
-      BillingAddress: null,
       consent: false
     },
     installationAddress: null,
