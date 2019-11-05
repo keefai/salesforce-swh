@@ -20,6 +20,7 @@ import EditableInput from './components/EditableInput';
 import Map from './components/Map';
 import CreateNew from './components/CreateNew';
 import YesNoDropdown from './components/YesNoDropdown';
+import DetailsForm from './components/DetailsForm';
 
 const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
@@ -35,11 +36,12 @@ const RemoveButton = (props) => (
   </IconButton>
 )
 
-const Invoice = ({ data, account, ...props }) => {
+const Invoice = ({ data, account, getAccount, ...props }) => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
   const [oppData, setOppData] = useState(data);
+  const [accModal, setAccModal] = useState(false);
 
   useEffect(() => {
     setOppData(data);
@@ -182,29 +184,6 @@ const Invoice = ({ data, account, ...props }) => {
     setBatProduct(newBat);
   }
 
-  // create new
-  const [create, setCreate] = useState(false);
-  const onBoarding = state => () => {
-    setCreate(state);
-  };
-
-  // account
-  const updateAccount = (ndata) => () => {
-    const diff = difference(ndata, account);
-    console.log('ACCOUNT PATCH: ', diff);
-    api
-      .patch(`/Account/${ndata.Id}`, diff)
-      .then(res => {
-        console.log(res);
-        props.enqueueSnackbar('Account Updated', {
-          autoHideDuration: 1000
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
   // helpers
   const getFirstYearQuarterlySavings = () => {
     return oppData.SavingsList__c ? (JSON.parse(oppData.SavingsList__c)[0].Total / 4).toFixed(2) : 0.0;
@@ -225,7 +204,7 @@ const Invoice = ({ data, account, ...props }) => {
 
   return (
     <React.Fragment>
-      <CreateNew state={create} close={onBoarding(false)} />
+      <DetailsForm state={accModal} close={() => setAccModal(false)} account={account} getAccount={getAccount} />
       <div className={style.page}>
         <h4>Test</h4>
         <table className={style.table}>
@@ -267,9 +246,6 @@ const Invoice = ({ data, account, ...props }) => {
           </tbody>
         </table>
         <br />
-        <Button color="primary" onClick={onBoarding(true)}>
-          Onboarding
-        </Button>
       </div>
       <br />
       <hr />
@@ -295,7 +271,7 @@ const Invoice = ({ data, account, ...props }) => {
 
           <Grid container spacing={3}>
             <Grid item xs={6}>
-              <div>
+              <div onClick={() => setAccModal(true)}>
                 <div>{account.FirstName} {account.LastName}</div>
                 <div>{account.BillingAddress}</div>
                 {/* <div>{account.BillingCity}</div> */}

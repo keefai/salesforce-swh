@@ -24,8 +24,7 @@ const OpportunityInvoice = props => {
       console.log(res);
       setOpportunity(res.data);
       if (res.data) {
-        const resAcc = await api.get(`/Account/${res.data.AccountId}`);
-        setAccount(resAcc.data);
+        await getAccount(res.data.AccountId);
       }
     } catch (err) {
       console.log(err);
@@ -34,6 +33,15 @@ const OpportunityInvoice = props => {
       showLoading && setLoading(false);
     }
   };
+
+  const getAccount = async (id) => {
+    try {
+      const resAcc = await api.get(`/Account/${id}`);
+      setAccount(resAcc.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const getTemplates = async () => {
     setLoading(true);
@@ -93,7 +101,13 @@ const OpportunityInvoice = props => {
   }
 
   if (opportunityId && opportunity) {
-    return <Invoice data={opportunity} account={account} />;
+    return <Invoice data={opportunity} account={{
+      Id: account.Id,
+      FirstName: account.FirstName,
+      LastName: account.LastName,
+      PersonEmail: account.PersonEmail,
+      Phone: account.Phone
+    }} getAccount={getAccount} />;
   }
 
   if (templates && templates.totalSize > 0) {
