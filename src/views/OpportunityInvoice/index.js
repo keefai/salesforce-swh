@@ -10,8 +10,9 @@ import Create from './Create';
 const OpportunityInvoice = props => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
   const [templates, setTemplates] = useState(null);
+  const [opportunity, setOpportunity] = useState(null);
+  const [account, setAccount] = useState(null);
 
   const { opportunityId = null } = props.match.params;
 
@@ -21,7 +22,11 @@ const OpportunityInvoice = props => {
       const res = await api.get(`/Opportunity/${id}`);
       emitOpportunity(id);
       console.log(res);
-      setData(res.data);
+      setOpportunity(res.data);
+      if (res.data) {
+        const resAcc = await api.get(`/Account/${res.data.AccountId}`);
+        setAccount(resAcc.data);
+      }
     } catch (err) {
       console.log(err);
       setError(err);
@@ -87,8 +92,8 @@ const OpportunityInvoice = props => {
     );
   }
 
-  if (opportunityId && data) {
-    return <Invoice data={data} />;
+  if (opportunityId && opportunity) {
+    return <Invoice data={opportunity} account={account} />;
   }
 
   if (templates && templates.totalSize > 0) {

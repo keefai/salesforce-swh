@@ -35,7 +35,7 @@ const RemoveButton = (props) => (
   </IconButton>
 )
 
-const Invoice = ({ data, ...props }) => {
+const Invoice = ({ data, account, ...props }) => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
@@ -188,23 +188,21 @@ const Invoice = ({ data, ...props }) => {
     setCreate(state);
   };
 
-  // user details
-  const [address, setAddress] = useState('Apple Headquarters, Infinite Loop');
-  const [city, setCity] = useState('Cupertino, USA');
-  const [fullAddress, setFullAddress] = useState(`${address}, ${city}`);
-
-  const setAddressForMap = (add, cit) => {
-    setFullAddress(`${add}, ${cit}`);
-  };
-
-  const handleAddress = e => {
-    setAddress(e.target.value);
-    setAddressForMap(e.target.value, city);
-  };
-
-  const handleCity = e => {
-    setCity(e.target.value);
-    setAddressForMap(address, e.target.value);
+  // account
+  const updateAccount = (ndata) => () => {
+    const diff = difference(ndata, account);
+    console.log('ACCOUNT PATCH: ', diff);
+    api
+      .patch(`/Account/${ndata.Id}`, diff)
+      .then(res => {
+        console.log(res);
+        props.enqueueSnackbar('Account Updated', {
+          autoHideDuration: 1000
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   // helpers
@@ -297,34 +295,13 @@ const Invoice = ({ data, ...props }) => {
 
           <Grid container spacing={3}>
             <Grid item xs={6}>
-              <div>Your Name</div>
               <div>
-                {address}
-                {/* <EditableInput
-                  type="text"
-                  value={address}
-                  placeholder="Address"
-                  inputStyle={{
-                    minWidth: '150px',
-                    textAlign: 'left'
-                  }}
-                  onChange={handleAddress}
-                /> */}
+                <div>{account.FirstName} {account.LastName}</div>
+                <div>{account.BillingAddress}</div>
+                {/* <div>{account.BillingCity}</div> */}
+                <div>{account.PersonEmail}</div>
+                <div>{account.Phone}</div>
               </div>
-              <div>
-                {city}
-                {/* <EditableInput
-                  type="text"
-                  value={city}
-                  placeholder="City"
-                  inputStyle={{
-                    minWidth: '150px',
-                    textAlign: 'left'
-                  }}
-                  onChange={handleCity}
-                /> */}
-              </div>
-              <div>youremail@gmail.com</div>
               <br />
               <div>07/09/2019</div>
             </Grid>
@@ -845,7 +822,7 @@ const Invoice = ({ data, ...props }) => {
                 <div className={style.chart} style={{ padding: '2% 4%' }}>
                   <div className={style.heading2}>Proposed Solar Panel Layout</div>
                   <Map
-                    address={fullAddress}
+                    address={oppData.Address_Line_1__c}
                     containerStyle={{
                       position: 'relative',
                       width: '100%',

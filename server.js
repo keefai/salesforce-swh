@@ -294,6 +294,25 @@ app.post('/api/createOpportunity', asyncMiddleware(async (request, response, nex
   }
 }));
 
+app.get('/api/Account/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getAccount(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}))
+
+app.patch('/api/Account/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.updateAccount(sfdc, session, id, body);
+  return response.status(res.status).json(res.json);
+}))
+
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './build/index.html'));
