@@ -102,7 +102,10 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   };
 
   // solar panel product
-  const [spProduct, setSpProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.SOLAR_PANEL));
+  const [spProduct, setSpProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.SOLAR_PANEL) || {
+      Product2Id: products[0].Id,
+      Quantity: 0
+    });
 
   const handleSpProductData = (i, field) => e => {
     const oldSp = spProduct;
@@ -126,7 +129,10 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   // inverter product
-  const [invProduct, setInvProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.INVERTER));
+  const [invProduct, setInvProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.INVERTER) || {
+      Product2Id: products[0].Id,
+      Quantity: 0
+    });
 
   const handleInvProductData = (i, field) => e => {
     const oldInv = invProduct;
@@ -150,7 +156,10 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   // battery product
-  const [batProduct, setBatProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.BATTERY));
+  const [batProduct, setBatProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.BATTERY) || {
+      Product2Id: products[0].Id,
+      Quantity: 0
+    });
 
   const handleBatProductData = (i, field) => e => {
     const oldBat = batProduct;

@@ -28,7 +28,7 @@ const SelectProducts = ({ options, value, onChange }) => {
     >
       {!edit ? options.find(op => op.Id === value).Name :
         <TextField
-          id="select-yes-no"
+          id="select-product"
           select
           className={classes.textField}
           value={value}
