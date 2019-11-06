@@ -21,6 +21,7 @@ import Map from './components/Map';
 import CreateNew from './components/CreateNew';
 import YesNoDropdown from './components/YesNoDropdown';
 import DetailsForm from './components/DetailsForm';
+import InstallationMap from './components/InstallationMap';
 import { ProductTypes, ProductTypeByID } from './helpers';
 import SelectProducts from './components/SelectProducts';
 
@@ -53,6 +54,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   const [signModal, setSignModal] = useState(false);
   const [oppData, setOppData] = useState(data);
   const [accModal, setAccModal] = useState(false);
+  const [mapModal, setMapModal] = useState(false);
 
   useEffect(() => {
     setOppData(data);
@@ -203,6 +205,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   return (
     <React.Fragment>
       <DetailsForm state={accModal} close={() => setAccModal(false)} account={account} getAccount={getAccount} />
+      <InstallationMap state={mapModal} close={() => setMapModal(false)} address={oppData.Address_Line_1__c} updateAddress={handleOppData('Address_Line_1__c')} />
       <Sidebar exportPDF={exportPDF} openModal={openModal} />
       <Signature state={signModal} closeModal={closeModal} setSign={setSign} />
       <PDFExport
@@ -561,19 +564,16 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                 <tbody>
                   <tr>
                     <td className={style.editLabel}>Installation Address</td>
-                    <td className={style.violet}>
-                      <EditableInput
-                        type="text"
-                        value={oppData.Address_Line_1__c}
-                        onChange={handleOppData('Address_Line_1__c')}
-                        onBlur={oppDataBlur}
-                      />
-                      <EditableInput
+                    <td className={style.violet} onClick={() => setMapModal(true)}>
+                      <span style={{
+                        padding: '5px !important'
+                      }}>{oppData.Address_Line_1__c}</span>
+                      {/*<EditableInput
                         type="text"
                         value={oppData.Address_Line_2__c}
                         onChange={handleOppData('Address_Line_2__c')}
                         onBlur={oppDataBlur}
-                      />
+                      />*/}
                     </td>
                   </tr>
                   <tr>

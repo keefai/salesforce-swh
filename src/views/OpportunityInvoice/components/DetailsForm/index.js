@@ -23,6 +23,10 @@ const DetailsForm = ({
   const [accData, setAccData] = useState(account);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setAccData(account);
+  }, []);
+
   const handleAccData = (field) => e => {
     setAccData({
       ...accData,

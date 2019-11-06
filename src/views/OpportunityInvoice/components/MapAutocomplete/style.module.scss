@@ -1,0 +1,87 @@
+.mapLoadingContainer {
+  width: 100%;
+  min-height: 400px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.map {
+  :global
+  .gm-style-cc {
+    display: none;
+  }
+}
+
+.addressContainer {
+  width: 100%;
+  height: 400px;
+  position: relative;
+}
+
+.mapInput {
+  width: 90% !important;
+  margin: 5% !important;
+  position: absolute !important;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 10;
+
+  :global
+  .MuiFormLabel-root {
+    color: #333 !important;
+  }
+
+  :global
+  .MuiFormLabel-root.Mui-focused {
+    color: #333 !important;
+  }
+
+  :global
+  .MuiFilledInput-underline.Mui-focused:after {
+    display: none !important;
+  }
+}
+
+.flexWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .left {
+    flex: 1;
+    order: 1;
+    padding: 20px;
+  }
+
+  .right {
+    flex: 1;
+    order: 2;
+  }
+
+  form {
+    margin: 20px auto;
+    position: relative;
+    height: 30px;
+
+    input {
+      height: 100%;
+      font-size: 1.4em;
+    }
+
+    input[type=text] {
+      width: 80%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    input[type=submit] {
+      width: 20%;
+      position: absolute;
+      right: 0;
+      top: 2px;
+      border: 1px solid #ddd;
+      background: #FFF;
+    }
+  }
+}
