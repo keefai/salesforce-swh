@@ -84,6 +84,43 @@ exports.getOpportunities = async (sfdc, session, id) => {
   }
 }
 
+exports.getOpportunityProducts = async (sfdc, session, id) => {
+  try {
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}/OpportunityLineItems`);
+    const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+    console.log('getOpportunityProducts', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('getOpportunityProducts: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+exports.getProducts = async (sfdc, session) => {
+  try {
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Product2`);
+    const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+    console.log('getProducts', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('getProducts: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+
 exports.updateOpportunity = async (sfdc, session, id, data) => {
   const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}`);
   try {
@@ -251,3 +288,5 @@ exports.createOpportunity = async (sfdc, session, data) => {
     };
 	}
 }
+
+// /services/data/v46.0/query?q=SELECT%20Id,%20Name,%20Account.Name,%20(SELECT%20Quantity,%20UnitPrice,%20TotalPrice,%20PricebookEntry.Name,%20PricebookEntry.Product2.Family%20FROM%20OpportunityLineItems)%20FROM%20Opportunity%20WHERE%20Id%20=%20'0060w0000042l6ZAAQ'%0A

@@ -184,7 +184,27 @@ app.get('/api/Opportunity/:id', asyncMiddleware(async (request, response, next) 
 
   const res = await utils.getOpportunities(sfdc, session, id);
   return response.status(res.status).json(res.json);
-}))
+}));
+
+app.get('/api/Opportunity/:id/OpportunityLineItems', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getOpportunityProducts(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}));
+
+app.get('/api/Products', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getProducts(sfdc, session);
+  return response.status(res.status).json(res.json);
+}));
 
 app.patch('/api/Opportunity/:id', asyncMiddleware(async (request, response, next) => {
   const { id } = request.params;

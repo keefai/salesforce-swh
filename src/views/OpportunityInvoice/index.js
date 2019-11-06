@@ -12,6 +12,8 @@ const OpportunityInvoice = props => {
   const [error, setError] = useState(null);
   const [templates, setTemplates] = useState(null);
   const [opportunity, setOpportunity] = useState(null);
+  const [products, setProducts] = useState(null);
+  const [oppProducts, setOppProducts] = useState(null);
   const [account, setAccount] = useState(null);
 
   const { opportunityId = null } = props.match.params;
@@ -21,10 +23,12 @@ const OpportunityInvoice = props => {
     try {
       const res = await api.get(`/Opportunity/${id}`);
       emitOpportunity(id);
-      console.log(res);
+      console.log('Opportunity: ', res.data);
       setOpportunity(res.data);
       if (res.data) {
         await getAccount(res.data.AccountId);
+        await getOpportunityProducts(id);
+        await getProducts(res.data.AccountId);
       }
     } catch (err) {
       console.log(err);
@@ -36,10 +40,33 @@ const OpportunityInvoice = props => {
 
   const getAccount = async (id) => {
     try {
-      const resAcc = await api.get(`/Account/${id}`);
-      setAccount(resAcc.data);
+      const res = await api.get(`/Account/${id}`);
+      console.log('Account: ', res);
+      setAccount(res.data);
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  const getProducts = async () => {
+    try {
+      const res = await api.get(`/Products`);
+      console.log('Products: ', res);
+      setProducts(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err);
+    }
+  }
+
+  const getOpportunityProducts = async (id) => {
+    try {
+      const res = await api.get(`/Opportunity/${id}/OpportunityLineItems`);
+      console.log('OppProducts: ', res.data);
+      setOppProducts(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err);
     }
   }
 
@@ -62,6 +89,7 @@ const OpportunityInvoice = props => {
     if (opportunityId) {
       console.log('Id: ', opportunityId);
       getOpportnity(opportunityId);
+      getProducts();
       subscribeToOpportunity(opportunityId, (d) => {
         console.log('subscribeToOpportunity: ', d);
         props.enqueueSnackbar('Invoice Updated', {
@@ -101,13 +129,19 @@ const OpportunityInvoice = props => {
   }
 
   if (opportunityId && opportunity) {
-    return <Invoice data={opportunity} account={{
-      Id: account.Id,
-      FirstName: account.FirstName,
-      LastName: account.LastName,
-      PersonEmail: account.PersonEmail,
-      Phone: account.Phone
-    }} getAccount={getAccount} />;
+    return <Invoice
+      data={opportunity}
+      account={{
+        Id: account.Id,
+        FirstName: account.FirstName,
+        LastName: account.LastName,
+        PersonEmail: account.PersonEmail,
+        Phone: account.Phone
+      }}
+      getAccount={getAccount}
+      oppProducts={oppProducts.records}
+      products={products.recentItems}
+    />;
   }
 
   if (templates && templates.totalSize > 0) {

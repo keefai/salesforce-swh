@@ -21,6 +21,8 @@ import Map from './components/Map';
 import CreateNew from './components/CreateNew';
 import YesNoDropdown from './components/YesNoDropdown';
 import DetailsForm from './components/DetailsForm';
+import { ProductTypes, ProductTypeByID } from './helpers';
+import SelectProducts from './components/SelectProducts';
 
 const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
@@ -36,7 +38,16 @@ const RemoveButton = (props) => (
   </IconButton>
 )
 
-const Invoice = ({ data, account, getAccount, ...props }) => {
+const filterAndGetObjects = (products, oProducts, type) => {
+  return oProducts
+    .filter((op) => op.RecordTypeId__c === type)
+    .map((fop) => ({
+      Product2Id: fop.Product2Id,
+      Quantity: fop.Quantity
+    }));
+}
+
+const Invoice = ({ data, account, getAccount, oppProducts, products, ...props }) => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
@@ -80,12 +91,6 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
   };
 
   const [missData, setMissData] = useState({
-    solarPanelProduct: '--',
-    solarPanelProductQ: 0,
-    inverterProduct: '--',
-    inverterProductQ: 0,
-    batteryProduct: '--',
-    batteryProductQ: 0,
     approxQuarterlyEnergyUse: '--'
   });
 
@@ -97,12 +102,7 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
   };
 
   // solar panel product
-  const [spProduct, setSpProduct] = useState([
-    {
-      product: '',
-      quantity: ''
-    }
-  ]);
+  const [spProduct, setSpProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.SOLAR_PANEL));
 
   const handleSpProductData = (i, field) => e => {
     const oldSp = spProduct;
@@ -114,8 +114,8 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
     setSpProduct([
       ...spProduct,
       {
-        product: '',
-        quantity: ''
+        Product2Id: products[0].Id,
+        Quantity: 0
       }
     ]);
   }
@@ -126,12 +126,7 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
   }
 
   // inverter product
-  const [invProduct, setInvProduct] = useState([
-    {
-      product: '',
-      quantity: ''
-    }
-  ]);
+  const [invProduct, setInvProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.INVERTER));
 
   const handleInvProductData = (i, field) => e => {
     const oldInv = invProduct;
@@ -143,8 +138,8 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
     setInvProduct([
       ...invProduct,
       {
-        product: '',
-        quantity: ''
+        Product2Id: products[0].Id,
+        Quantity: 0
       }
     ]);
   }
@@ -155,12 +150,7 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
   }
 
   // battery product
-  const [batProduct, setBatProduct] = useState([
-    {
-      product: '',
-      quantity: ''
-    }
-  ]);
+  const [batProduct, setBatProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.BATTERY));
 
   const handleBatProductData = (i, field) => e => {
     const oldBat = batProduct;
@@ -172,8 +162,8 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
     setBatProduct([
       ...batProduct,
       {
-        product: '',
-        quantity: ''
+        Product2Id: products[0].Id,
+        Quantity: 0
       }
     ]);
   }
@@ -259,21 +249,21 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
                     <td className={style.hidden}>&nbsp;</td>
                   </tr>
                   {
-                    spProduct.map((p, i) => (
+                    spProduct && spProduct.map((p, i) => (
                       <tr>
                         <td className={style.editLabel}>Solar Panel Product</td>
                         <td className={style.violet}>
-                          <EditableInput
-                            type="text"
-                            value={p.product}
-                            onChange={handleSpProductData(i, 'product')}
+                          <SelectProducts
+                            options={products}
+                            value={p.Product2Id}
+                            onChange={handleSpProductData(i, 'Product2Id')}
                           />
                         </td>
                         <td className={style.numberTd}>
                           <EditableInput
                             type="integer"
-                            value={p.quantity}
-                            onChange={handleSpProductData(i, 'quantity')}
+                            value={p.Quantity}
+                            onChange={handleSpProductData(i, 'Quantity')}
                           />
                         </td>
                         <td className={style.addRemoveTd}>
@@ -287,21 +277,21 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
                     ))
                   }
                   {
-                    invProduct.map((p, i) => (
+                    invProduct && invProduct.map((p, i) => (
                       <tr>
                         <td className={style.editLabel}>Inverter Product</td>
                         <td className={style.violet}>
-                          <EditableInput
-                            type="text"
-                            value={p.product}
-                            onChange={handleInvProductData(i, 'product')}
+                          <SelectProducts
+                            options={products}
+                            value={p.Product2Id}
+                            onChange={handleInvProductData(i, 'Product2Id')}
                           />
                         </td>
                         <td className={style.numberTd}>
                           <EditableInput
                             type="integer"
-                            value={p.quantity}
-                            onChange={handleInvProductData(i, 'quantity')}
+                            value={p.Quantity}
+                            onChange={handleInvProductData(i, 'Quantity')}
                           />
                         </td>
                         <td className={style.addRemoveTd}>
@@ -319,17 +309,17 @@ const Invoice = ({ data, account, getAccount, ...props }) => {
                       <tr>
                         <td className={style.editLabel}>Battery Product</td>
                         <td className={style.violet}>
-                          <EditableInput
-                            type="text"
-                            value={p.product}
-                            onChange={handleBatProductData(i, 'product')}
+                          <SelectProducts
+                            options={products}
+                            value={p.Product2Id}
+                            onChange={handleBatProductData(i, 'Product2Id')}
                           />
                         </td>
                         <td className={style.numberTd}>
                           <EditableInput
                             type="integer"
-                            value={p.quantity}
-                            onChange={handleBatProductData(i, 'quantity')}
+                            value={p.Quantity}
+                            onChange={handleBatProductData(i, 'Quantity')}
                           />
                         </td>
                         <td className={style.addRemoveTd}>
