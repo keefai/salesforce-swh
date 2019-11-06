@@ -279,7 +279,7 @@ app.post('/api/createOpportunity', asyncMiddleware(async (request, response, nex
 
     // create opportunity
     const { attributes, Id, RecordTypeId, LastModifiedDate, Daily_Supply_Charge_incl_GST__c,
-      EstimatedMonthlyRepayment__c, TotalSystemCostInclGST__c, HasOpenActivity, KlipLok_Roof_Panel_Installtion__c, IsDeleted, FiscalQuarter, UseFinance__c, Split_Array__c, DepositAmount__c, Solar_Panel_Product_Count__c, IsClosed, Landscape_Panel_Installation__c, SystemModstamp, LastActivityDate, GST__c, HasOpportunityLineItem, ForecastCategory, CreatedById, STCDiscount__c, Rack_Kit_Product__c, Cost_of_Power_incl_GST__c, BalanceDueOnCompletion__c, LastViewedDate, Fiscal, CreatedDate, HasOverdueTask, FiscalYear, LastReferencedDate, IsWon, LastModifiedById, ...createOpportunityData } = opportunity.json;
+      EstimatedMonthlyRepayment__c, TotalSystemCostInclGST__c, HasOpenActivity, KlipLok_Roof_Panel_Installtion__c, IsDeleted, FiscalQuarter, UseFinance__c, Split_Array__c, DepositAmount__c, Solar_Panel_Product_Count__c, IsClosed, Landscape_Panel_Installation__c, SystemModstamp, LastActivityDate, GST__c, HasOpportunityLineItem, ForecastCategory, CreatedById, STCDiscount__c, Rack_Kit_Product__c, Cost_of_Power_incl_GST__c, BalanceDueOnCompletion__c, LastViewedDate, Fiscal, CreatedDate, HasOverdueTask, FiscalYear, LastReferencedDate, IsWon, LastModifiedById, MonthlyInterestRate__c, ...createOpportunityData } = opportunity.json;
     const opportunityRes = await utils.createOpportunity(sfdc, session, {
       ...createOpportunityData,
       Is_Template__c: false,
