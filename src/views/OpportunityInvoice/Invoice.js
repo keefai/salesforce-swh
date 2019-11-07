@@ -40,12 +40,17 @@ const RemoveButton = (props) => (
 )
 
 const filterAndGetObjects = (products, oProducts, type) => {
-  return oProducts
-    .filter((op) => op.RecordTypeId__c === type)
-    .map((fop) => ({
+  const filteredOp = oProducts.filter((op) => op.RecordTypeId__c === type);
+  if (filteredOp.length) {
+    return filteredOp.map((fop) => ({
       Product2Id: fop.Product2Id,
       Quantity: fop.Quantity
     }));
+  }
+  return [{
+    Product2Id: null,
+    Quantity: 0
+  }];
 }
 
 const filterProducts = (products, type) => {
@@ -108,10 +113,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   };
 
   // solar panel product
-  const [spProduct, setSpProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.SOLAR_PANEL) || {
-      Product2Id: products[0].Id,
-      Quantity: 0
-    });
+  const [spProduct, setSpProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.SOLAR_PANEL));
 
   const handleSpProductData = (i, field) => e => {
     const oldSp = spProduct;
@@ -123,7 +125,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     setSpProduct([
       ...spProduct,
       {
-        Product2Id: products[0].Id,
+        Product2Id: null,
         Quantity: 0
       }
     ]);
@@ -135,10 +137,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   // inverter product
-  const [invProduct, setInvProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.INVERTER) || {
-      Product2Id: products[0].Id,
-      Quantity: 0
-    });
+  const [invProduct, setInvProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.INVERTER));
 
   const handleInvProductData = (i, field) => e => {
     const oldInv = invProduct;
@@ -150,7 +149,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     setInvProduct([
       ...invProduct,
       {
-        Product2Id: products[0].Id,
+        Product2Id: null,
         Quantity: 0
       }
     ]);
@@ -162,10 +161,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   // battery product
-  const [batProduct, setBatProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.BATTERY) || {
-      Product2Id: products[0].Id,
-      Quantity: 0
-    });
+  const [batProduct, setBatProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.BATTERY));
 
   const handleBatProductData = (i, field) => e => {
     const oldBat = batProduct;
@@ -177,7 +173,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     setBatProduct([
       ...batProduct,
       {
-        Product2Id: products[0].Id,
+        Product2Id: null,
         Quantity: 0
       }
     ]);
@@ -266,7 +262,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                   </tr>
                   {
                     spProduct && spProduct.map((p, i) => (
-                      <tr>
+                      <tr key={i}>
                         <td className={style.editLabel}>Solar Panel Product</td>
                         <td className={style.violet}>
                           <SelectProducts
@@ -294,7 +290,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                   }
                   {
                     invProduct && invProduct.map((p, i) => (
-                      <tr>
+                      <tr key={i}>
                         <td className={style.editLabel}>Inverter Product</td>
                         <td className={style.violet}>
                           <SelectProducts
@@ -322,7 +318,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                   }
                   {
                     batProduct.map((p, i) => (
-                      <tr>
+                      <tr key={i}>
                         <td className={style.editLabel}>Battery Product</td>
                         <td className={style.violet}>
                           <SelectProducts
