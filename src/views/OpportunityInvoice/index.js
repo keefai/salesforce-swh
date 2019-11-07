@@ -140,7 +140,7 @@ const OpportunityInvoice = props => {
       }}
       getAccount={getAccount}
       oppProducts={oppProducts.records}
-      products={products.recentItems}
+      products={products.records}
     />;
   }
 

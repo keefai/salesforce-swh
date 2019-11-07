@@ -1,5 +1,5 @@
 export const ProductTypes = {
-  SOLAR_PANEL: 'Solar Panel',
+SOLAR_PANEL: 'Solar Panel',
   INVERTER: 'Inverter',
   BATTERY: 'Battery'
 };

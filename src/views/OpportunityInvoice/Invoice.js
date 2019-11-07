@@ -48,6 +48,10 @@ const filterAndGetObjects = (products, oProducts, type) => {
     }));
 }
 
+const filterProducts = (products, type) => {
+  return products.filter((p) => p.Product_Type__c === type);
+}
+
 const Invoice = ({ data, account, getAccount, oppProducts, products, ...props }) => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
@@ -266,7 +270,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         <td className={style.editLabel}>Solar Panel Product</td>
                         <td className={style.violet}>
                           <SelectProducts
-                            options={products}
+                            options={filterProducts(products, ProductTypes.SOLAR_PANEL)}
                             value={p.Product2Id}
                             onChange={handleSpProductData(i, 'Product2Id')}
                           />
@@ -294,7 +298,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         <td className={style.editLabel}>Inverter Product</td>
                         <td className={style.violet}>
                           <SelectProducts
-                            options={products}
+                            options={filterProducts(products, ProductTypes.INVERTER)}
                             value={p.Product2Id}
                             onChange={handleInvProductData(i, 'Product2Id')}
                           />
@@ -322,7 +326,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         <td className={style.editLabel}>Battery Product</td>
                         <td className={style.violet}>
                           <SelectProducts
-                            options={products}
+                          options={filterProducts(products, ProductTypes.BATTERY)}
                             value={p.Product2Id}
                             onChange={handleBatProductData(i, 'Product2Id')}
                           />

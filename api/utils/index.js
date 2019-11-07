@@ -102,14 +102,33 @@ exports.getOpportunityProducts = async (sfdc, session, id) => {
   }
 }
 
+// exports.getProducts = async (sfdc, session) => {
+//   try {
+//     const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Product2`);
+//     const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+//     console.log('getProducts', payload);
+//     return {
+//       status: 200,
+//       json: payload
+//     };
+//   } catch (error) {
+//     console.error('getProducts: Force.com data API error: '+ JSON.stringify(error));
+//     return {
+//       status: 500,
+//       json: error
+//     };
+//   }
+// }
+
 exports.getProducts = async (sfdc, session) => {
   try {
-    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Product2`);
-    const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+    const query = encodeURI('SELECT Id, Name, Product_Type__c FROM Product2');
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
+    const payload = await httpClient.get({ ...apiRequestOptions });
     console.log('getProducts', payload);
     return {
       status: 200,
-      json: payload
+      json: JSON.parse(payload)
     };
   } catch (error) {
     console.error('getProducts: Force.com data API error: '+ JSON.stringify(error));
@@ -119,7 +138,6 @@ exports.getProducts = async (sfdc, session) => {
     };
   }
 }
-
 
 exports.updateOpportunity = async (sfdc, session, id, data) => {
   const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}`);
