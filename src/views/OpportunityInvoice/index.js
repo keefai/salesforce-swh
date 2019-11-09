@@ -61,7 +61,7 @@ const OpportunityInvoice = props => {
 
   const getOpportunityProducts = async (id) => {
     try {
-      const res = await api.get(`/Opportunity/${id}/OpportunityLineItems`);
+      const res = await api.get(`/OpportunityProducts/${id}`);
       console.log('OppProducts: ', res.data);
       setOppProducts(res.data);
     } catch (err) {

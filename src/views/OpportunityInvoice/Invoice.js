@@ -39,18 +39,22 @@ const RemoveButton = (props) => (
   </IconButton>
 )
 
+const sampleProduct = {
+  Id: null,
+  Product2Id: null,
+  Quantity: 0
+}
+
 const filterAndGetObjects = (products, oProducts, type) => {
-  const filteredOp = oProducts.filter((op) => op.RecordTypeId__c === type);
+  const filteredOp = oProducts.filter((op) => op.Product2.Product_Type__c === type);
   if (filteredOp.length) {
     return filteredOp.map((fop) => ({
-      Product2Id: fop.Product2Id,
+      Id: fop.Id,
+      Product2Id: fop.Product2.Id,
       Quantity: fop.Quantity
     }));
   }
-  return [{
-    Product2Id: null,
-    Quantity: 0
-  }];
+  return [sampleProduct];
 }
 
 const filterProducts = (products, type) => {
@@ -65,9 +69,22 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   const [accModal, setAccModal] = useState(false);
   const [mapModal, setMapModal] = useState(false);
 
+  const getSpProducts = () => filterAndGetObjects(products, oppProducts, ProductTypes.SOLAR_PANEL);
+  const getInvProducts = () => filterAndGetObjects(products, oppProducts, ProductTypes.INVERTER);
+  const getBatProducts = () => filterAndGetObjects(products, oppProducts, ProductTypes.BATTERY);
+  const [spProduct, setSpProduct] = useState(getSpProducts());
+  const [invProduct, setInvProduct] = useState(getInvProducts());
+  const [batProduct, setBatProduct] = useState(getBatProducts());
+
   useEffect(() => {
     setOppData(data);
-  }, [data]);
+  }, [data, oppProducts]);
+
+  useEffect(() => {
+    setSpProduct(getSpProducts());
+    setInvProduct(getInvProducts());
+    setBatProduct(getBatProducts());
+  }, [oppProducts]);
 
   // Save Data
   const saveData = (ndata, odata) => {
@@ -112,22 +129,50 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     });
   };
 
-  // solar panel product
-  const [spProduct, setSpProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.SOLAR_PANEL));
+  // product apis
+  const updateOppProduct = (id, diff) => {
+    if (Object.keys(diff).length && id) {
+      api
+      .patch(`/OpportunityProduct/${id}`, diff)
+      .then(res => {
+        console.log(res);
+        props.enqueueSnackbar('Data Saved', {
+          autoHideDuration: 1000
+        });
+      })
+      .catch(err => {
+        props.enqueueSnackbar('Error Saving Data', {
+          autoHideDuration: 1000
+        });
+        console.log(err);
+      });
+    }
+  }
+  const debouncedUpdateOppProduct = useCallback(_.debounce(updateOppProduct, 2000), []);
 
+
+  // solar panel product
   const handleSpProductData = (i, field) => e => {
-    const oldSp = spProduct;
-    oldSp[i][field] = e.target.value;
-    setSpProduct(oldSp);
+    const newSp = JSON.parse(JSON.stringify(spProduct));
+    newSp[i][field] = e.target.value;
+
+    if (newSp[i].Id === null) {
+      // create
+      console.log('CREATE');
+    } else {
+      console.log('UPDATE');
+      const diff = difference(newSp[i], spProduct[i]);
+      console.log('PATCH: ', diff);
+      debouncedUpdateOppProduct(newSp[i].Id, diff);
+    }
+
+    setSpProduct(newSp);
   }
 
   const addSpProduct = e => {
     setSpProduct([
       ...spProduct,
-      {
-        Product2Id: null,
-        Quantity: 0
-      }
+      sampleProduct
     ]);
   }
 
@@ -137,21 +182,27 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   // inverter product
-  const [invProduct, setInvProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.INVERTER));
-
   const handleInvProductData = (i, field) => e => {
-    const oldInv = invProduct;
-    oldInv[i][field] = e.target.value;
-    setInvProduct(oldInv);
+    const newInv = JSON.parse(JSON.stringify(invProduct));
+    newInv[i][field] = e.target.value;
+
+    if (newInv[i].Id === null) {
+      // create
+      console.log('CREATE');
+    } else {
+      console.log('UPDATE');
+      const diff = difference(newInv[i], invProduct[i]);
+      console.log('PATCH: ', diff);
+      debouncedUpdateOppProduct(newInv[i].Id, diff);
+    }
+
+    setInvProduct(newInv);
   }
 
   const addInvProduct = e => {
     setInvProduct([
       ...invProduct,
-      {
-        Product2Id: null,
-        Quantity: 0
-      }
+      sampleProduct
     ]);
   }
 
@@ -161,21 +212,27 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   // battery product
-  const [batProduct, setBatProduct] = useState(filterAndGetObjects(products, oppProducts, ProductTypeByID.BATTERY));
-
   const handleBatProductData = (i, field) => e => {
-    const oldBat = batProduct;
-    oldBat[i][field] = e.target.value;
-    setBatProduct(oldBat);
+    const newBat = JSON.parse(JSON.stringify(batProduct));
+    newBat[i][field] = e.target.value;
+
+    if (newBat[i].Id === null) {
+      // create
+      console.log('CREATE');
+    } else {
+      console.log('UPDATE');
+      const diff = difference(newBat[i], batProduct[i]);
+      console.log('PATCH: ', diff);
+      debouncedUpdateOppProduct(newBat[i].Id, diff);
+    }
+
+    setBatProduct(newBat);
   }
 
   const addBatProduct = e => {
     setBatProduct([
       ...batProduct,
-      {
-        Product2Id: null,
-        Quantity: 0
-      }
+      sampleProduct
     ]);
   }
 
@@ -279,7 +336,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                           />
                         </td>
                         <td className={style.addRemoveTd}>
-                          { i === (spProduct.length - 1) ?
+                          { (i === (spProduct.length - 1)) && ((p.Id !== null) || (spProduct.length === 1))?
                             <AddButton onClick={addSpProduct} />
                             :
                             <RemoveButton onClick={removeSpProduct(i)} />
@@ -289,7 +346,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                     ))
                   }
                   {
-                    invProduct && invProduct.map((p, i) => (
+                    invProduct.map((p, i) => (
                       <tr key={i}>
                         <td className={style.editLabel}>Inverter Product</td>
                         <td className={style.violet}>
@@ -307,7 +364,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                           />
                         </td>
                         <td className={style.addRemoveTd}>
-                          { i === (invProduct.length - 1) ?
+                          { (i === (invProduct.length - 1)) && ((p.Id !== null) || (invProduct.length === 1)) ?
                             <AddButton onClick={addInvProduct} />
                             :
                             <RemoveButton onClick={removeInvProduct(i)} />
@@ -322,7 +379,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         <td className={style.editLabel}>Battery Product</td>
                         <td className={style.violet}>
                           <SelectProducts
-                          options={filterProducts(products, ProductTypes.BATTERY)}
+                            options={filterProducts(products, ProductTypes.BATTERY)}
                             value={p.Product2Id}
                             onChange={handleBatProductData(i, 'Product2Id')}
                           />
@@ -335,7 +392,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                           />
                         </td>
                         <td className={style.addRemoveTd}>
-                          { i === (batProduct.length - 1) ?
+                          { (i === (batProduct.length - 1)) && ((p.Id !== null) || (batProduct.length === 1)) ?
                             <AddButton onClick={addBatProduct} />
                             :
                             <RemoveButton onClick={removeBatProduct(i)} />

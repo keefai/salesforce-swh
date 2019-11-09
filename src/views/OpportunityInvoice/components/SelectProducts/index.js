@@ -13,11 +13,6 @@ const SelectProducts = ({ options, value, onChange }) => {
   const classes = useStyles();
   const [edit, setEdit] = React.useState(false);
 
-  const handleChange = e => {
-    console.log(e);
-    onChange(e);
-  };
-
   return (
     <div
       className={style.div}
@@ -32,7 +27,7 @@ const SelectProducts = ({ options, value, onChange }) => {
           select
           className={classes.textField}
           value={value}
-          onChange={handleChange}
+          onChange={onChange}
           SelectProps={{
             native: true
           }}
@@ -42,9 +37,11 @@ const SelectProducts = ({ options, value, onChange }) => {
             margin: 0
           }}
         >
-          <option key='select' value={null}>
-            Select
-          </option>
+          {!value && (
+            <option key='select' value={null}>
+              Select
+            </option>
+          )}
           {options.map(option => (
             <option key={option.Id} value={option.Id}>
               {option.Name}

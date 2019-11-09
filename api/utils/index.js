@@ -84,17 +84,53 @@ exports.getOpportunities = async (sfdc, session, id) => {
   }
 }
 
+// exports.getOpportunityProducts = async (sfdc, session, id) => {
+//   try {
+//     const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}/OpportunityLineItems`);
+//     const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+//     console.log('getOpportunityProducts', payload);
+//     return {
+//       status: 200,
+//       json: payload
+//     };
+//   } catch (error) {
+//     console.error('getOpportunityProducts: Force.com data API error: '+ JSON.stringify(error));
+//     return {
+//       status: 500,
+//       json: error
+//     };
+//   }
+// }
 exports.getOpportunityProducts = async (sfdc, session, id) => {
   try {
-    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}/OpportunityLineItems`);
-    const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+    const query = encodeURI(`SELECT Id, Name, Quantity, UnitPrice, TotalPrice, Product2.Product_Type__c, Product2.Id FROM OpportunityLineItem WHERE OpportunityId='${id}'`);
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
+    const payload = await httpClient.get({ ...apiRequestOptions });
     console.log('getOpportunityProducts', payload);
+    return {
+      status: 200,
+      json: JSON.parse(payload)
+    };
+  } catch (error) {
+    console.error('getOpportunityProducts: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+exports.updateOpportunityProduct = async (sfdc, session, id, data) => {
+  try {
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `ui-api/records/${id}`);
+    const payload = await httpClient.patch({ ...apiRequestOptions, body: data, json: true });
+    console.log('updateOpportunityProduct', payload);
     return {
       status: 200,
       json: payload
     };
   } catch (error) {
-    console.error('getOpportunityProducts: Force.com data API error: '+ JSON.stringify(error));
+    console.error('updateOpportunityProduct: Force.com data API error: '+ JSON.stringify(error));
     return {
       status: 500,
       json: error
