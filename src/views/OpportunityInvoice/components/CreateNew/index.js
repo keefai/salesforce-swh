@@ -6,6 +6,8 @@ import DetailsFrom from './DetailsForm';
 import InstallationAddress from './InstallationAddress';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import QuickTemplates from './QuickTemplates';
+import GooglePlacesSearch from '../../../../components/GooglePlacesSearch';
+import Map from '../Map';
 
 const STEPS = Object.freeze({
   DETAILS: 'DETAILS',
@@ -103,6 +105,15 @@ const CreateNew = ({
       className={style.dialog}
     >
       {renderState()}
+      <Map
+        latLng={{
+          lat: 0,
+          lng: 0
+        }}
+        containerStyle={{
+          display: 'none'
+        }}
+      />
     </Dialog>
   );
 };

@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import GooglePlacesSearch from '../../../../components/GooglePlacesSearch';
 import Map from '../Map';
 import style from './style.module.scss';
 
@@ -16,10 +17,16 @@ const InstallationAddress = ({
   updateAddress
 }) => {
   const [add, setAdd] = useState(address);
+  const [latLng, setLatLng] = useState({
+    lat: 0,
+    lng: 0
+  });
 
   useEffect(() => {
-    setAdd(address);
-  }, [address]);
+    if (state === true) {
+      setAdd(address);
+    }
+  }, [address, state]);
 
   const setAddress = (e) => {
     updateAddress({
@@ -32,6 +39,14 @@ const InstallationAddress = ({
     close();
   }
 
+  const getLatLng = (newAdd, lat, lng) => {
+    setAdd(newAdd);
+    setLatLng({
+      lat,
+      lng
+    })
+  };
+
   return (
     <Dialog
       disableBackdropClick
@@ -43,18 +58,26 @@ const InstallationAddress = ({
     >
       <DialogTitle id="form-dialog-title">Installation Address</DialogTitle>
       <DialogContent>
-        <div className={style.addressContainer}>
-          <TextField
-            margin="dense"
-            label="Installation Address"
-            variant="filled"
-            value={add}
-            onChange={(e) => setAdd(e.target.value)}
+        <div className={style.addressContainer} getLatLng={getLatLng}>
+          {/*
+            <TextField
+              margin="dense"
+              label="Installation Address"
+              variant="filled"
+              value={add}
+              onChange={(e) => setAdd(e.target.value)}
+              className={style.mapInput}
+              fullWidth
+            />
+          */}
+          <GooglePlacesSearch
+            getLatLng={getLatLng}
             className={style.mapInput}
-            fullWidth
+            wrapperClassName={style.mapInputWrapper}
+            address={add}
           />
           <Map
-            address={add}
+            latLng={latLng}
             containerStyle={{
               width: '100%',
               height: '100%'

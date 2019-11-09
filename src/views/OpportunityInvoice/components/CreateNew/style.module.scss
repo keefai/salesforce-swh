@@ -26,21 +26,9 @@
   width: 90% !important;
   margin: 5% !important;
   position: absolute !important;
-  background: rgba(255, 255, 255, 0.8);
   z-index: 10;
+}
 
-  :global
-  .MuiFormLabel-root {
-    color: #333 !important;
-  }
-
-  :global
-  .MuiFormLabel-root.Mui-focused {
-    color: #333 !important;
-  }
-
-  :global
-  .MuiFilledInput-underline.Mui-focused:after {
-    display: none !important;
-  }
+.mapInputWrapper {
+  position: relative;
 }

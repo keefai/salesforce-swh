@@ -15,11 +15,17 @@ const LoadingContainer = (props) => (
   </div>
 );
 
-const GoogleMap = ({ google, address, className, ...props }) => {
-  const [location, setLocation] = useState({
-    lat: 0,
-    lng: 0
-  });
+const GoogleMap = ({ google, address, latLng, className, ...props }) => {
+  const getLatLng = () => {
+    if (latLng) {
+      return latLng;
+    }
+    return {
+      lat: 0,
+      lng: 0
+    }
+  }
+  const [location, setLocation] = useState(getLatLng());
 
   const fetchGeocoding = async (add) => {
     try {
@@ -34,8 +40,12 @@ const GoogleMap = ({ google, address, className, ...props }) => {
   const debouncedFetchGeocoding = useCallback(_.debounce(fetchGeocoding, 2000), []);
 
   useEffect(() => {
-    debouncedFetchGeocoding(address);
-  }, [address]);
+    if (!latLng) {
+      debouncedFetchGeocoding(address);
+    } else {
+      setLocation(latLng);
+    }
+  }, [address, latLng]);
 
 	return (
     <Map

@@ -5,6 +5,7 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import GooglePlacesSearch from '../../../../components/GooglePlacesSearch';
 import Map from '../Map';
 import style from './style.module.scss';
 
@@ -14,22 +15,36 @@ const InstallationAddress = ({
   skip,
   nextStep
 }) => {
+  const [latLng, setLatLng] = useState({
+    lat: 0,
+    lng: 0
+  });
+
+  const getLatLng = (newAdd, lat, lng) => {
+    handleInstallationAddress({
+      target: {
+        value: newAdd
+      }
+    });
+    setLatLng({
+      lat,
+      lng
+    })
+  };
+
   return (
     <React.Fragment>
       <DialogTitle id="form-dialog-title">Installation Address</DialogTitle>
       <DialogContent>
         <div className={style.addressContainer}>
-          <TextField
-            margin="dense"
-            label="Installation Address"
-            variant="filled"
-            value={installationAddress}
-            onChange={handleInstallationAddress}
+          <GooglePlacesSearch
+            getLatLng={getLatLng}
             className={style.mapInput}
-            fullWidth
+            wrapperClassName={style.mapInputWrapper}
+            address={installationAddress}
           />
           <Map
-            address={installationAddress}
+            latLng={latLng}
             containerStyle={{
               width: '100%',
               height: '100%'

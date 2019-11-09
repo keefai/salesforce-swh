@@ -16,7 +16,7 @@ const CreateOpportunity = ({ templates, ...props }) => {
       Phone: null,
       consent: false
     },
-    installationAddress: null,
+    installationAddress: '',
     templateId: templates[0].Id
   });
 
