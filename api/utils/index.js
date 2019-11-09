@@ -120,6 +120,43 @@ exports.getOpportunityProducts = async (sfdc, session, id) => {
   }
 }
 
+exports.getProductPricebook = async (sfdc, session, id, p2id) => {
+  try {
+    const query = encodeURI(`SELECT Id, UnitPrice FROM PricebookEntry WHERE Product2Id='${id}' AND Pricebook2Id='${p2id}'`);
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
+    const payload = await httpClient.get({ ...apiRequestOptions });
+    console.log('getProductPricebook', payload);
+    return {
+      status: 200,
+      json: JSON.parse(payload)
+    };
+  } catch (error) {
+    console.error('getProductPricebook: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+};
+
+exports.createOpportunityProduct = async (sfdc, session, data) => {
+  try {
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `ui-api/records`);
+    const payload = await httpClient.post({ ...apiRequestOptions, body: data, json: true });
+    console.log('createOpportunityProduct', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('createOpportunityProduct: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
 exports.updateOpportunityProduct = async (sfdc, session, id, data) => {
   try {
     const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `ui-api/records/${id}`);
@@ -131,6 +168,24 @@ exports.updateOpportunityProduct = async (sfdc, session, id, data) => {
     };
   } catch (error) {
     console.error('updateOpportunityProduct: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+exports.deleteOpportunityProduct = async (sfdc, session, id) => {
+  try {
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `ui-api/records/${id}`);
+    const payload = await httpClient.delete({ ...apiRequestOptions });
+    console.log('deleteOpportunityProduct', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('deleteOpportunityProduct: Force.com data API error: '+ JSON.stringify(error));
     return {
       status: 500,
       json: error

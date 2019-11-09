@@ -196,6 +196,37 @@ app.get('/api/OpportunityProducts/:id', asyncMiddleware(async (request, response
   return response.status(res.status).json(res.json);
 }));
 
+app.post('/api/OpportunityProduct/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+  // call pricebook entry
+  const pricebookRes = await utils.getProductPricebook(sfdc, session, body.Product2Id, body.Opportunity.Pricebook2Id);
+  if (pricebookRes.status === 500 || pricebookRes.records.length < 1) {
+    return response.status(500).json(res.json);
+  }
+  const data = {
+    apiName: "OpportunityLineItem",
+    fields: {
+      OpportunityId: id,
+      PricebookEntryId: pricebookRes.records[0].Id,
+      Quantity: body.Quantity,
+      UnitPrice: pricebookRes.records[0].UnitPrice,
+    }
+  };
+  const res = await utils.createOpportunityProduct(sfdc, session, data);
+  return response.status(res.status).json(res.json);
+}));
+
+app.delete('/api/OpportunityProduct/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const session = getSession(request, response);
+  if (session == null) return;
+  const res = await utils.deleteOpportunityProduct(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}));
+
 app.patch('/api/OpportunityProduct/:id', asyncMiddleware(async (request, response, next) => {
   const { id } = request.params;
   const body = request.body;

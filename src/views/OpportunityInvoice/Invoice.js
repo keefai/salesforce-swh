@@ -150,6 +150,24 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
   const debouncedUpdateOppProduct = useCallback(_.debounce(updateOppProduct, 2000), []);
 
+  const deleteOppProduct = (id) => {
+    if (id) {
+      api
+      .delete(`/OpportunityProduct/${id}`)
+      .then(res => {
+        console.log(res);
+        props.enqueueSnackbar('Product Deleted', {
+          autoHideDuration: 1000
+        });
+      })
+      .catch(err => {
+        props.enqueueSnackbar('Error Deleting Product', {
+          autoHideDuration: 1000
+        });
+        console.log(err);
+      });
+    }
+  }
 
   // solar panel product
   const handleSpProductData = (i, field) => e => {
@@ -177,6 +195,10 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   const removeSpProduct = i => e => {
+    const sP = JSON.parse(JSON.stringify(spProduct[i]));
+    if (sP.Id) {
+      deleteOppProduct(sP.Id);
+    }
     const newSp = spProduct.filter((p, pi) => pi !== i);
     setSpProduct(newSp);
   }
@@ -207,6 +229,10 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   const removeInvProduct = i => e => {
+    const inv = JSON.parse(JSON.stringify(invProduct[i]));
+    if (inv.Id) {
+      deleteOppProduct(inv.Id);
+    }
     const newInv = invProduct.filter((p, pi) => pi !== i);
     setInvProduct(newInv);
   }
@@ -237,6 +263,10 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
 
   const removeBatProduct = i => e => {
+    const bat = JSON.parse(JSON.stringify(batProduct[i]));
+    if (bat.Id) {
+      deleteOppProduct(bat.Id);
+    }
     const newBat = batProduct.filter((p, pi) => pi !== i);
     setBatProduct(newBat);
   }
