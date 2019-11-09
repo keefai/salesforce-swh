@@ -130,18 +130,41 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   };
 
   // product apis
+  const addOppProduct = (proData) => {
+    if (Object.keys(proData).length) {
+      api
+      .post(`/OpportunityProduct`, {
+        ...proData,
+        Opportunity: data
+      })
+      .then(res => {
+        console.log(res);
+        props.enqueueSnackbar('Product Added', {
+          autoHideDuration: 1000
+        });
+      })
+      .catch(err => {
+        props.enqueueSnackbar('Error Adding Product', {
+          autoHideDuration: 1000
+        });
+        console.log(err);
+      });
+    }
+  }
+  const debouncedAddOppProduct = useCallback(_.debounce(addOppProduct, 2000), []);
+
   const updateOppProduct = (id, diff) => {
     if (Object.keys(diff).length && id) {
       api
       .patch(`/OpportunityProduct/${id}`, diff)
       .then(res => {
         console.log(res);
-        props.enqueueSnackbar('Data Saved', {
+        props.enqueueSnackbar('Product Updated', {
           autoHideDuration: 1000
         });
       })
       .catch(err => {
-        props.enqueueSnackbar('Error Saving Data', {
+        props.enqueueSnackbar('Error Updating Product', {
           autoHideDuration: 1000
         });
         console.log(err);
@@ -175,8 +198,12 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     newSp[i][field] = e.target.value;
 
     if (newSp[i].Id === null) {
-      // create
-      console.log('CREATE');
+      if ((newSp[i].Product2Id !== null) && (newSp[i].Quantity > 0)) {
+        console.log('CREATE');
+        debouncedAddOppProduct(newSp[i])
+      } else {
+        console.log('Not Eligible For Creation');
+      }
     } else {
       console.log('UPDATE');
       const diff = difference(newSp[i], spProduct[i]);
@@ -209,8 +236,12 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     newInv[i][field] = e.target.value;
 
     if (newInv[i].Id === null) {
-      // create
-      console.log('CREATE');
+      if ((newInv[i].Product2Id !== null) && (newInv[i].Quantity > 0)) {
+        console.log('CREATE');
+        debouncedAddOppProduct(newInv[i])
+      } else {
+        console.log('Not Eligible For Creation');
+      }
     } else {
       console.log('UPDATE');
       const diff = difference(newInv[i], invProduct[i]);
@@ -243,8 +274,12 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     newBat[i][field] = e.target.value;
 
     if (newBat[i].Id === null) {
-      // create
-      console.log('CREATE');
+      if ((newBat[i].Product2Id !== null) && (newBat[i].Quantity > 0)) {
+        console.log('CREATE');
+        debouncedAddOppProduct(newBat[i])
+      } else {
+        console.log('Not Eligible For Creation');
+      }
     } else {
       console.log('UPDATE');
       const diff = difference(newBat[i], batProduct[i]);
