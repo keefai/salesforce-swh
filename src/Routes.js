@@ -32,9 +32,7 @@ const Routes = () => {
       <Route path="/scanner" exact component={ScannerView} />
       <Route path="/barcode" exact component={BarcodeView} />
       <Route path="/opportunity" exact component={withAuth(OpportunityView)} />
-      {/*
-        <Route path="/test" exact component={TestView} />
-      */}
+      <Route path="/test" exact component={TestView} />
       <Route path="/not-found" exact component={NotFoundView} />
       <Redirect to="/not-found" />
     </Switch>

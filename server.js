@@ -6,6 +6,9 @@ var bodyParser = require('body-parser');
 var xmlparser = require('express-xml-bodyparser');
 var path = require('path');
 var logger = require('morgan');
+var azureStorage = require('azure-storage');
+var multer = require('multer');
+var getStream = require('into-stream');
 var session = require('express-session');
 var http = require("http");
 var SalesforceClient = require('salesforce-node-client');
@@ -22,6 +25,29 @@ var redis = require("redis");
 var pubDb = redis.createClient({
   url: process.env.HEROKU_REDIS_NAVY_URL
 });
+
+// multer and azure storage
+const inMemoryStorage = multer.memoryStorage();
+const uploadStrategy = multer({ storage: inMemoryStorage }).single('image');
+const blobService = azureStorage.createBlobService();
+const containerName = 'salesforce-swh-uploads';
+
+blobService.createContainerIfNotExists(
+  containerName,
+  {
+    publicAccessLevel: 'blob'
+  },
+  (error) => {
+    if (error) {
+      console.log("Error Creating container");
+    }
+  }
+);
+
+const getBlobName = (originalName) => {
+    const identifier = Math.random().toString().replace(/0\./, ''); // remove "0." from start of string
+    return `${identifier}-${originalName}`;
+};
 
 // Instantiate Salesforce client with .env configuration
 const sfdc = new SalesforceClient();
@@ -315,7 +341,6 @@ app.get('/api/getOpportunityTemplateDefaultValues/:recordId', asyncMiddleware(as
   return response.status(res.status).json(res.json);
 }));
 
-
 app.post('/api/createOpportunity', asyncMiddleware(async (request, response, next) => {
   const body = request.body;
   const session = getSession(request, response);
@@ -376,6 +401,32 @@ app.patch('/api/Account/:id', asyncMiddleware(async (request, response, next) =>
   const res = await utils.updateAccount(sfdc, session, id, body);
   return response.status(res.status).json(res.json);
 }))
+
+app.post('/api/uploadImage', uploadStrategy, asyncMiddleware(async (request, response, next) => {
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const blobName = getBlobName(request.file.originalname);
+  const stream = getStream(request.file.buffer);
+  const streamLength = request.file.buffer.length;
+
+  blobService.createBlockBlobFromStream(
+    containerName,
+    blobName,
+    stream,
+    streamLength,
+    (err, result, res) => {
+      if(err) {
+        console.log('uploadImage Error: ', err);
+        return response.status(500).json(err);
+      }
+      console.log('uploadImage Result: ', result);
+      const imageURL = blobService.getUrl(containerName, blobName);
+      return response.status(200).json({ url: imageURL });
+    }
+  );
+}));
 
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {

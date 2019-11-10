@@ -22,8 +22,9 @@ import CreateNew from './components/CreateNew';
 import YesNoDropdown from './components/YesNoDropdown';
 import DetailsForm from './components/DetailsForm';
 import InstallationMap from './components/InstallationMap';
-import { ProductTypes, ProductTypeByID } from './helpers';
+import { ProductTypes, ProductTypeByID, validURL } from './helpers';
 import SelectProducts from './components/SelectProducts';
+import ImageUpload from './components/ImageUpload';
 
 const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
@@ -314,6 +315,38 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   const getEstimatedFirstYearSavings = () => {
     return oppData.SavingsList__c ? JSON.parse(oppData.SavingsList__c)[0].Total.toFixed(2) : 0.0;
   };
+
+  // render Map
+  const renderMap = () => {
+    if (oppData.Address_Line_2__c && validURL(oppData.Address_Line_2__c)) {
+      return (
+        <img src={oppData.Address_Line_2__c} alt='installation-address' style={{ width: '100%' }}/>
+      )
+    }
+
+    if ((oppData.Address_Line_1__c === null) || (oppData.Address_Line_1__c.trim().length < 1)) {
+      return (
+        <ImageUpload
+          setImg={(val) => handleOppData('Address_Line_2__c')({
+            target: {
+              value: val
+            }
+          })}
+        />
+      );
+    }
+
+    return (
+      <Map
+        address={oppData.Address_Line_1__c}
+        containerStyle={{
+          position: 'relative',
+          width: '100%',
+          height: '400px'
+        }}
+      />
+    );
+  }
 
   // save pdf function
   const exportPDF = () => {
@@ -685,17 +718,9 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
               <table className={style.table}>
                 <tbody>
                   <tr>
-                    <td className={style.editLabel}>Installation Address</td>
+                    <td className={style.padding}>Installation Address</td>
                     <td className={style.violet} onClick={() => setMapModal(true)}>
-                      <span style={{
-                        padding: '5px !important'
-                      }}>{oppData.Address_Line_1__c}</span>
-                      {/*<EditableInput
-                        type="text"
-                        value={oppData.Address_Line_2__c}
-                        onChange={handleOppData('Address_Line_2__c')}
-                        onBlur={oppDataBlur}
-                      />*/}
+                      <span>{oppData.Address_Line_1__c}&nbsp;</span>
                     </td>
                   </tr>
                   <tr>
@@ -861,14 +886,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
               <div className={style.chartContainer}>
                 <div className={style.chart} style={{ padding: '2% 4%' }}>
                   <div className={style.heading2}>Proposed Solar Panel Layout</div>
-                  <Map
-                    address={oppData.Address_Line_1__c}
-                    containerStyle={{
-                      position: 'relative',
-                      width: '100%',
-                      height: '400px'
-                    }}
-                  />
+                  {renderMap()}
                 </div>
               </div>
             </Grid>
@@ -944,6 +962,15 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
         </div>
         <br />
       </PDFExport>
+      <Map
+        latLng={{
+          lat: 0,
+          lng: 0
+        }}
+        containerStyle={{
+          display: 'none'
+        }}
+      />
     </React.Fragment>
   );
 };
