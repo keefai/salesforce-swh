@@ -106,10 +106,31 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   const debouncedSaveData = useCallback(_.debounce(saveData, 2000), []);
 
   const handleOppData = field => e => {
-    const newData = {
-      ...oppData,
-      [field]: e.target.value
-    };
+    let newData;
+    // handle day night usage
+    if (field === 'DayUsagePercentage__c' || field === 'NightUsagePercentage__c') {
+      let dayNightUsage;
+      if (field === 'DayUsagePercentage__c') {
+        dayNightUsage = {
+          DayUsagePercentage__c: e.target.value,
+          NightUsagePercentage__c: 100 - Number(e.target.value)
+        };
+      } else {
+        dayNightUsage = {
+          DayUsagePercentage__c: 100 - Number(e.target.value),
+          NightUsagePercentage__c: e.target.value
+        };
+      }
+      newData = {
+        ...oppData,
+        ...dayNightUsage
+      };
+    } else {
+      newData = {
+        ...oppData,
+        [field]: e.target.value
+      };
+    }
     setOppData(newData);
     debouncedSaveData(newData, data);
   };
