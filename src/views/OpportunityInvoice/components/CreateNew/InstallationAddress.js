@@ -32,6 +32,14 @@ const InstallationAddress = ({
     })
   };
 
+  const handleAddress = (newAdd) => {
+    handleInstallationAddress({
+      target: {
+        value: newAdd
+      }
+    });
+  }
+
   return (
     <React.Fragment>
       <DialogTitle id="form-dialog-title">Installation Address</DialogTitle>
@@ -39,6 +47,7 @@ const InstallationAddress = ({
         <div className={style.addressContainer}>
           <GooglePlacesSearch
             getLatLng={getLatLng}
+            handleAddress={handleAddress}
             className={style.mapInput}
             wrapperClassName={style.mapInputWrapper}
             address={installationAddress}

@@ -47,6 +47,10 @@ const InstallationAddress = ({
     })
   };
 
+  const handleAddress = (newAdd) => {
+    setAdd(newAdd);
+  }
+
   return (
     <Dialog
       disableBackdropClick
@@ -72,6 +76,7 @@ const InstallationAddress = ({
           */}
           <GooglePlacesSearch
             getLatLng={getLatLng}
+            handleAddress={handleAddress}
             className={style.mapInput}
             wrapperClassName={style.mapInputWrapper}
             address={add}

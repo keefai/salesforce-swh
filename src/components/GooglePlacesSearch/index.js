@@ -51,6 +51,7 @@ export default class GooglePlacesSearch extends React.Component {
   }
 
   handleChange = address => {
+    this.props.handleAddress(address);
     this.setState({
       address,
       latitude: null,
@@ -60,6 +61,7 @@ export default class GooglePlacesSearch extends React.Component {
   };
 
   handleSelect = selected => {
+    this.props.handleAddress(selected);
     this.setState({ isGeocoding: true, address: selected });
     this.setAddress(selected);
   };
