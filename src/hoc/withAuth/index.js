@@ -31,7 +31,7 @@ const withAuth = (WrappedComponent) => {
     }
 
     if (error) {
-      return <Redirect to={`/login?redirectTo=${encodeURI(location)}`} />
+      return <Redirect to={`/login?redirectTo=${encodeURI(location.pathname)}`} />
     }
 
     return (
