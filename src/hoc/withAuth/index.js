@@ -1,54 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import api from '../../common/api';
 import { FullPageLoader } from '../../components';
+import { useLocation} from "react-router-dom";
 
 const withAuth = (WrappedComponent) => {
-  return class WithAuthHOC extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        user: null,
-        loading: true,
-        error: null
-      };
-    }
+  return (props) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const location = useLocation();
 
-    componentDidMount() {
-      this.setState({ loading: true });
+    useEffect(() => {
+      setLoading(true);
       api
         .get('/whoami')
         .then(res => {
-          this.setState({
-            user: res.data,
-            loading: false
-          });
+          setUser(res.data);
         })
         .catch(err => {
-          this.setState({
-            error: err,
-            loading: false
-          })
+          setError(err);
         })
-    }
-  
-    render() {
-      if (this.state.loading) {
-        return <FullPageLoader />;
-      }
+        .finally(() => {
+          setLoading(false);
+        })
+    }, []);
 
-      if (this.state.error) {
-        console.log('Should Redirect');
-        return <Redirect to='/login' /> 
-      }
-
-      return (
-        <WrappedComponent
-          user={this.state.user}
-          {...this.props}
-        />
-      );
+    if (loading) {
+      return <FullPageLoader />;
     }
+
+    if (error) {
+      return <Redirect to={`/login?redirectTo=${encodeURI(location)}`} />
+    }
+
+    return (
+      <WrappedComponent
+        user={user}
+        {...props}
+      />
+    );
   }
 };
 

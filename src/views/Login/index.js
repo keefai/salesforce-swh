@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import { SalesforceButton } from 'components';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import { Minimal as MinimalLayout } from '../../layouts';
 import api from '../../common/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -27,6 +27,7 @@ const LoginPage = () => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [redirect, setRedirect] = useState(false);
+  let { redirectTo = '/' } = useParams();
 
   const login = () => {
     window.location = '/api/auth/login';
@@ -45,7 +46,7 @@ const LoginPage = () => {
   }, []);
 
   if (redirect) {
-    return <Redirect to="/" /> 
+    return <Redirect to={decodeURI(redirectTo)} />;
   }
 
   return (

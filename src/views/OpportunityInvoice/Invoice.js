@@ -904,7 +904,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                       <b>SALE PRICE</b> (After Discounts/Rebates)
                     </td>
                     <td className={style.green}>
-                      <b>${oppData.TotalSystemCostInclGST__c}b>
+                      <b>${oppData.TotalSystemCostInclGST__c}</b>
                     </td>
                   </tr>
                   <tr>
