@@ -26,8 +26,6 @@ import { ProductTypes, ProductTypeByID, validURL } from './helpers';
 import SelectProducts from './components/SelectProducts';
 import { ImageUploadDropzone, ImageDropzone, DivDropzone, MapDropzone } from './components/ImageUpload';
 
-const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-
 const AddButton = (props) => (
   <IconButton aria-label="add" {...props}>
     <AddIcon fontSize="medium" />
@@ -895,7 +893,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                       <b>SALE PRICE</b> (After Discounts/Rebates)
                     </td>
                     <td className={style.green}>
-                      <b>$--</b>
+                      <b>${oppData.TotalSystemCostInclGST__c}b>
                     </td>
                   </tr>
                   <tr>

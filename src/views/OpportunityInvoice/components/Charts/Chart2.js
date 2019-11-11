@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Chart from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import style from './style.module.scss';
 
+const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+const sortData = (data) => {
+  const _data = JSON.parse(JSON.stringify(data));
+  if (_data && _data.MonthlyProduction) {
+    _data.MonthlyProduction.sort((a, b) => {
+      return months.indexOf(a.month) - months.indexOf(b.month);
+    });
+  }
+  return _data;
+}
+
 const Chart2 = ({ data }) => {
+  const [sortedData, setSortedData] = useState(sortData(data));
+
+  useEffect(() => {
+    setSortedData(sortData(data));
+  }, [sortedData]);
+
   const chartData = {
-    labels: data ? data.MonthlyProduction.map(d => d.month) : [],
+    labels: sortedData ? sortedData.MonthlyProduction.map(d => d.month) : [],
     datasets: [
       {
         backgroundColor: 'rgb(0, 153, 255)',
-        data: data ? data.MonthlyProduction.map(d => Number(d.production).toFixed(2)) : [],
+        data: sortedData ? sortedData.MonthlyProduction.map(d => Number(d.production).toFixed(2)) : [],
         borderWidth: 0
       }
     ]
