@@ -26,6 +26,17 @@ import { ProductTypes, ProductTypeByID, validURL } from './helpers';
 import SelectProducts from './components/SelectProducts';
 import { ImageUploadDropzone, ImageDropzone, DivDropzone, MapDropzone } from './components/ImageUpload';
 
+const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+const sortMonthlyProduction = (data) => {
+  const _data = JSON.parse(JSON.stringify(data));
+  if (_data && _data.MonthlyProduction) {
+    _data.MonthlyProduction.sort((a, b) => {
+      return months.indexOf(a.month) - months.indexOf(b.month);
+    });
+  }
+  return _data;
+}
+
 const AddButton = (props) => (
   <IconButton aria-label="add" {...props}>
     <AddIcon fontSize="medium" />
@@ -746,7 +757,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
               )}
               {oppData.Annual_Production__c && (
                 <div className={style.chartContainer}>
-                  <Chart2 data={JSON.parse(oppData.Annual_Production__c)} />
+                  <Chart2 data={sortMonthlyProduction(JSON.parse(oppData.Annual_Production__c))} />
                 </div>
               )}
             </Grid>
@@ -765,7 +776,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
               <table className={style.table}>
                 <tbody>
                   <tr>
-                    <td className={style.padding}>Installation Address</td>
+                    <td className={`${style.padding} ${style.min250}`}>Installation Address</td>
                     <td className={style.violet} onClick={() => setMapModal(true)}>
                       <span>{oppData.Address_Line_1__c}&nbsp;</span>
                     </td>
