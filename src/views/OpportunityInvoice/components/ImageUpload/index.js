@@ -1,105 +1,154 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { withSnackbar } from 'notistack';
-import { DropzoneArea } from "material-ui-dropzone";
+import classnames from "classnames";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import { useDropzone } from "react-dropzone";
 import Fab from '@material-ui/core/Fab';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import api from '../../../../common/api';
-import style from './style.module.scss';
+import styles from "./style.module.scss";
+import Map from '../Map';
 
-class ImageUpload extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      uploaded: false,
-      uploading: false,
-      error: null
-    };
-  }
+export const ImageUploadDropzone = ({ children, setImg, noClick = false }) => {
+  const [uploaded, setUploaded] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(false);
 
-  handleChange = files => {
-    this.setState({
-      uploading: true
-    });
+  const onDrop = useCallback(acceptedFiles => {
+    setUploading(true);
+    const file = acceptedFiles[0];
+    console.log(file);
     const data = new FormData();
-    data.append('image', files[0]);
+    data.append('image', file);
     api.post('/uploadImage', data)
       .then((res) => {
         console.log('uploadImage: ', res.data);
-        this.setState({
-          uploaded: true
-        });
-        this.props.setImg(res.data.url);
+        setUploaded(true);
+        setTimeout(() => {
+          setUploaded(false);
+        }, 2000);
+        setImg(res.data.url);
       })
       .catch((err) => {
         console.log('uploadImage Error: ', err);
-        this.setState({
-          error: err
-        });
+        setError(err);
       })
       .finally(() => {
-        this.setState({
-          uploading: false
-        });
+        setUploading(false);
       });
-  };
+    // Do something with the files
+  }, []);
 
-  dropzoneText = () => (
-    <div className={style.dropzoneText}>
-      Drag and Drop File Here
-      <br />
-      <span>or click to select</span>
-    </div>
-  )
-
-  reUpload = () => {
-    this.setState({
-      uploading: false,
-      error: null
-    });
+  const reUpload = () => {
+    setUploading(false);
+    setError(null);
   }
 
-  render() {
-    if (this.state.uploading) {
-      return (
-        <div className={style.container}>
-          <div>
-            <CircularProgress />
-          </div>
-          <div style={{ marginTop: '20px' }}>Uploading</div>
-        </div>
-      );
-    }
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: "image/*",
+    multiple: false,
+    maxSize: 3000000,
+    noClick: noClick
+  });
 
-    if (this.state.error) {
-      return (
-        <div className={style.container}>
-          <div style={{ color: 'red' }}>Error Uploading File. Retry Again.</div>
-          <Fab color="secondary" aria-label="retry" onClick={this.reUpload}>
-            <RefreshIcon />
-          </Fab>
-        </div>
-      );
-    }
-
-    if (this.state.uploaded) {
-      return (
-        <div className={style.container}>
-          <div>Image Uploaded. Please wait...</div>
-        </div>
-      );
-    }
-
+  if (uploading) {
     return (
-      <DropzoneArea
-        dropzoneClass={style.dropzone}
-        onChange={this.handleChange}
-        filesLimit={1}
-        acceptedFiles={['image/*']}
-        dropzoneText={this.dropzoneText()}
-      />
+      <div className={styles.container}>
+        <div>
+          <CircularProgress />
+        </div>
+        <div style={{ marginTop: '20px' }}>Uploading</div>
+      </div>
     );
   }
-}
 
-export default withSnackbar(ImageUpload);
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div style={{ color: 'red' }}>Error Uploading File. Retry Again.</div>
+        <br />
+        <Fab color="secondary" aria-label="retry" size="medium" onClick={reUpload}>
+          <RefreshIcon />
+        </Fab>
+      </div>
+    );
+  }
+
+  if (uploaded) {
+    return (
+      <div className={styles.container}>
+        <div>Image Uploaded. Please wait...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      {children(isDragActive)}
+    </div>
+  );
+};
+
+export const MyDropzone = ({ className, style, active, showSubtext = true }) => {
+  const classes = classnames(styles.myDropzone, {
+    [styles.myDropzoneActive]: active
+  }, className);
+
+  return (
+    <div className={classes}>
+      <div className={styles.dropzoneText}>
+        Drag and Drop File Here
+        <br />
+        {showSubtext && <span>or click to select</span>}
+      </div>
+      <CloudUploadIcon className={styles.dropzoneIcon} />
+    </div>
+  );
+};
+
+export const ImageDropzone = ({ active, src, alt }) => {
+  return (
+    <div className={styles.dropzoneImageContainer}>
+      <img src={src} alt={alt} className={styles.dropzoneImage} />
+      {active && (
+        <MyDropzone
+          className={styles.dropzoneActiveForImage}
+          active={active}
+          showSubtext={false}
+        />
+      )}
+    </div>
+  );
+};
+
+export const DivDropzone = ({ active, src, alt }) => {
+  return (
+    <div className={styles.divDropzone}>
+      <MyDropzone active={active} />
+    </div>
+  );
+};
+
+export const MapDropzone = ({ active, address}) => {
+  return (
+    <div className={styles.dropzoneImageContainer}>
+      <Map
+        address={address}
+        containerStyle={{
+          position: 'relative',
+          width: '100%',
+          height: '400px'
+        }}
+      />
+      {active && (
+        <MyDropzone
+          className={styles.dropzoneActiveForImage}
+          active={active}
+          showSubtext={false}
+        />
+      )}
+    </div>
+  );
+}

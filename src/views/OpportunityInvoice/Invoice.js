@@ -24,7 +24,7 @@ import DetailsForm from './components/DetailsForm';
 import InstallationMap from './components/InstallationMap';
 import { ProductTypes, ProductTypeByID, validURL } from './helpers';
 import SelectProducts from './components/SelectProducts';
-import ImageUpload from './components/ImageUpload';
+import { ImageUploadDropzone, ImageDropzone, DivDropzone, MapDropzone } from './components/ImageUpload';
 
 const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
@@ -341,31 +341,59 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   const renderMap = () => {
     if (oppData.Address_Line_2__c && validURL(oppData.Address_Line_2__c)) {
       return (
-        <img src={oppData.Address_Line_2__c} alt='installation-address' style={{ width: '100%' }}/>
-      )
-    }
-
-    if ((oppData.Address_Line_1__c === null) || (oppData.Address_Line_1__c.trim().length < 1)) {
-      return (
-        <ImageUpload
+        <ImageUploadDropzone
           setImg={(val) => handleOppData('Address_Line_2__c')({
             target: {
               value: val
             }
           })}
-        />
+        >
+          {active => (
+            <ImageDropzone
+              src={oppData.Address_Line_2__c}
+              alt="installation-address"
+              active={active}
+            />
+          )}
+        </ImageUploadDropzone>
+      )
+    }
+
+    if ((oppData.Address_Line_1__c === null) || (oppData.Address_Line_1__c.trim().length < 1)) {
+      return (
+        <ImageUploadDropzone
+          setImg={(val) => handleOppData('Address_Line_2__c')({
+            target: {
+              value: val
+            }
+          })}
+          noClick={true}
+        >
+          {active => (
+            <DivDropzone
+              active={active}
+            />
+          )}
+        </ImageUploadDropzone>
       );
     }
 
     return (
-      <Map
-        address={oppData.Address_Line_1__c}
-        containerStyle={{
-          position: 'relative',
-          width: '100%',
-          height: '400px'
-        }}
-      />
+      <ImageUploadDropzone
+          setImg={(val) => handleOppData('Address_Line_2__c')({
+            target: {
+              value: val
+            }
+          })}
+          noClick={true}
+        >
+          {active => (
+            <MapDropzone
+              address={oppData.Address_Line_1__c}
+              active={active}
+            />
+          )}
+      </ImageUploadDropzone>
     );
   }
 
