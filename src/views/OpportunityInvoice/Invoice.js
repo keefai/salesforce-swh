@@ -175,10 +175,10 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
   }
   const debouncedAddOppProduct = useCallback(_.debounce(addOppProduct, 2000), []);
 
-  const updateOppProduct = (id, diff) => {
+  const updateOppProduct = (id, diff, newData) => {
     if (Object.keys(diff).length && id) {
       api
-      .patch(`/OpportunityProduct/${id}`, diff)
+      .patch(`/OpportunityProduct/${id}`, { diff, newData, Opportunity: data })
       .then(res => {
         console.log(res);
         props.enqueueSnackbar('Product Updated', {
@@ -230,7 +230,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
       console.log('UPDATE');
       const diff = difference(newSp[i], spProduct[i]);
       console.log('PATCH: ', diff);
-      debouncedUpdateOppProduct(newSp[i].Id, diff);
+      debouncedUpdateOppProduct(newSp[i].Id, diff, newSp[i]);
     }
 
     setSpProduct(newSp);
@@ -268,7 +268,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
       console.log('UPDATE');
       const diff = difference(newInv[i], invProduct[i]);
       console.log('PATCH: ', diff);
-      debouncedUpdateOppProduct(newInv[i].Id, diff);
+      debouncedUpdateOppProduct(newInv[i].Id, diff, newInv[i]);
     }
 
     setInvProduct(newInv);
@@ -306,7 +306,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
       console.log('UPDATE');
       const diff = difference(newBat[i], batProduct[i]);
       console.log('PATCH: ', diff);
-      debouncedUpdateOppProduct(newBat[i].Id, diff);
+      debouncedUpdateOppProduct(newBat[i].Id, diff, newBat[i]);
     }
 
     setBatProduct(newBat);

@@ -257,13 +257,41 @@ app.patch('/api/OpportunityProduct/:id', asyncMiddleware(async (request, respons
   const body = request.body;
   const session = getSession(request, response);
   if (session == null) return;
-  const data = {
-    fields: {
-      ...body
+  const { diff, newData, Opportunity } = body;
+  if (diff.Product2Id) {
+    console.log('UPDATING PRODUCT');
+    // delete existing
+    const deleteRes = await utils.deleteOpportunityProduct(sfdc, session, id);
+    if (deleteRes === 500) {
+      return response.status(deleteRes.status).json(deleteRes.json);
     }
-  };
-  const res = await utils.updateOpportunityProduct(sfdc, session, id, data);
-  return response.status(res.status).json(res.json);
+
+    // create
+    const pricebookRes = await utils.getProductPricebook(sfdc, session, newData.Product2Id, Opportunity.Pricebook2Id);
+    if (pricebookRes.status === 500 || pricebookRes.json.records.length < 1) {
+      return response.status(500).json(pricebookRes.json);
+    }
+    const data = {
+      apiName: "OpportunityLineItem",
+      fields: {
+        OpportunityId: Opportunity.Id,
+        PricebookEntryId: pricebookRes.json.records[0].Id,
+        Quantity: newData.Quantity,
+        UnitPrice: pricebookRes.json.records[0].UnitPrice,
+      }
+    };
+    const createRes = await utils.createOpportunityProduct(sfdc, session, data);
+    return response.status(createRes.status).json(createRes.json);
+  } else {
+    console.log('UPDATING QUANTITY');
+    const data = {
+      fields: {
+        ...diff
+      }
+    };
+    const res = await utils.updateOpportunityProduct(sfdc, session, id, data);
+    return response.status(res.status).json(res.json);
+  }
 }));
 
 app.get('/api/Products', asyncMiddleware(async (request, response, next) => {
