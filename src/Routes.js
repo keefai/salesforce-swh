@@ -1,10 +1,11 @@
 import React from 'react';
-import { Switch, Redirect, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import withAuth from './hoc/withAuth';
 // import { RouteWithLayout } from './components';
 // import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
+  Home as HomeView,
   Me as MeView,
   Invoice as InvoiceView,
   Login as LoginView,
@@ -20,7 +21,7 @@ import {
 const Routes = () => {
   return (
     <Switch>
-      <Redirect exact from="/" to="/me" />
+      <Route path="/" exact component={withAuth(HomeView)} />
       <Route path="/login" exact component={LoginView} />
       <Route path="/me" exact component={withAuth(MeView)} />
       {/*
@@ -33,8 +34,7 @@ const Routes = () => {
       <Route path="/barcode" exact component={BarcodeView} />
       <Route path="/opportunity" exact component={withAuth(OpportunityView)} />
       <Route path="/test" exact component={TestView} />
-      <Route path="/not-found" exact component={NotFoundView} />
-      <Redirect to="/not-found" />
+      <Route path="*" component={NotFoundView} />
     </Switch>
   );
 };

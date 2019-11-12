@@ -23,11 +23,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const LoginPage = () => {
+const LoginPage = ({ location }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [redirect, setRedirect] = useState(false);
-  let { redirectTo = '/' } = useParams();
+  const params = new URLSearchParams(location.search);
+  const redirectTo = params.get('redirectTo');
 
   const login = () => {
     window.location = '/api/auth/login';
@@ -41,6 +42,10 @@ const LoginPage = () => {
       setRedirect(true);
     })
     .catch(err => {
+      // not logged in, set redirect
+      if (redirectTo) {
+        localStorage.setItem('redirectTo', redirectTo);
+      }
       setLoading(false);
     })
   }, []);
