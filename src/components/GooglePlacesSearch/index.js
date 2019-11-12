@@ -83,6 +83,11 @@ export default class GooglePlacesSearch extends React.Component {
           onSelect={this.handleSelect}
           onError={this.handleError}
           shouldFetchSuggestions={address.length > 2}
+          searchOptions={{
+            componentRestrictions: {
+              country: 'au' // localized to australia
+            }
+          }}
         >
           {({ getInputProps, suggestions, getSuggestionItemProps }) => {
             return (
