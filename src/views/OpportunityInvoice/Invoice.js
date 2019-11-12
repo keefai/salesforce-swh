@@ -752,6 +752,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                     data={{
                       Savings: JSON.parse(oppData.SavingsList__c)
                     }}
+                    annotationData={oppData.TotalSystemCostInclGST__c}
                   />
                 </div>
               )}

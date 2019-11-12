@@ -3,7 +3,7 @@ import 'chartjs-plugin-annotation';
 import { Bar } from 'react-chartjs-2';
 import style from './style.module.scss';
 
-const Chart1 = ({ data }) => {
+const Chart1 = ({ data, annotationData }) => {
   const chartData = {
     labels: data ? data.Savings.map((d, i) => i + 1) : [],
     datasets: [
@@ -18,12 +18,12 @@ const Chart1 = ({ data }) => {
         backgroundColor: 'rgb(0, 153, 255)',
         data: data ? data.Savings.map(d => d.DirectCumulative) : [],
         borderWidth: 0
+      },
+      {
+        label: 'Initial Solar System Cost',
+        backgroundColor: 'rgb(255, 45, 45)',
+        borderWidth: 0
       }
-      // {
-      //   label: 'Initial Solar System Cost',
-      //   backgroundColor: 'rgb(255, 45, 45)',
-      //   borderWidth: 0
-      // }
     ]
   };
 
@@ -65,6 +65,28 @@ const Chart1 = ({ data }) => {
                       return `$${label}`;
                     }
                   }
+                }
+              ]
+            },
+            annotation: {
+              annotations: [
+                {
+                  type: 'line',
+                  mode: 'horizontal',
+                  scaleID: 'y-axis-0',
+                  value: annotationData,
+                  borderColor: 'rgb(255, 45, 45)',
+                  borderWidth: 3,
+                  label: {
+                    enabled: true,
+                    position: 'top',
+                    yAdjust: -16,
+                    // content: data ? `ROI in ${data.PaybackPeriodYears} Years` : '',
+                    content: `$${annotationData}`,
+                    backgroundColor: 'transparent',
+                    fontColor: 'red',
+                    fontSize: 16
+                 }
                 }
               ]
             }
