@@ -776,7 +776,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
               <table className={style.table}>
                 <tbody>
                   <tr>
-                    <td className={`${style.padding} ${style.min250}`}>Installation Address</td>
+                    <td className={`${style.padding} ${style.min50p}`}>Installation Address</td>
                     <td className={style.violet} onClick={() => setMapModal(true)}>
                       <span>{oppData.Address_Line_1__c}&nbsp;</span>
                     </td>

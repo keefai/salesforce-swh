@@ -8,18 +8,26 @@
     & > div {
     	padding: 15px;
     	text-align: center;
-        border: 2px solid rgb(0, 153, 255);
-        transition: all 0.2s ease-in-out;
+      border: 2px solid rgb(0, 153, 255);
+      transition: all 0.2s ease-in-out;
 
-        &:hover {
-            cursor: pointer;
-            background: rgb(144, 219, 244);
-            border: 2px solid rgb(144, 219, 244);
-            box-sizing: border-box;
-        }
+      &:hover {
+          cursor: pointer;
+          background: rgb(144, 219, 244);
+          border: 2px solid rgb(144, 219, 244);
+          box-sizing: border-box;
+      }
+
+      @media (max-width: 767px) {
+        padding: 10px;
+      }
 
     	& > img {
-    		max-width: 30px;
+        max-width: 30px;
+
+        @media (max-width: 767px) {
+          max-width: 20px;
+        }
     	}
     }
 }
