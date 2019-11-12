@@ -431,16 +431,16 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
       >
         <div className={style.page}>
           <Grid container spacing={3}>
-            <Grid item xs={4} className={style.logotitle}>
-              YOUR SOLAR QUOTE
+            <Grid item md={6} className={style.leftHeader}>
+              <span className={style.logotitle}>YOUR SOLAR QUOTE</span>
             </Grid>
-            <Grid item xs={4} className={style.logoContainer}>
+            <Grid item md={6} className={style.rightHeader}>
               <img src="/images/logos/swa.png" alt="swa-logo" className={style.logo} />
             </Grid>
           </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
+          <Grid container spacing={3} style={{ marginTop: '25px' }}>
+            <Grid item md={6} className={style.leftHeader}>
               <div onClick={() => setAccModal(true)}>
                 <div>{account.FirstName} {account.LastName}</div>
                 <div>{account.BillingAddress}</div>
@@ -449,6 +449,17 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                 <div>{account.Phone}</div>
               </div>
               <br />
+            </Grid>
+            <Grid item md={6} className={style.rightHeader}>
+              <div>20 Paul Drive</div>
+              <div>Surrey Downs, SA 5004</div>
+              <br />
+              <div>{oppData.Address_Line_1__c}</div>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
               <div>07/09/2019</div>
             </Grid>
           </Grid>
@@ -982,7 +993,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                     <td>
                       Solar Warehouse Australia
                       <br />
-                      BSD: 065 150 AC: 1070 4370
+                      BSB: 065 150 AC: 1070 4370
                     </td>
                   </tr>
                 </tbody>

@@ -18,7 +18,12 @@ const DetailsForm = ({
 }) => {
   return (
     <React.Fragment>
-      <DialogTitle id="form-dialog-title">Contact Details</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        <div className={style.spacedHeader}>
+          <span>Contact Details</span>
+          <img src="/images/logos/swa.png" alt="swa-logo" />
+        </div>
+      </DialogTitle>
       <DialogContent>
         <Grid container spacing={1}>
           <Grid item xs={6}>

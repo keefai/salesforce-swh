@@ -42,7 +42,11 @@ const InstallationAddress = ({
 
   return (
     <React.Fragment>
-      <DialogTitle id="form-dialog-title">Installation Address</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        <div className={style.spacedHeader}>
+          <span>Installation Address</span>
+        </div>
+      </DialogTitle>
       <DialogContent>
         <div className={style.addressContainer}>
           <GooglePlacesSearch

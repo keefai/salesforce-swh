@@ -17,7 +17,11 @@ const QuickTemplates = ({
 }) => {
   return (
     <React.Fragment>
-      <DialogTitle id="form-dialog-title">Templates</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        <div className={style.spacedHeader}>
+          <span>Templates</span>
+        </div>
+      </DialogTitle>
       <DialogContent>
         <RadioGroup aria-label="template" name="template" value={templateId} onChange={handleTemplate}>
           {templates.map((t, i) => (
