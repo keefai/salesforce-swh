@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import style from './style.module.scss';
 import './print.scss';
 import api from '../../common/api';
-import { difference } from '../../common/helpers';
+import { formatNumber, difference } from '../../common/helpers';
 import Sidebar from './components/Sidebar';
 import Chart1 from './components/Charts/Chart1';
 import Chart2 from './components/Charts/Chart2';
@@ -664,14 +664,14 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                   </tr>
                   <tr>
                     <td>Average 1st year quarterly savings*</td>
-                    <td className={style.green}>${getFirstYearQuarterlySavings()}</td>
+                    <td className={style.green}>${formatNumber(getFirstYearQuarterlySavings())}</td>
                   </tr>
                   <tr>
                     <td>
                       <b>Estimated first year savings*</b>
                     </td>
                     <td className={style.green}>
-                      <b>${getEstimatedFirstYearSavings()}</b>
+                      <b>${formatNumber(getEstimatedFirstYearSavings())}</b>
                     </td>
                   </tr>
                   <tr>
@@ -691,13 +691,13 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                 <tbody>
                   <tr>
                     <td>Average Daily Energy Production</td>
-                    <td className={style.green}>{oppData.AverageDailyProduction__c} kWh</td>
+                    <td className={style.green}>{formatNumber(oppData.AverageDailyProduction__c)} kWh</td>
                   </tr>
                   <tr>
                     <td>
                       Approx. 1<sup>st</sup> Year Energy Production
                     </td>
-                    <td className={style.green}>{oppData.AverageAnnualProduction__c} kWh</td>
+                    <td className={style.green}>{formatNumber(oppData.AverageAnnualProduction__c)} kWh</td>
                   </tr>
                 </tbody>
               </table>
@@ -886,11 +886,11 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                 <tbody>
                   <tr>
                     <td>Cost of System (excluding GST)*</td>
-                    <td className={style.green}>${oppData.TotalSystemCostExclGST__c}</td>
+                    <td className={style.green}>${formatNumber(oppData.TotalSystemCostExclGST__c)}</td>
                   </tr>
                   <tr>
                     <td>GST</td>
-                    <td className={style.green}>${oppData.GST__c}</td>
+                    <td className={style.green}>${formatNumber(oppData.GST__c)}</td>
                   </tr>
                   <tr>
                     <td>Promo Discount</td>
@@ -898,27 +898,31 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                   </tr>
                   <tr>
                     <td>STC Discount</td>
-                    <td className={style.green}>${oppData.STCDiscount__c}</td>
+                    <td className={style.green}>-${formatNumber(oppData.STCDiscount__c)}</td>
+                  </tr>
+                  <tr>
+                    <td>HBS Subsidy</td>
+                    <td className={style.green}>-${formatNumber(oppData.HBSSubsidy__c)}</td>
                   </tr>
                   <tr style={{ height: '75px' }}>
                     <td>
                       <b>SALE PRICE</b> (After Discounts/Rebates)
                     </td>
                     <td className={style.green}>
-                      <b>${oppData.TotalSystemCostInclGST__c}</b>
+                      <b>${formatNumber(oppData.TotalSystemCostInclGST__c)}</b>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <b>Deposit Amount</b>
                     </td>
-                    <td className={style.green}>${oppData.DepositAmount__c}</td>
+                    <td className={style.green}>${formatNumber(oppData.DepositAmount__c)}</td>
                   </tr>
                   <tr>
                     <td>
                       <b>Balance Due On Day Of Install Via Rate Setter Finance</b>
                     </td>
-                    <td>${oppData.BalanceDueOnCompletion__c}</td>
+                    <td>${formatNumber(oppData.BalanceDueOnCompletion__c)}</td>
                   </tr>
                 </tbody>
               </table>

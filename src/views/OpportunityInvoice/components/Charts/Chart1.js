@@ -1,6 +1,7 @@
 import React from 'react';
 import 'chartjs-plugin-annotation';
 import { Bar } from 'react-chartjs-2';
+import { formatNumber } from '../../../../common/helpers';
 import style from './style.module.scss';
 
 const Chart1 = ({ data, annotationData }) => {
@@ -62,7 +63,7 @@ const Chart1 = ({ data, annotationData }) => {
                   ticks: {
                     min: 0,
                     callback: label => {
-                      return `$${label}`;
+                      return `$${formatNumber(label)}`;
                     }
                   }
                 }
@@ -82,7 +83,7 @@ const Chart1 = ({ data, annotationData }) => {
                     position: 'top',
                     yAdjust: -16,
                     // content: data ? `ROI in ${data.PaybackPeriodYears} Years` : '',
-                    content: `$${annotationData}`,
+                    content: `$${formatNumber(annotationData)}`,
                     backgroundColor: 'transparent',
                     fontColor: 'red',
                     fontSize: 16
