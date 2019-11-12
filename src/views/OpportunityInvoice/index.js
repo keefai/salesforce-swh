@@ -15,6 +15,7 @@ const OpportunityInvoice = props => {
   const [products, setProducts] = useState(null);
   const [oppProducts, setOppProducts] = useState(null);
   const [account, setAccount] = useState(null);
+  const [pricebook, setPricebook] = useState(null);
 
   const { opportunityId = null } = props.match.params;
 
@@ -26,6 +27,7 @@ const OpportunityInvoice = props => {
       console.log('Opportunity: ', res.data);
       setOpportunity(res.data);
       if (res.data) {
+        await getPricebook(res.data.Pricebook2Id);
         await getAccount(res.data.AccountId);
         await getOpportunityProducts(id);
         await getProducts(res.data.AccountId);
@@ -37,6 +39,16 @@ const OpportunityInvoice = props => {
       showLoading && setLoading(false);
     }
   };
+
+  const getPricebook = async (id) => {
+    try {
+      const res = await api.get(`/PricebookProducts/${id}`);
+      console.log('getPricebook: ', res);
+      setPricebook(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const getAccount = async (id) => {
     try {
@@ -140,7 +152,7 @@ const OpportunityInvoice = props => {
       }}
       getAccount={getAccount}
       oppProducts={oppProducts.records}
-      products={products.records}
+      products={products.records.filter(p => Boolean(pricebook.records.find(pb => pb.Product2Id === p.Id)))}
     />;
   }
 

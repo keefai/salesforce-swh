@@ -139,6 +139,25 @@ exports.getProductPricebook = async (sfdc, session, id, p2id) => {
   }
 };
 
+exports.getPricebook = async (sfdc, session, pricebook2Id) => {
+  try {
+    const query = encodeURI(`SELECT Id, Product2Id FROM PricebookEntry WHERE Pricebook2Id='${pricebook2Id}'`);
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
+    const payload = await httpClient.get({ ...apiRequestOptions });
+    console.log('getProductPricebook', payload);
+    return {
+      status: 200,
+      json: JSON.parse(payload)
+    };
+  } catch (error) {
+    console.error('getProductPricebook: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+};
+
 exports.createOpportunityProduct = async (sfdc, session, data) => {
   try {
     const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `ui-api/records`);

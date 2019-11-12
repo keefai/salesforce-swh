@@ -222,6 +222,16 @@ app.get('/api/OpportunityProducts/:id', asyncMiddleware(async (request, response
   return response.status(res.status).json(res.json);
 }));
 
+app.get('/api/PricebookProducts/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getPricebook(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}));
+
 app.post('/api/OpportunityProduct', asyncMiddleware(async (request, response, next) => {
   const body = request.body;
   const session = getSession(request, response);
