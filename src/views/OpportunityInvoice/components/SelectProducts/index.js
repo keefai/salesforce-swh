@@ -21,7 +21,7 @@ const SelectProducts = ({ options, value, onChange }) => {
       }}
       onClick={() => setEdit(true)}
     >
-      {!edit ? value ? options.find(op => op.Id === value).Name : <i>Select</i> :
+      {!edit ? value ? options.find(op => op.Id === value).Name : <i style={{ color: '#A9A9A9' }}>Select Product</i> :
         <TextField
           id="select-product"
           select
@@ -39,7 +39,7 @@ const SelectProducts = ({ options, value, onChange }) => {
         >
           {!value && (
             <option key='select' value={null}>
-              Select
+              Select Product
             </option>
           )}
           {options.map(option => (

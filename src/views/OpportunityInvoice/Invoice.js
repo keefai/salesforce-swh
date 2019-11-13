@@ -305,6 +305,9 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     newBat[i][field] = e.target.value;
 
     if (newBat[i].Id === null) {
+      if ((newBat[i].Product2Id !== null) && (newBat[i].Quantity === 0 || newBat[i].Quantity === null)) {
+        newBat[i].Quantity = 1;
+      }
       if ((newBat[i].Product2Id !== null) && (newBat[i].Quantity > 0)) {
         console.log('CREATE');
         debouncedAddOppProduct(newBat[i])
@@ -497,6 +500,8 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         </td>
                         <td className={style.numberTd}>
                           <EditableInput
+                            inputType="number"
+                            min={0}
                             type="integer"
                             value={p.Quantity}
                             onChange={handleSpProductData(i, 'Quantity')}
@@ -525,6 +530,8 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         </td>
                         <td className={style.numberTd}>
                           <EditableInput
+                            inputType="number"
+                            min={0}
                             type="integer"
                             value={p.Quantity}
                             onChange={handleInvProductData(i, 'Quantity')}
@@ -553,6 +560,8 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         </td>
                         <td className={style.numberTd}>
                           <EditableInput
+                            inputType="number"
+                            min={0}
                             type="integer"
                             value={p.Quantity}
                             onChange={handleBatProductData(i, 'Quantity')}

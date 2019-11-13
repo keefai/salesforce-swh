@@ -10,6 +10,16 @@
   }
 }
 
+.input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+
+  &:focus {
+    -webkit-appearance: number-input;
+    -moz-appearance: number-input;
+  }
+}
+
 .div {
   padding: 5px;
 }

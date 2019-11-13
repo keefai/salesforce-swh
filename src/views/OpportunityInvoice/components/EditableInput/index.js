@@ -39,12 +39,22 @@ class EditableInput extends React.Component {
         parsedVal = parseFloat(newVal);
       }
 
+      if (isNaN(parsedVal)) {
+        parsedVal = null;
+      }
+
+      if (this.props.min !== undefined) {
+        if (parsedVal === null || parsedVal < this.props.min) {
+          parsedVal = this.props.min;
+        }
+      }
+
       this.setState({ val: newVal });
       this.props.onChange({
         ...e,
         target: {
           ...e.target,
-          value: isNaN(parsedVal) ? null : parsedVal
+          value: parsedVal
         }
       });
     } else {
@@ -82,7 +92,7 @@ class EditableInput extends React.Component {
       >
         {prefix}
         <AutosizeInput
-          input='text'
+          type={this.props.inputType || 'text'}
           inputClassName={`${style.input} ${className}`}
           onChange={this.onChangeMiddleware}
           value={this.state.val}
