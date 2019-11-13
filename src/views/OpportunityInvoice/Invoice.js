@@ -472,7 +472,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                   <tr>
                     <td>System Size</td>
                     <td className={style.green}>
-                      {oppData.SystemSize__c}
+                      {oppData.SystemSize__c}kWH
                       {/* <EditableInput
                         type='integer'
                         value={oppData.SystemSize__c}
@@ -583,7 +583,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         value={oppData.Cost_of_Power_ex_GST__c}
                         onChange={handleOppData('Cost_of_Power_ex_GST__c')}
                         prefix="$"
-                        suffix="/kWh"
+                        suffix="/kWH"
                         onBlur={oppDataBlur}
                       />
                     </td>
@@ -609,7 +609,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         value={oppData.Feed_in_tariff__c}
                         onChange={handleOppData('Feed_in_tariff__c')}
                         prefix="$"
-                        suffix="/kWh"
+                        suffix="/kWH"
                         onBlur={oppDataBlur}
                       />
                     </td>
@@ -633,7 +633,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         type="integer"
                         value={oppData.AverageDailyUsage__c}
                         onChange={handleOppData('AverageDailyUsage__c')}
-                        suffix="kWh"
+                        suffix="kWH"
                         onBlur={oppDataBlur}
                       />
                     </td>
@@ -645,7 +645,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                         type="integer"
                         value={missData.approxQuarterlyEnergyUse}
                         onChange={handleMissData('approxQuarterlyEnergyUse')}
-                        suffix="kWh"
+                        suffix="kWH"
                       />
                     </td>
                   </tr>
@@ -702,13 +702,13 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                 <tbody>
                   <tr>
                     <td>Average Daily Energy Production</td>
-                    <td className={style.green}>{formatNumber(oppData.AverageDailyProduction__c)} kWh</td>
+                    <td className={style.green}>{formatNumber(oppData.AverageDailyProduction__c)} kWH</td>
                   </tr>
                   <tr>
                     <td>
                       Approx. 1<sup>st</sup> Year Energy Production
                     </td>
-                    <td className={style.green}>{formatNumber(oppData.AverageAnnualProduction__c)} kWh</td>
+                    <td className={style.green}>{formatNumber(oppData.AverageAnnualProduction__c)} kWH</td>
                   </tr>
                 </tbody>
               </table>
