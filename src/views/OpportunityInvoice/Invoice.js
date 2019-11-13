@@ -911,10 +911,12 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                     <td>STC Discount</td>
                     <td className={style.green}>-${formatNumber(oppData.STCDiscount__c)}</td>
                   </tr>
-                  <tr>
-                    <td>HBS Subsidy</td>
-                    <td className={style.green}>-${formatNumber(oppData.HBSSubsidy__c)}</td>
-                  </tr>
+                  {oppData.HBSSubsidy__c > 0 && (
+                    <tr>
+                      <td>HBS Subsidy</td>
+                      <td className={style.green}>-${formatNumber(oppData.HBSSubsidy__c)}</td>
+                    </tr>
+                  )}
                   <tr style={{ height: '75px' }}>
                     <td>
                       <b>SALE PRICE</b> (After Discounts/Rebates)
