@@ -653,8 +653,8 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
                     <td className={style.yellow}>
                       <EditableInput
                         type="integer"
-                        value={missData.approxQuarterlyEnergyUse}
-                        onChange={handleMissData('approxQuarterlyEnergyUse')}
+                        value={oppData.AverageQuarterlyUsage__c}
+                        onChange={handleOppData('AverageQuarterlyUsage__c')}
                         suffix="kWH"
                       />
                     </td>
