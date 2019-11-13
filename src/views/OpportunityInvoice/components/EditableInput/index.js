@@ -11,19 +11,19 @@ class EditableInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      val: this.props.value,
+      // val: this.props.value,
       edit: false
     };
     this.iRef = null;
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      this.setState({
-        val: this.props.value
-      });
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.value !== this.props.value) {
+  //     this.setState({
+  //       val: this.props.value
+  //     });
+  //   }
+  // }
 
   onChangeMiddleware = (e) => {
     let newVal = e.target.value;
@@ -49,7 +49,6 @@ class EditableInput extends React.Component {
         }
       }
 
-      this.setState({ val: newVal });
       this.props.onChange({
         ...e,
         target: {
@@ -58,7 +57,6 @@ class EditableInput extends React.Component {
         }
       });
     } else {
-      this.setState({ val: newVal });
       this.props.onChange({
         ...e,
         target: {
@@ -95,7 +93,7 @@ class EditableInput extends React.Component {
           type={this.props.inputType || 'text'}
           inputClassName={`${style.input} ${className}`}
           onChange={this.onChangeMiddleware}
-          value={this.state.val}
+          value={value}
           onBlur={this.onBlurMiddleware}
           inputRef={(node) => this.iRef = node}
           {...props}
