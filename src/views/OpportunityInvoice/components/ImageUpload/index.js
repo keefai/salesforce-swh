@@ -9,6 +9,12 @@ import api from '../../../../common/api';
 import styles from "./style.module.scss";
 import Map from '../Map';
 
+const UploadButton = (props) => (
+  <Fab color="default" aria-label="upload" {...props}>
+    <CloudUploadIcon />
+  </Fab>
+);
+
 export const ImageUploadDropzone = ({ children, setImg, noClick = false }) => {
   const [uploaded, setUploaded] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -44,7 +50,7 @@ export const ImageUploadDropzone = ({ children, setImg, noClick = false }) => {
     setError(null);
   }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: "image/*",
     multiple: false,
@@ -86,7 +92,7 @@ export const ImageUploadDropzone = ({ children, setImg, noClick = false }) => {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
-      {children(isDragActive)}
+      {children(isDragActive, open)}
     </div>
   );
 };
@@ -131,7 +137,7 @@ export const DivDropzone = ({ active, src, alt }) => {
   );
 };
 
-export const MapDropzone = ({ active, address}) => {
+export const MapDropzone = ({ active, open, address}) => {
   return (
     <div className={styles.dropzoneImageContainer}>
       <Map
@@ -142,6 +148,13 @@ export const MapDropzone = ({ active, address}) => {
           height: '400px'
         }}
       />
+      <div style={{
+        position: 'absolute',
+        top: '15px',
+        left: '15px'
+      }}>
+        <UploadButton onClick={open} />
+      </div>
       {active && (
         <MyDropzone
           className={styles.dropzoneActiveForImage}

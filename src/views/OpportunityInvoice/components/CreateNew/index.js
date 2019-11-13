@@ -48,7 +48,7 @@ const CreateNew = ({
           installationAddress={installationAddress}
           handleInstallationAddress={handleInstallationAddress}
           skip={() => {
-            handleInstallationAddress({ e: { target: { value: null } } });
+            handleInstallationAddress({ target: { value: null } });
             setStep(STEPS.TEMPLATE);
           }}
           nextStep={() => setStep(STEPS.TEMPLATE)}

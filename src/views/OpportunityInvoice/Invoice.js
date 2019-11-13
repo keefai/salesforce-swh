@@ -399,10 +399,11 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
           })}
           noClick={true}
         >
-          {active => (
+          {(active, open) => (
             <MapDropzone
               address={oppData.Address_Line_1__c}
               active={active}
+              open={open}
             />
           )}
       </ImageUploadDropzone>

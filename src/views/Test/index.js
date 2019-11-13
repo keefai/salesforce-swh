@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Paper from '@material-ui/core/Paper';
-import { ImageUploadDropzone, DivDropzone, ImageDropzone } from '../OpportunityInvoice/components/ImageUpload';
+import { ImageUploadDropzone, MapDropzone, ImageDropzone } from '../OpportunityInvoice/components/ImageUpload';
 
 const TestView = () => {
   const [img, setImg] = useState('');
@@ -12,11 +12,8 @@ const TestView = () => {
           {JSON.stringify(img, null, 2)}
         </code>
       </pre>
-      <ImageUploadDropzone>
-        {(active) => <DivDropzone active={active} />}
-      </ImageUploadDropzone>
-      <ImageUploadDropzone>
-        {active => <ImageDropzone src="https://swamedia.blob.core.windows.net/salesforce-swh-uploads/08241853393936505-test1.png" alt="installation-address" active={active} />}
+      <ImageUploadDropzone noClick={true}>
+        {(active, open) => <MapDropzone address='Mumbai, Maharashtra, India' active={active} open={open} />}
       </ImageUploadDropzone>
     </div>
   );
