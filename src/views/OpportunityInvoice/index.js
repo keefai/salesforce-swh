@@ -94,6 +94,7 @@ const OpportunityInvoice = props => {
     try {
       const res = await api.get(`/OpportunityImages/${id}`);
       console.log('OpportunityImages: ', res.data);
+      emitOpportunitySystemImage(id);
       setOppImages(res.data);
     } catch (err) {
       console.log(err);

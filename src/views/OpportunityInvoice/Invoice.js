@@ -91,7 +91,7 @@ const getLatestSystemImage = (oppImages, type)  => {
 
 const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, ...props }) => {
   let resume = React.createRef();
-  const [sign, setSign] = useState('');
+  const sign = getLatestSystemImage(oppImages, SystemImageTypes.CUSTOMER_SIGNATURE);
   const [signModal, setSignModal] = useState(false);
   const [oppData, setOppData] = useState(data);
   const [accModal, setAccModal] = useState(false);
@@ -387,6 +387,24 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, 
       });
   }
 
+  const uploadSignature = async (imageObj) => {
+    try {
+      const res = api.post(`/OpportunityImages/${data.Id}`, {
+        ...imageObj,
+        type: SystemImageTypes.CUSTOMER_SIGNATURE
+      });
+      console.log(res);
+      props.enqueueSnackbar('Signature Updated', {
+        autoHideDuration: 1000
+      });
+    } catch (err) {
+      props.enqueueSnackbar('Error Updating Signature', {
+        autoHideDuration: 1000
+      });
+      console.log(err);
+    }
+}
+
   // render Map
   const renderMap = () => {
     const imageUrl = getLatestSystemImage(oppImages, SystemImageTypes.SOLAR_PANEL_LAYOUT);
@@ -451,7 +469,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, 
       <DetailsForm state={accModal} close={() => setAccModal(false)} account={account} getAccount={getAccount} />
       <InstallationMap state={mapModal} close={() => setMapModal(false)} address={oppData.Address_Line_1__c} updateAddress={handleOppData('Address_Line_1__c')} />
       <Sidebar exportPDF={exportPDF} openModal={openModal} />
-      <Signature state={signModal} closeModal={closeModal} setSign={setSign} />
+      <Signature state={signModal} closeModal={closeModal} oppId={data.Id} />
       <PDFExport
         scale={0.55}
         paperSize="A4"
