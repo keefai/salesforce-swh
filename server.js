@@ -212,6 +212,16 @@ app.get('/api/Opportunity/:id', asyncMiddleware(async (request, response, next) 
   return response.status(res.status).json(res.json);
 }));
 
+app.get('/api/Opportunity/:id/RecordType', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+
+  const res = await utils.getOpportunityType(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}));
+
 app.get('/api/OpportunityProducts/:id', asyncMiddleware(async (request, response, next) => {
   const { id } = request.params;
   const body = request.body;

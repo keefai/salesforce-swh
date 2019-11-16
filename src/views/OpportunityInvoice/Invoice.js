@@ -22,7 +22,7 @@ import CreateNew from './components/CreateNew';
 import YesNoDropdown from './components/YesNoDropdown';
 import DetailsForm from './components/DetailsForm';
 import InstallationMap from './components/InstallationMap';
-import { ProductTypes, SystemImageTypes, validURL } from './helpers';
+import { ProductTypes, SystemImageTypes, OpportunityRecordType, validURL } from './helpers';
 import SelectProducts from './components/SelectProducts';
 import { ImageUploadDropzone, ImageDropzone, DivDropzone, MapDropzone } from './components/ImageUpload';
 
@@ -89,7 +89,11 @@ const getLatestSystemImage = (oppImages, type)  => {
   return null;
 }
 
-const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, ...props }) => {
+const checkRecordType = (oppType, type) => {
+  return type.indexOf(oppType.DeveloperName) !== -1;
+};
+
+const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, products, ...props }) => {
   let resume = React.createRef();
   const sign = getLatestSystemImage(oppImages, SystemImageTypes.CUSTOMER_SIGNATURE);
   const [signModal, setSignModal] = useState(false);
@@ -482,6 +486,8 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, 
           <Grid container spacing={3}>
             <Grid item md={6} className={style.leftHeader}>
               <span className={style.logotitle}>YOUR SOLAR QUOTE</span>
+              <br />
+              <span>{data.Id} (salesforce id)</span>
             </Grid>
             <Grid item md={6} className={style.rightHeader}>
               <img src="/images/logos/swa.png" alt="swa-logo" className={style.logo} />
@@ -534,7 +540,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, 
                     <td className={style.hidden}>&nbsp;</td>
                   </tr>
                   {
-                    spProduct && spProduct.map((p, i) => (
+                    spProduct && checkRecordType(oppType, [OpportunityRecordType.SOLAR_SYSTEM, OpportunityRecordType.SOLAR_BATTERY]) && spProduct.map((p, i) => (
                       <tr key={i}>
                         <td className={style.editLabel}>Solar Panel Product</td>
                         <td className={style.violet}>
@@ -564,6 +570,8 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, 
                     ))
                   }
                   {
+                    invProduct &&
+                    checkRecordType(oppType, [OpportunityRecordType.SOLAR_SYSTEM, OpportunityRecordType.SOLAR_BATTERY, OpportunityRecordType.BATTERY]) &&
                     invProduct.map((p, i) => (
                       <tr key={i}>
                         <td className={style.editLabel}>Inverter Product</td>
@@ -594,6 +602,8 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, 
                     ))
                   }
                   {
+                    batProduct &&
+                    checkRecordType(oppType, [OpportunityRecordType.SOLAR_BATTERY, OpportunityRecordType.BATTERY]) &&
                     batProduct.map((p, i) => (
                       <tr key={i}>
                         <td className={style.editLabel}>Battery Product</td>
@@ -974,7 +984,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, 
                   )}
                   <tr style={{ height: '75px' }}>
                     <td>
-                      <b>SALE PRICE</b> (After Discounts/Rebates)
+                      <b>SALE PRICE</b> (After Discounts/Rebates inc GST)
                     </td>
                     <td className={style.green}>
                       <b>${formatNumber(oppData.TotalSystemCostInclGST__c)}</b>

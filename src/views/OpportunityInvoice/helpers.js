@@ -15,6 +15,13 @@ export const SystemImageTypes = {
   CUSTOMER_SIGNATURE: 'Customer Signature'
 };
 
+export const OpportunityRecordType = {
+  SOLAR_SYSTEM: 'Solar_System_S',
+  BATTERY: 'Battery',
+  SOLAR_BATTERY: 'Solar_Battery_SB',
+  GENERIC: 'Generic_Opportunity'
+}
+
 export const validURL = (str = '') => {
   var pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol

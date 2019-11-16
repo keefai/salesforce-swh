@@ -84,6 +84,24 @@ exports.getOpportunities = async (sfdc, session, id) => {
   }
 }
 
+exports.getOpportunityType = async (sfdc, session, id) => {
+  try {
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}/RecordType`);
+    const payload = await httpClient.get({ ...apiRequestOptions, json: true });
+    console.log('getOpportunityType', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('getOpportunityType: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
 // exports.getOpportunityProducts = async (sfdc, session, id) => {
 //   try {
 //     const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `sobjects/Opportunity/${id}/OpportunityLineItems`);

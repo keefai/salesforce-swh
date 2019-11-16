@@ -21,6 +21,7 @@ const OpportunityInvoice = props => {
   const [opportunity, setOpportunity] = useState(null);
   const [products, setProducts] = useState(null);
   const [oppProducts, setOppProducts] = useState(null);
+  const [oppType, setOppType] = useState(null);
   const [oppImages, setOppImages] = useState(null);
   const [account, setAccount] = useState(null);
   const [pricebook, setPricebook] = useState(null);
@@ -35,6 +36,7 @@ const OpportunityInvoice = props => {
       console.log('Opportunity: ', res.data);
       setOpportunity(res.data);
       if (res.data) {
+        await getOpportunityType(id);
         await getPricebook(res.data.Pricebook2Id);
         await getAccount(res.data.AccountId);
         await getOpportunityProducts(id);
@@ -53,6 +55,16 @@ const OpportunityInvoice = props => {
       const res = await api.get(`/PricebookProducts/${id}`);
       console.log('getPricebook: ', res);
       setPricebook(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const getOpportunityType = async (id) => {
+    try {
+      const res = await api.get(`/Opportunity/${id}/RecordType`);
+      console.log('getPgetOpportunityTypericebook: ', res);
+      setOppType(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -184,6 +196,7 @@ const OpportunityInvoice = props => {
       getAccount={getAccount}
       oppProducts={oppProducts.records}
       oppImages={oppImages.records}
+      oppType={oppType}
       products={products.records.filter(p => Boolean(pricebook.records.find(pb => pb.Product2Id === p.Id)))}
     />;
   }
