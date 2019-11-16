@@ -348,7 +348,7 @@ app.post('/api/webhook/systemImage', asyncMiddleware(async (request, response, n
   console.log('systemImage BODY: ', JSON.stringify(request.body, null, 2));
   const data = request.body['soapenv:envelope']['soapenv:body'][0]['notifications'][0]['notification'][0]['sobject'][0];
   console.log('systemImage Data: ', data);
-  const id = data['sf:System_Detail__c'][0];
+  const id = data['sf:system_detail__c'][0];
   if (id) {
     pubDb.publish(`systemImage-${id}`, 'update');
   }

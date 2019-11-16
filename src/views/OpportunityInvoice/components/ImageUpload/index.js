@@ -32,7 +32,7 @@ export const ImageUploadDropzone = ({ children, setImg, noClick = false }) => {
         setUploaded(true);
         setTimeout(() => {
           setUploaded(false);
-        }, 2000);
+        }, 2500);
         setImg(res.data);
       })
       .catch((err) => {
