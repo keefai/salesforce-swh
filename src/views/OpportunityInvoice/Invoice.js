@@ -22,7 +22,7 @@ import CreateNew from './components/CreateNew';
 import YesNoDropdown from './components/YesNoDropdown';
 import DetailsForm from './components/DetailsForm';
 import InstallationMap from './components/InstallationMap';
-import { ProductTypes, ProductTypeByID, validURL } from './helpers';
+import { ProductTypes, SystemImageTypes, validURL } from './helpers';
 import SelectProducts from './components/SelectProducts';
 import { ImageUploadDropzone, ImageDropzone, DivDropzone, MapDropzone } from './components/ImageUpload';
 
@@ -71,7 +71,25 @@ const filterProducts = (products, type) => {
   return products.filter((p) => p.Product_Type__c === type);
 }
 
-const Invoice = ({ data, account, getAccount, oppProducts, products, ...props }) => {
+const getLatestSystemImage = (oppImages, type)  => {
+  if (oppImages) {
+    let filOppImages = oppImages.filter(bb => bb.Type__c === type);
+    if (filOppImages && filOppImages.length > 0) {
+      filOppImages.sort((a, b) => {
+        let keyA = new Date(a.CreatedDate);
+        let keyB = new Date(b.CreatedDate);
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
+        return 0;
+      });
+      return filOppImages[0].ImageURL__c;
+    }
+    return null;
+  }
+  return null;
+}
+
+const Invoice = ({ data, account, getAccount, oppProducts, oppImages, products, ...props }) => {
   let resume = React.createRef();
   const [sign, setSign] = useState('');
   const [signModal, setSignModal] = useState(false);
@@ -349,20 +367,37 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     return oppData.SavingsList__c ? JSON.parse(oppData.SavingsList__c)[0].Total.toFixed(2) : 0.0;
   };
 
+  const uploadSystemImage = (imageObj) => {
+      api
+      .post(`/OpportunityImages/${data.Id}`, {
+        ...imageObj,
+        type: SystemImageTypes.SOLAR_PANEL_LAYOUT
+      })
+      .then(res => {
+        console.log(res);
+        props.enqueueSnackbar('Solar Panel Layout Updated', {
+          autoHideDuration: 1000
+        });
+      })
+      .catch(err => {
+        props.enqueueSnackbar('Error Updating Solar Panel Layout', {
+          autoHideDuration: 1000
+        });
+        console.log(err);
+      });
+  }
+
   // render Map
   const renderMap = () => {
-    if (oppData.Address_Line_2__c && validURL(oppData.Address_Line_2__c)) {
+    const imageUrl = getLatestSystemImage(oppImages, SystemImageTypes.SOLAR_PANEL_LAYOUT);
+    if (imageUrl) {
       return (
         <ImageUploadDropzone
-          setImg={(val) => handleOppData('Address_Line_2__c')({
-            target: {
-              value: val
-            }
-          })}
+          setImg={uploadSystemImage}
         >
           {active => (
             <ImageDropzone
-              src={oppData.Address_Line_2__c}
+              src={imageUrl}
               alt="installation-address"
               active={active}
             />
@@ -374,11 +409,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
     if ((oppData.Address_Line_1__c === null) || (oppData.Address_Line_1__c.trim().length < 1)) {
       return (
         <ImageUploadDropzone
-          setImg={(val) => handleOppData('Address_Line_2__c')({
-            target: {
-              value: val
-            }
-          })}
+          setImg={uploadSystemImage}
           noClick={true}
         >
           {active => (
@@ -392,20 +423,16 @@ const Invoice = ({ data, account, getAccount, oppProducts, products, ...props })
 
     return (
       <ImageUploadDropzone
-          setImg={(val) => handleOppData('Address_Line_2__c')({
-            target: {
-              value: val
-            }
-          })}
-          noClick={true}
-        >
-          {(active, open) => (
-            <MapDropzone
-              address={oppData.Address_Line_1__c}
-              active={active}
-              open={open}
-            />
-          )}
+        setImg={uploadSystemImage}
+        noClick={true}
+      >
+        {(active, open) => (
+          <MapDropzone
+            address={oppData.Address_Line_1__c}
+            active={active}
+            open={open}
+          />
+        )}
       </ImageUploadDropzone>
     );
   }

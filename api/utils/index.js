@@ -120,6 +120,47 @@ exports.getOpportunityProducts = async (sfdc, session, id) => {
   }
 }
 
+// Opportunity Images
+exports.getOpportunitySystemImages = async (sfdc, session, id) => {
+  try {
+    const query = encodeURI(`SELECT Id, Name, ImageURL__c, Type__c, CreatedDate FROM System_Image__c WHERE System_Detail__c='${id}'`);
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
+    const payload = await httpClient.get({ ...apiRequestOptions });
+    console.log('getOpportunitySystemImages', payload);
+    return {
+      status: 200,
+      json: JSON.parse(payload)
+    };
+  } catch (error) {
+    console.error('getOpportunitySystemImages: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+exports.createOpportunitySystemImages = async (sfdc, session, data) => {
+  try {
+    const apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, `ui-api/records`);
+    const payload = await httpClient.post({ ...apiRequestOptions, body: data, json: true });
+    console.log('createOpportunitySystemImages', payload);
+    return {
+      status: 200,
+      json: payload
+    };
+  } catch (error) {
+    console.error('createOpportunitySystemImages: Force.com data API error: '+ JSON.stringify(error));
+    return {
+      status: 500,
+      json: error
+    };
+  }
+}
+
+
+// END - Opportunity Images
+
 exports.getProductPricebook = async (sfdc, session, id, p2id) => {
   try {
     const query = encodeURI(`SELECT Id, UnitPrice FROM PricebookEntry WHERE Product2Id='${id}' AND Pricebook2Id='${p2id}'`);

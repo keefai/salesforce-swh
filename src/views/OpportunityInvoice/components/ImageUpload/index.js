@@ -33,7 +33,7 @@ export const ImageUploadDropzone = ({ children, setImg, noClick = false }) => {
         setTimeout(() => {
           setUploaded(false);
         }, 2000);
-        setImg(res.data.url);
+        setImg(res.data);
       })
       .catch((err) => {
         console.log('uploadImage Error: ', err);

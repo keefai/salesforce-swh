@@ -3,7 +3,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withSnackbar } from 'notistack';
 import style from './style.module.scss';
 import api from '../../common/api';
-import { emitOpportunity, subscribeToOpportunity, unSubscribeToOpportunity } from '../../common/socket';
+import { 
+  emitOpportunity,
+  subscribeToOpportunity,
+  unSubscribeToOpportunity,
+  emitOpportunitySystemImage,
+  subscribeToOpportunitySystemImage,
+  unSubscribeToOpportunitySystemImage
+} from '../../common/socket';
 import Invoice from './Invoice';
 import Create from './Create';
 
@@ -14,12 +21,13 @@ const OpportunityInvoice = props => {
   const [opportunity, setOpportunity] = useState(null);
   const [products, setProducts] = useState(null);
   const [oppProducts, setOppProducts] = useState(null);
+  const [oppImages, setOppImages] = useState(null);
   const [account, setAccount] = useState(null);
   const [pricebook, setPricebook] = useState(null);
 
   const { opportunityId = null } = props.match.params;
 
-  const getOpportnity = async (id, showLoading = true) => {
+  const getOpportunity = async (id, showLoading = true) => {
     showLoading && setLoading(true);
     try {
       const res = await api.get(`/Opportunity/${id}`);
@@ -82,6 +90,17 @@ const OpportunityInvoice = props => {
     }
   }
 
+  const getOpportunityImages = async (id) => {
+    try {
+      const res = await api.get(`/OpportunityImages/${id}`);
+      console.log('OpportunityImages: ', res.data);
+      setOppImages(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err);
+    }
+  }
+
   const getTemplates = async () => {
     setLoading(true);
     try {
@@ -100,19 +119,30 @@ const OpportunityInvoice = props => {
     console.log('opportunityId: ', opportunityId);
     if (opportunityId) {
       console.log('Id: ', opportunityId);
-      getOpportnity(opportunityId);
+      getOpportunity(opportunityId);
       getProducts();
+      getOpportunityImages(opportunityId);
+
       subscribeToOpportunity(opportunityId, (d) => {
         console.log('subscribeToOpportunity: ', d);
         props.enqueueSnackbar('Invoice Updated', {
           autoHideDuration: 1000
         });
-        getOpportnity(opportunityId, false);
+        getOpportunity(opportunityId, false);
       });
+
+      subscribeToOpportunitySystemImage(opportunityId, (d) => {
+        console.log('subscribeToOpportunitySystemImage: ', d);
+        getOpportunityImages(opportunityId); 
+      })
 
       return () => {
         unSubscribeToOpportunity(opportunityId, (d) => {
           console.log('unSubscribeToOpportunity: ', d);
+        });
+
+        unSubscribeToOpportunitySystemImage(opportunityId, (d) => {
+          console.log('unSubscribeToOpportunitySystemImage: ', d);
         });
       };
     } else {
@@ -152,6 +182,7 @@ const OpportunityInvoice = props => {
       }}
       getAccount={getAccount}
       oppProducts={oppProducts.records}
+      oppImages={oppImages.records}
       products={products.records.filter(p => Boolean(pricebook.records.find(pb => pb.Product2Id === p.Id)))}
     />;
   }

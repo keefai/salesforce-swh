@@ -33,6 +33,19 @@ export const unSubscribeToOpportunity = (Id, cb) => {
   socket.off(`opportunity-${Id}`, cb);
 };
 
+export const emitOpportunitySystemImage = Id => {
+  console.log('Subscribing to ', Id);
+  socket.emit('systemImage', { Id });
+};
+
+export const subscribeToOpportunitySystemImage = (Id, cb) => {
+  socket.on(`systemImage-${Id}`, cb);
+};
+
+export const unSubscribeToOpportunitySystemImage = (Id, cb) => {
+  socket.off(`systemImage-${Id}`, cb);
+};
+
 // export const subscribeToTradeOrder = (cb) => {
 //   socket.on('tradeOrder', cb);
 // };

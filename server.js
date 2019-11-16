@@ -344,6 +344,26 @@ app.post('/api/webhook/opportunity', asyncMiddleware(async (request, response, n
   return response.send(resXML);
 }));
 
+app.post('/api/webhook/systemImage', asyncMiddleware(async (request, response, next) => {
+  console.log('systemImage BODY: ', JSON.stringify(request.body, null, 2));
+  const data = request.body['soapenv:envelope']['soapenv:body'][0]['notifications'][0]['notification'][0]['sobject'][0];
+  console.log('systemImage Data: ', data);
+  const id = data['sf:System_Detail__c'][0];
+  if (id) {
+    pubDb.publish(`systemImage-${id}`, 'update');
+  }
+  const resXML = `
+  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+      <notificationsResponse xmlns="http://soap.sforce.com/2005/09/outbound">
+        <Ack>true</Ack>
+      </notificationsResponse>
+    </soapenv:Body>
+  </soapenv:Envelope>
+  `;
+  return response.send(resXML);
+}));
+
 // app.get('/api/opportunityMetadata', asyncMiddleware(async (request, response, next) => {
 //   const { id } = request.params;
 //   const body = request.body;
@@ -461,10 +481,40 @@ app.post('/api/uploadImage', uploadStrategy, asyncMiddleware(async (request, res
       }
       console.log('uploadImage Result: ', result);
       const imageURL = blobService.getUrl(containerName, blobName);
-      return response.status(200).json({ url: imageURL });
+      return response.status(200).json({ name: blobName, url: imageURL });
     }
   );
 }));
+
+// Opportunity System Images
+
+app.get('/api/OpportunityImages/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const session = getSession(request, response);
+  if (session == null) return;
+  const res = await utils.getOpportunitySystemImages(sfdc, session, id);
+  return response.status(res.status).json(res.json);
+}));
+
+app.post('/api/OpportunityImages/:id', asyncMiddleware(async (request, response, next) => {
+  const { id } = request.params;
+  const body = request.body;
+  const session = getSession(request, response);
+  if (session == null) return;
+  const data = {
+    apiName: "System_Image__c",
+    fields: {
+      System_Detail__c: id,
+      Type__c: body.type,
+      Name: body.name,
+      ImageURL__c: body.url
+    }
+  };
+  const res = await utils.createOpportunitySystemImages(sfdc, session, data);
+  return response.status(res.status).json(res.json);
+}));
+
+// END - Opportunity System Image
 
 app.use(express.static(path.join(__dirname, './build')));
 app.get('*', (req, res) => {
