@@ -1,0 +1,16 @@
+.spacedActions {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.dialog {
+  :global
+  .MuiPaper-root {
+    width: 500px;
+  }
+}
+
+.title {
+  text-align: center;
+  font-size: 20px;
+}

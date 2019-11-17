@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { withSnackbar } from 'notistack';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import Grid from '@material-ui/core/Grid';
+import Switch from '@material-ui/core/Switch';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
@@ -21,6 +22,7 @@ import Map from './components/Map';
 import CreateNew from './components/CreateNew';
 import YesNoDropdown from './components/YesNoDropdown';
 import DetailsForm from './components/DetailsForm';
+import PaymentModal from './components/PaymentModal';
 import InstallationMap from './components/InstallationMap';
 import { ProductTypes, SystemImageTypes, OpportunityRecordType, validURL } from './helpers';
 import SelectProducts from './components/SelectProducts';
@@ -100,6 +102,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
   const [oppData, setOppData] = useState(data);
   const [accModal, setAccModal] = useState(false);
   const [mapModal, setMapModal] = useState(false);
+  const [paymentModal, setPaymentModal] = useState(false);
 
   const getSpProducts = () => filterAndGetObjects(products, oppProducts, ProductTypes.SOLAR_PANEL);
   const getInvProducts = () => filterAndGetObjects(products, oppProducts, ProductTypes.INVERTER);
@@ -117,6 +120,11 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
     setInvProduct(getInvProducts());
     setBatProduct(getBatProducts());
   }, [oppProducts]);
+
+  // handle payment modal
+  const handlePaymentModal = (e) => {
+    setPaymentModal(e.target.checked);
+  }
 
   // Save Data
   const saveData = (ndata, odata) => {
@@ -475,6 +483,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
 
   return (
     <React.Fragment>
+      <PaymentModal state={paymentModal} close={() => setPaymentModal(false)} />
       <DetailsForm state={accModal} close={() => setAccModal(false)} account={account} getAccount={getAccount} />
       <InstallationMap state={mapModal} close={() => setMapModal(false)} address={oppData.Address_Line_1__c} updateAddress={handleOppData('Address_Line_1__c')} />
       <Sidebar exportPDF={exportPDF} openModal={openModal} />
@@ -1006,6 +1015,28 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
                       <b>Balance Due On Day Of Install Via Rate Setter Finance</b>
                     </td>
                     <td>${formatNumber(oppData.BalanceDueOnCompletion__c)}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Easy Monthly Repayments from</b>
+                      <br />
+                      <span>
+                        Pay no deposit!
+                        Click to see our easy finance options
+                      </span>
+                    </td>
+                    <td>
+                      <span>$--.--</span>
+                      <br />
+                      <div style={{ textAlign: 'center' }}>
+                        <Switch
+                          checked={paymentModal}
+                          onChange={handlePaymentModal}
+                          value="payment"
+                          inputProps={{ 'aria-label': 'payment' }}
+                        /> 
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
