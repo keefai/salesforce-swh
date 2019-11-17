@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { formatNumber } from '../../../../common/helpers';
 import style from './style.module.scss';
 
 const Chart2 = ({ data }) => {
@@ -23,6 +24,17 @@ const Chart2 = ({ data }) => {
           data={chartData}
           height={250}
           options={{
+            tooltips: {
+              mode: 'single',
+              intersect: false,
+              position: 'nearest',
+              callbacks: {
+                  label: (t, d) => {
+                    var yLabel = t.yLabel;
+                    return `${formatNumber(yLabel)} kWH`;
+                  }
+              }
+            },
             animation: {
               onComplete: function() {
                 var chartInstance = this.chart,
@@ -61,7 +73,7 @@ const Chart2 = ({ data }) => {
                   ticks: {
                     min: 0,
                     callback: label => {
-                      return `${label} kWh`;
+                      return `${label} kWH`;
                     }
                   }
                 }

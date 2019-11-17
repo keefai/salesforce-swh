@@ -251,6 +251,9 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
     newSp[i][field] = e.target.value;
 
     if (newSp[i].Id === null) {
+      if ((newSp[i].Product2Id !== null) && (newSp[i].Quantity === 0 || newSp[i].Quantity === null)) {
+        newSp[i].Quantity = 1;
+      }
       if ((newSp[i].Product2Id !== null) && (newSp[i].Quantity > 0)) {
         console.log('CREATE');
         debouncedAddOppProduct(newSp[i])
@@ -263,7 +266,6 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
       console.log('PATCH: ', diff);
       debouncedUpdateOppProduct(newSp[i].Id, diff, newSp[i]);
     }
-
     setSpProduct(newSp);
   }
 
@@ -289,6 +291,9 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
     newInv[i][field] = e.target.value;
 
     if (newInv[i].Id === null) {
+      if ((newInv[i].Product2Id !== null) && (newInv[i].Quantity === 0 || newInv[i].Quantity === null)) {
+        newInv[i].Quantity = 1;
+      }
       if ((newInv[i].Product2Id !== null) && (newInv[i].Quantity > 0)) {
         console.log('CREATE');
         debouncedAddOppProduct(newInv[i])
@@ -919,7 +924,7 @@ const Invoice = ({ data, account, getAccount, oppProducts, oppType, oppImages, p
                     </td>
                   </tr>
                   <tr>
-                    <td className={style.editLabel}>Electricity Provider</td>
+                    <td className={`${style.editLabel} ${style.padding}`}>Electricity Provider</td>
                     <td className={style.yellow}>--</td>
                   </tr>
                   <tr>

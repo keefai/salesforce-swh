@@ -5,19 +5,21 @@ import { formatNumber } from '../../../../common/helpers';
 import style from './style.module.scss';
 
 const Chart1 = ({ data, annotationData }) => {
+  const exportCredit = data ? data.Savings.map(d => d.ExportCumulative) : [];
+  const directUsageSavings =  data ? data.Savings.map(d => d.DirectCumulative) : [];
   const chartData = {
     labels: data ? data.Savings.map((d, i) => i + 1) : [],
     datasets: [
       {
         label: 'Export Credit',
         backgroundColor: 'rgb(144, 219, 244)',
-        data: data ? data.Savings.map(d => d.ExportCumulative) : [],
+        data: exportCredit,
         borderWidth: 0
       },
       {
         label: 'Direct Usage Savings',
         backgroundColor: 'rgb(0, 153, 255)',
-        data: data ? data.Savings.map(d => d.DirectCumulative) : [],
+        data: directUsageSavings,
         borderWidth: 0
       },
       {
@@ -37,6 +39,18 @@ const Chart1 = ({ data, annotationData }) => {
           height={250}
           options={{
             responsive: true,
+            tooltips: {
+              mode: 'single',
+              intersect: false,
+              position: 'nearest',
+              callbacks: {
+                  label: (t, d) => {
+                    var dstLabel = d.datasets[t.datasetIndex].label;
+                    var yLabel = t.yLabel;
+                    return `${dstLabel}: $${formatNumber(yLabel)}`;
+                  }
+              }
+            },
             legend: {
               position: 'bottom',
               onClick: e => e.stopPropagation()
